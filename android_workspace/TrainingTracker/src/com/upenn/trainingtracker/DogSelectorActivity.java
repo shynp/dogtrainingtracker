@@ -118,7 +118,7 @@ public class DogSelectorActivity extends FragmentActivity
     	
     	DateSelectorTextView dateSelector = (DateSelectorTextView) this.addDogDialog.findViewById(R.id.dateSelectorTextViewID);
     	Calendar dob = dateSelector.getDateOfBirth();
-    	String dobString = dob.get(Calendar.DAY_OF_MONTH) + "-" + dob.get(Calendar.MONTH) + "-" + dob.get(Calendar.YEAR);
+    	String dobString = dob.get(Calendar.YEAR) + "-" + dob.get(Calendar.MONTH) + "-" + dob.get(Calendar.DAY_OF_MONTH);
 
     	// Get image and encode as string
     	ImageSelectorImageView imageSelector = (ImageSelectorImageView) this.addDogDialog.findViewById(R.id.dogImageID);
