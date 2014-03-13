@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+	    <EditText
+	        android:id="@+id/nameID"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:hint="Name"
+	        android:ems="10"
+            android:layout_marginBottom="7dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+	        android:inputType="text" />
+	    <com.upenn.trainingtracker.customviews.DateSelectorTextView
+	        android:id="@+id/dateSelectorTextViewID"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content" 
+            android:layout_marginBottom="7dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+             android:ems="10"
+            android:hint="Date of Birth"
+	        />
+	    <EditText
+	        android:id="@+id/breedID"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:hint="Breed"
+	         android:ems="10"
+            android:layout_marginBottom="7dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+	        android:inputType="text" />
+	    <EditText
+	        android:id="@+id/serviceTypeID"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:hint="Service Type"
+	        android:ems="10"
+            android:layout_marginBottom="7dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+	        android:inputType="text" />
+		    <TextView
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:textSize="20sp"
+	            android:layout_marginTop="7dp"
+            	android:layout_marginLeft="15dp"
+		        android:text="Click to Upload Image" />
+		<LinearLayout
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:gravity="center_horizontal"
+		    android:orientation="vertical" >
+
+		    <com.upenn.trainingtracker.customviews.ImageSelectorImageView 
+		        android:id="@+id/dogImageID"
+		        android:layout_width="150dip"
+		        android:layout_height="150dip"
+		        android:layout_margin="5dp"
+		        android:src="@drawable/dog_thumb" />
+		    
+		</LinearLayout>
+		<LinearLayout
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content"
+		    android:gravity="center_horizontal"
+		    android:orientation="horizontal" >
+			<Button
+			    android:id="@+id/addNewDogButtonID"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_marginTop="15dp"
+			    android:paddingLeft="15dp"
+			    android:paddingRight="15dp"
+			    android:text="Add Entry" />
+		</LinearLayout>
+
+    
+
+</LinearLayout>

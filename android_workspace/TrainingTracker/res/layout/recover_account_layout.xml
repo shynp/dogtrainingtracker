@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:orientation="vertical" >
+
+
+        
+	    <EditText
+	        android:id="@+id/emailID"
+	        android:layout_width="200dp"
+	        android:layout_height="wrap_content"
+	        android:ems="14"
+	        android:hint="Email Address"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+
+	        android:inputType="textEmailAddress" />
+	
+
+	    
+	    <Button
+	        android:id="@+id/createAccountButtonID"
+	        style="?android:attr/buttonStyleSmall"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="10dp"
+	        android:layout_marginBottom="15dp"
+	        android:text="Send Recovery Email" />
+	</LinearLayout>
+
+
+
+</LinearLayout>
