@@ -31,7 +31,8 @@ public class Util {
 
     private static final String TAG = "db.Util";
 
-    private Util() {
+    private Util() 
+    {
 
     }
 

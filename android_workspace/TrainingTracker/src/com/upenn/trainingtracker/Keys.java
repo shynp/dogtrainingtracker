@@ -4,7 +4,7 @@ public class Keys
 {
 	public static final String CONNECTION_PASSWORD = "39Dkf93ja91dvMNa02ns1d4N9";
 	//public static final String SITE = "http://pennvetwdc.t15.org/";
-	public static final String SITE = "http://pennvetwdc.net78.net/";
+	public static final String SITE = "http://pennvetwdc.t15.org/";
 
 	public static class UserKeys
     {
