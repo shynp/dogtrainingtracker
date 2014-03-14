@@ -37,10 +37,14 @@ import android.widget.Toast;
 
 public class DogSelectorActivity extends FragmentActivity
 {
-	public final static int CAMERA_INTENT_RESULT_CODE = 1;
-	public final static int CROP_INTENT_RESULT_CODE = 2;
-	public final static int GALLERY_INTENT_RESULT_CODE = 3;
-	public final static int CROP_INTENT_RESULT_CODE_FROM_GALLERY = 4;
+	/**
+	 * These are the result-codes that identify which activity the user is returning from.  All of these
+	 * activities are started from the ImageSelectorImageView of the add_dog_layout.
+	 */
+	public final static int CAMERA_INTENT_RESULT_CODE = 1; // Returning from camera app
+	public final static int CROP_INTENT_RESULT_CODE = 2;   // Returning from cropping after camera app
+	public final static int GALLERY_INTENT_RESULT_CODE = 3; // Retruning from gallery
+	public final static int CROP_INTENT_RESULT_CODE_FROM_GALLERY = 4; // Returning from cropping after gallery
 	
 	private Dialog addDogDialog;
 
@@ -53,6 +57,12 @@ public class DogSelectorActivity extends FragmentActivity
 		this.setContentView(R.layout.dog_selector_layout);
 		
 	}
+	/**
+	 * The imageSelector (of type ImageSelectorImageView) launches the CropImage activity (in janmuller package)
+	 * It launches it for a result (see "startActivityForResult").  The result is returned to the current activity
+	 * which is this class.  The requestCode which was set when the activity was launched is now used to determine 
+	 * the appropriate action to take.
+	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
@@ -75,7 +85,10 @@ public class DogSelectorActivity extends FragmentActivity
 			imageSelector.setCropGalleryResult();
 		}
 	}
-	   // Initiating Menu XML file (menu.xml)
+	/**
+	 * This method is overridden so that the menu can be set.  The menu is opened when the physical
+	 * "menu" button is pressed on the android
+	 */
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -83,10 +96,12 @@ public class DogSelectorActivity extends FragmentActivity
         menuInflater.inflate(R.menu.dog_selector_menu, menu);
         return true;
     }
-    public void openDateSelector()
-    {
-	
-    }
+    /**
+     * This method is called by the add dog button (as defined in add_dog_layout.xml
+     * Both the date-selector and image-selector need a reference to the parent activity. So, these elements
+     * are retrieved via their id and passed a reference to this actiivty
+     * @param view
+     */
     public void openAddDogPopUp(final View view)
     {
     	this.addDogDialog = new Dialog(this);
@@ -110,6 +125,11 @@ public class DogSelectorActivity extends FragmentActivity
     	addDogDialog.show();
 
     }
+    /**
+     * This method is called when the user submits the new dog entry.  Values are retrieved from the fields
+     * and then the values are pushed to the server with an AsyncTask
+     * @param view
+     */
     public void addNewDogEntry(final View view)
     {
     	String name = ((TextView)this.addDogDialog.findViewById(R.id.nameID)).getText().toString().trim();
@@ -165,6 +185,7 @@ public class DogSelectorActivity extends FragmentActivity
     			// TODO: Update the local database
     		}
     	}.execute(null,null,null);
+    	//TODO: Close the dialog.  Currently left open for the purpose of debugging
     }
     /**
      * Event Handling for Individual menu item selected

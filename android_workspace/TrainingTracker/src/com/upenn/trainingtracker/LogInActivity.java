@@ -18,6 +18,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -26,6 +29,11 @@ import android.widget.Toast;
 
 public class LogInActivity extends Activity
 {
+	/*
+	 *  A dialog is created in openCreateAccountPopup and logInCallBack() determines 
+	 *  if this dialog will be closed.  For this reason, all dialogs use this instance variable
+	 *  to allow for global access.
+	 */
 	private Dialog dialog;
 	
     @Override
@@ -40,10 +48,18 @@ public class LogInActivity extends Activity
         	//dbHandler.syncUsersAndDogs();
         }
     }
+    /**
+     * Called by Anonymous Listener which was created inside openCreateAccountPopup().  Uses AsyncTask
+     * to push values to server
+     * @param name
+     * @param username
+     * @param password
+     * @param email
+     * @param phone
+     */
     private void addNewUserToServer(String name, String username, String password,
     		String email, String phone)
     {
-
     	final List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 
     	pairs.add(new BasicNameValuePair("name", name));
@@ -89,6 +105,11 @@ public class LogInActivity extends Activity
 
     }
 
+    /**
+     * Called when user tries to login.  Checks the database to see if the credentials are valid and
+     * appropriately handles result.
+     * @param view
+     */
     public void logInCallBack(final View view)
     {
     	EditText usernameView = (EditText) this.findViewById(R.id.username);
@@ -99,7 +120,6 @@ public class LogInActivity extends Activity
     	DatabaseHandler db = new DatabaseHandler(this);
     	if (db.isValidUser(userName, password))
     	{
-    		//Toast.makeText(this, "Valid Credentials", Toast.LENGTH_LONG).show();
     		Intent intent = new Intent(this, DogSelectorActivity.class);
     		LogInActivity.this.startActivity(intent);
     	}
@@ -108,6 +128,11 @@ public class LogInActivity extends Activity
     		Toast.makeText(this, "Invalid Credentials", Toast.LENGTH_LONG).show();
     	}
     }
+    /**
+     * Opens dialog which allows user to have email sent to them with their account details.  Button which calls
+     * this method is contained in log_in_layout.  
+     * @param view
+     */
     public void openRecoverAccountPopup(final View view)
     {
     	dialog = new Dialog(this);
@@ -129,6 +154,36 @@ public class LogInActivity extends Activity
     	});
     	dialog.show();
     }
+    /**
+     * Event Handling for Individual menu item selected
+     * Identify single menu item by it's id
+     * */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+    	 switch (item.getItemId())
+         {
+         case R.id.itemSyncID:
+        	 ConnectionsManager cm = ConnectionsManager.getInstance(this);
+        	 cm.pullUsersFromServer(this);
+         default:
+             return super.onOptionsItemSelected(item);
+         }
+    }
+     // Initiating Menu XML file (menu.xml)
+	 @Override
+	 public boolean onCreateOptionsMenu(Menu menu)
+	 {
+	     MenuInflater menuInflater = getMenuInflater();
+	     menuInflater.inflate(R.menu.dog_selector_menu, menu);
+	     return true;
+	 }
+	 /**
+	  * Opens a pop-up dialog from which the user can create an account.  Opened when user selects create account button
+	  * contained in log_in_layout.  Anonymous listener created for the submitting of new account which ultimately calls
+	  * the addNewUserToServer method of this class
+	  * @param view
+	  */
     public void openCreateAccountPopup(final View view)
     {
     	dialog = new Dialog(this);

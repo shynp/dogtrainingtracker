@@ -42,12 +42,21 @@ public class ConnectionsManager
 		}
 		return instance;
 	}
+	/**
+	 * Checks to see if wifi is enabled and available
+	 * @return
+	 */
 	public boolean isWifiAvailable()
 	{
 		ConnectivityManager connManager = (ConnectivityManager) this.activity.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 		return mWifi.isConnected();
 	}
+	/**
+	 * Sends notification to the server to send a recovery email if the provided email is valid
+	 * @param activity
+	 * @param email
+	 */
 	public void promptRecoveryEmail(final Activity activity, String email)
 	{
     	final List<NameValuePair> pairs = new ArrayList<NameValuePair>();
@@ -98,6 +107,10 @@ public class ConnectionsManager
     		}
     	}.execute(null,null,null);
 	}
+	/**
+	 * Pull the users from server and afterwards update the local database copy
+	 * @param activity
+	 */
 	public void pullUsersFromServer(final Activity activity)
 	{
     	final List<NameValuePair> pairs = new ArrayList<NameValuePair>();
@@ -138,6 +151,12 @@ public class ConnectionsManager
     		}
     	}.execute(null,null,null);
 	}
+	/**
+	 * Pull the dog information from the server and afterwards update the local copy.
+	 * This does not update the individual training data only the basic information for each dog
+	 * such as name, picture, category, etc.
+	 * @param activity
+	 */
 	public void pullDogsFromServer(final Activity activity)
 	{
     	final List<NameValuePair> pairs = new ArrayList<NameValuePair>();
@@ -173,11 +192,17 @@ public class ConnectionsManager
     				return;
     			}
     			Log.i("TAG","Creating database handler");
-    			//DatabaseHandler handler = new DatabaseHandler(activity.getApplicationContext());
-    			//handler.updateUsersWithJSON(result);
+    			DatabaseHandler handler = new DatabaseHandler(activity.getApplicationContext());
+    			handler.updateDogsWithJSON(result, activity);
     		}
     	}.execute(null,null,null);
 	}
+	/**
+	 * Takes the input stream returned from the HTTP request and returns a StringBuidler.  This can
+	 * then be converted to a string.
+	 * @param is
+	 * @return
+	 */
     public static StringBuilder inputStreamToString(InputStream is) {
         String rLine = "";
         StringBuilder answer = new StringBuilder();
@@ -194,10 +219,6 @@ public class ConnectionsManager
             e.printStackTrace();
         }
         return answer;
-    }
-    public static void pushValueToServer()
-    {
-    	
     }
 
 }

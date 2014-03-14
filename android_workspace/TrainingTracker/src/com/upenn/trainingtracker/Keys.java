@@ -2,10 +2,17 @@ package com.upenn.trainingtracker;
 
 public class Keys 
 {
+	/**
+	 * Server-connection information
+	 */
 	public static final String CONNECTION_PASSWORD = "39Dkf93ja91dvMNa02ns1d4N9";
 	//public static final String SITE = "http://pennvetwdc.t15.org/";
 	public static final String SITE = "http://pennvetwdc.t15.org/";
 
+	/**
+	 * These are the keys used to identify the different columns of the database tables.  Each static subclass
+	 * represents a different table and each field a column of that table
+	 */
 	public static class UserKeys
     {
     	public static final String ID = "id";
