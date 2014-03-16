@@ -220,14 +220,44 @@ public class DatabaseHandler extends SQLiteOpenHelper
         }
         return b;
     }
+    
     /**
      * Will return the information needed about each dog for the DogSelector activity
      * @return
      */
-    public ArrayList<DogProfile> getDogProfiles()
+    public ArrayList<DogProfile> getDogProfiles(Context context)
     {
-    	// TODO: Implement this method
-    	return null;
+        String CREATE_DOGS_TABLE = "CREATE TABLE " + TABLE_DOGS + "("
+                + Keys.UserKeys.ID + " INTEGER PRIMARY KEY," + 
+        		Keys.DogKeys.NAME + " TEXT, " +
+                Keys.DogKeys.SKILLS_TABLE_NAME + " TEXT, " +
+        		Keys.DogKeys.BIRTH_DATE + " TEXT, " +
+                Keys.DogKeys.BREED + " TEXT, " +
+        		Keys.DogKeys.SERVICE_TYPE + " TEXT, " + 
+                Keys.DogKeys.IMAGE_NAME + " INTEGER" + ")";
+        
+    	SQLiteDatabase db = this.getReadableDatabase();
+    	String[] columnNames = new String[] {Keys.DogKeys.ID, Keys.DogKeys.NAME, Keys.DogKeys.SKILLS_TABLE_NAME,
+    			Keys.DogKeys.BIRTH_DATE, Keys.DogKeys.BREED, Keys.DogKeys.SERVICE_TYPE, Keys.DogKeys.IMAGE_NAME};
+    	Cursor cursor = db.query(DatabaseHandler.TABLE_DOGS, columnNames, null,null,null,null,null,null);    	
+    	
+    	ArrayList<DogProfile> profiles = new ArrayList<DogProfile>();
+    	
+    	while(cursor.moveToNext())
+    	{
+    		int ID = cursor.getInt(cursor.getColumnIndex(Keys.DogKeys.ID));
+    		String name = cursor.getString(cursor.getColumnIndex(Keys.DogKeys.NAME));
+    		String skillsTableName = cursor.getString(cursor.getColumnIndex(Keys.DogKeys.SKILLS_TABLE_NAME));
+    		String birthDate = cursor.getString(cursor.getColumnIndex(Keys.DogKeys.BIRTH_DATE));
+    		String breed = cursor.getString(cursor.getColumnIndex(Keys.DogKeys.BREED));
+    		String serviceType = cursor.getString(cursor.getColumnIndex(Keys.DogKeys.SERVICE_TYPE));
+    		String imageName = cursor.getString(cursor.getColumnIndex(Keys.DogKeys.IMAGE_NAME));
+    		
+    		Bitmap image = this.loadImage(context, imageName);
+    		DogProfile prof = new DogProfile(ID, name, skillsTableName, birthDate, breed, serviceType, image);
+    		profiles.add(prof);
+    	}
+    	return profiles;
     }
     /**
      * Called by LogInActivity to valide credentials

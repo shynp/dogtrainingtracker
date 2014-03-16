@@ -19,19 +19,29 @@ import com.upenn.trainingtracker.customviews.ImageSelectorImageView;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.ListActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,7 +55,7 @@ public class DogSelectorActivity extends FragmentActivity
 	public final static int CROP_INTENT_RESULT_CODE = 2;   // Returning from cropping after camera app
 	public final static int GALLERY_INTENT_RESULT_CODE = 3; // Retruning from gallery
 	public final static int CROP_INTENT_RESULT_CODE_FROM_GALLERY = 4; // Returning from cropping after gallery
-	
+	private ArrayList<DogProfile> profiles;
 	private Dialog addDogDialog;
 
 	private ImageSelectorImageView imageSelector;
@@ -55,7 +65,34 @@ public class DogSelectorActivity extends FragmentActivity
 	{
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.dog_selector_layout);
+		DatabaseHandler handler = new DatabaseHandler(this);
+   	 	profiles = handler.getDogProfiles(this);
+   	 	
+		final LazyAdapter adapter = new LazyAdapter(this, profiles);
+		ListView list = (ListView) this.findViewById(R.id.list);
+		list.setAdapter(adapter);
 		
+        EditText filterEditText = (EditText) findViewById(R.id.dogFilterTextID);
+
+        // Add Text Change Listener to EditText
+        filterEditText.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Call back the Adapter with current character to Filter
+            	Log.i("TAG","Filtering");
+                adapter.getFilter().filter(s.toString());
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count,int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+		//this.renderProfileWidgets();
 	}
 	/**
 	 * The imageSelector (of type ImageSelectorImageView) launches the CropImage activity (in janmuller package)
@@ -197,10 +234,36 @@ public class DogSelectorActivity extends FragmentActivity
     	 switch (item.getItemId())
          {
          case R.id.itemSyncID:
-        	 ConnectionsManager cm = ConnectionsManager.getInstance(this);
-        	 cm.pullDogsFromServer(this);
+        	 this.syncWithServer();
          default:
              return super.onOptionsItemSelected(item);
          }
     }
+    public void syncWithServer()
+    {
+    	ConnectionsManager cm = ConnectionsManager.getInstance(this);
+    	cm.pullDogsFromServer(this);
+    	//TODO: UPDATE
+    	//this.renderProfileWidgets();
+    }
+   /* public void renderProfileWidgets()
+    {
+   	 	DatabaseHandler handler = new DatabaseHandler(this);
+   	 	profiles = handler.getDogProfiles(this);
+   	 	
+    	LinearLayout parent = (LinearLayout) this.findViewById(R.id.dogProfileLayoutID);
+    	parent.removeAllViews();
+		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    	for (DogProfile profile : this.profiles)
+    	{
+    		// Get and render widget
+    		RelativeLayout profileWidget = (RelativeLayout) inflater.inflate(R.layout.dog_profile_widget, null);
+    		ImageView imageView = (ImageView) profileWidget.findViewById(R.id.profileImageID);
+    		imageView.setImageBitmap(profile.getImage());
+    		TextView textView = (TextView) profileWidget.findViewById(R.id.dogNameTextID);
+    		textView.setText(profile.getName());
+
+    		parent.addView(profileWidget);
+    	}
+    }*/
 }
