@@ -13,7 +13,9 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -186,6 +188,11 @@ public class LogInActivity extends Activity
 	  */
     public void openCreateAccountPopup(final View view)
     {
+    	// Check if wifi is available
+    	final ConnectionsManager cm = ConnectionsManager.getInstance(this);
+    	boolean isEnabled = cm.checkForWifi(this, "Wifi is needed to create new account");
+    	if (!isEnabled) return;
+    	
     	dialog = new Dialog(this);
     	dialog.setContentView(R.layout.create_account_layout);
     	dialog.setTitle("Account Creation");
@@ -195,6 +202,10 @@ public class LogInActivity extends Activity
 			@Override
 			public void onClick(View buttonView) 
 			{
+		    	ConnectionsManager cm = ConnectionsManager.getInstance(LogInActivity.this);
+		    	boolean isEnabled = cm.checkForWifi(LogInActivity.this, "Wifi is needed to add a new account");
+		    	if (!isEnabled) return;
+		    	
 			   	EditText fullNameET = (EditText) dialog.findViewById(R.id.nameID);
 		    	EditText userNameET = (EditText) dialog.findViewById(R.id.userNmeID);
 		    	EditText passwordET = (EditText) dialog.findViewById(R.id.passwordID);
@@ -215,7 +226,6 @@ public class LogInActivity extends Activity
 		    	}
 		    	Log.i("TAG", "New Account: " + fullName + " " + userName + " " + password + " " + email + " " + phone);
 		    	LogInActivity.this.addNewUserToServer(fullName, userName, password, email, phone);
-		    	ConnectionsManager cm = ConnectionsManager.getInstance(LogInActivity.this);
 		    	cm.pullUsersFromServer(LogInActivity.this);
 			}
     	});

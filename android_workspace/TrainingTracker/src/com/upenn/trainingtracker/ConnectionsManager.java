@@ -18,7 +18,10 @@ import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -107,6 +110,39 @@ public class ConnectionsManager
     		}
     	}.execute(null,null,null);
 	}
+	public void openWifiSettings(Activity activity)
+	{
+		  final Intent intent = new Intent(Intent.ACTION_MAIN, null);
+          intent.addCategory(Intent.CATEGORY_LAUNCHER);
+          final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.wifi.WifiSettings");
+          intent.setComponent(cn);
+          intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+          activity.startActivity( intent);
+	}
+	/**
+	 * Checks to see if wifi is enabled.  If it is not shows the given error message
+	 * @param activity
+	 * @param errorMessage
+	 */
+	public boolean checkForWifi(final Activity activity, String errorMessage)
+	{
+    	if (!this.isWifiAvailable())
+    	{
+    		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+    		builder.setMessage(errorMessage);
+    		builder.setNegativeButton("Select Network", new DialogInterface.OnClickListener(){
+				@Override
+				public void onClick(DialogInterface arg0, int arg1) 
+				{
+					ConnectionsManager.this.openWifiSettings(activity);
+				}
+    		});
+    		builder.setPositiveButton("Cancel", null);
+    		builder.create().show();
+    		return false;
+    	}
+    	return true;
+	}
 	/**
 	 * Pull the users from server and afterwards update the local database copy
 	 * @param activity
@@ -157,7 +193,7 @@ public class ConnectionsManager
 	 * such as name, picture, category, etc.
 	 * @param activity
 	 */
-	public void pullDogsFromServer(final Activity activity)
+	public void pullDogsFromServer(final Activity activity, final Notifiable notifier, final int eventCode)
 	{
     	final List<NameValuePair> pairs = new ArrayList<NameValuePair>();
     	pairs.add(new BasicNameValuePair("validation", Keys.CONNECTION_PASSWORD));
@@ -194,6 +230,10 @@ public class ConnectionsManager
     			Log.i("TAG","Creating database handler");
     			DatabaseHandler handler = new DatabaseHandler(activity.getApplicationContext());
     			handler.updateDogsWithJSON(result, activity);
+    			if (notifier != null)
+    			{
+    				notifier.notifyOfEvent(eventCode);
+    			}
     		}
     	}.execute(null,null,null);
 	}

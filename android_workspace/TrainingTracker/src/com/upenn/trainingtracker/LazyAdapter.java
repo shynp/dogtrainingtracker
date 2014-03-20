@@ -35,8 +35,15 @@ public class LazyAdapter extends BaseAdapter implements Filterable
 		@Override
 		public int compare(DogProfile profile1, DogProfile profile2) 
 		{
+			Log.i("TAG","In comparator");
 			String name1 = profile1.getName();
 			String name2 = profile2.getName();
+			if (constraint.trim().equals(""))
+			{
+				Log.i("TAG","COMPARING");
+				return name1.compareTo(name2);
+			}
+			
 			int distance1 = this.computeLevenshteinDistance(name1, constraint);
 			int distance2 = this.computeLevenshteinDistance(name2, constraint);
 			
@@ -109,10 +116,11 @@ public class LazyAdapter extends BaseAdapter implements Filterable
 			@Override
 			protected FilterResults performFiltering(CharSequence constraint) 
 			{
+				Log.i("TAG","Performing filtering");
 				FilterResults results = new FilterResults();
 				ArrayList<DogProfile> profilesFiltered = new ArrayList<DogProfile>();
 				
-				if (constraint == null || constraint.length() == 0)
+				if (constraint == null)
 				{
 					results.count = LazyAdapter.this.profiles.size();
 					results.values = LazyAdapter.this.profiles;

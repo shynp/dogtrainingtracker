@@ -45,7 +45,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class DogSelectorActivity extends FragmentActivity
+public class DogSelectorActivity extends FragmentActivity implements Notifiable
 {
 	/**
 	 * These are the result-codes that identify which activity the user is returning from.  All of these
@@ -55,6 +55,8 @@ public class DogSelectorActivity extends FragmentActivity
 	public final static int CROP_INTENT_RESULT_CODE = 2;   // Returning from cropping after camera app
 	public final static int GALLERY_INTENT_RESULT_CODE = 3; // Retruning from gallery
 	public final static int CROP_INTENT_RESULT_CODE_FROM_GALLERY = 4; // Returning from cropping after gallery
+	
+	public final int DOG_HAS_SYNCED = 5;
 	private ArrayList<DogProfile> profiles;
 	private Dialog addDogDialog;
 
@@ -71,9 +73,11 @@ public class DogSelectorActivity extends FragmentActivity
 		final LazyAdapter adapter = new LazyAdapter(this, profiles);
 		ListView list = (ListView) this.findViewById(R.id.list);
 		list.setAdapter(adapter);
+		Log.i("TAG","Calling Filter");
+		adapter.getFilter().filter("");
 		
         EditText filterEditText = (EditText) findViewById(R.id.dogFilterTextID);
-
+        
         // Add Text Change Listener to EditText
         filterEditText.addTextChangedListener(new TextWatcher() {
 
@@ -81,7 +85,7 @@ public class DogSelectorActivity extends FragmentActivity
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 // Call back the Adapter with current character to Filter
             	Log.i("TAG","Filtering");
-                adapter.getFilter().filter(s.toString());
+                adapter.getFilter().filter(s.toString().trim());
             }
 
             @Override
@@ -93,6 +97,15 @@ public class DogSelectorActivity extends FragmentActivity
             }
         });
 		//this.renderProfileWidgets();
+	}
+	public void refreshListDisplay()
+	{
+		DatabaseHandler handler = new DatabaseHandler(this);
+   	 	profiles = handler.getDogProfiles(this);
+   	 	
+		final LazyAdapter adapter = new LazyAdapter(this, profiles);
+		ListView list = (ListView) this.findViewById(R.id.list);
+		list.setAdapter(adapter);
 	}
 	/**
 	 * The imageSelector (of type ImageSelectorImageView) launches the CropImage activity (in janmuller package)
@@ -141,6 +154,10 @@ public class DogSelectorActivity extends FragmentActivity
      */
     public void openAddDogPopUp(final View view)
     {
+    	ConnectionsManager cm = ConnectionsManager.getInstance(this);
+    	boolean isEnabled = cm.checkForWifi(this, "Wifi is needed to add a new dog");
+    	if (!isEnabled) return;
+    	
     	this.addDogDialog = new Dialog(this);
     	addDogDialog.setTitle("Add New Dog");
     	addDogDialog.setContentView(R.layout.add_dog_layout);
@@ -148,6 +165,7 @@ public class DogSelectorActivity extends FragmentActivity
     	dateSelector.setParentFragment(this);
     	imageSelector = (ImageSelectorImageView) addDogDialog.findViewById(R.id.dogImageID); 
     	imageSelector.setParentActivity(this);
+    	
 
     	// Set behavior of add-dog button
     	Button addDogButton = (Button) this.addDogDialog.findViewById(R.id.addNewDogButtonID);
@@ -169,14 +187,22 @@ public class DogSelectorActivity extends FragmentActivity
      */
     public void addNewDogEntry(final View view)
     {
+    	ConnectionsManager cm = ConnectionsManager.getInstance(this);
+    	boolean isEnabled = cm.checkForWifi(this, "Wifi is needed to add a new dog");
+    	if (!isEnabled) return;
+    	
     	String name = ((TextView)this.addDogDialog.findViewById(R.id.nameID)).getText().toString().trim();
     	String breed = ((TextView)this.addDogDialog.findViewById(R.id.breedID)).getText().toString().trim();
     	String serviceType = ((TextView)this.addDogDialog.findViewById(R.id.serviceTypeID)).getText().toString().trim();
     	
     	DateSelectorTextView dateSelector = (DateSelectorTextView) this.addDogDialog.findViewById(R.id.dateSelectorTextViewID);
     	Calendar dob = dateSelector.getDateOfBirth();
+    	
+    	boolean shouldContinue = this.validateNewDogData(dob, name, breed, serviceType);
+    	if (!shouldContinue) return;
+    	
     	String dobString = dob.get(Calendar.YEAR) + "-" + dob.get(Calendar.MONTH) + "-" + dob.get(Calendar.DAY_OF_MONTH);
-
+    	
     	// Get image and encode as string
     	ImageSelectorImageView imageSelector = (ImageSelectorImageView) this.addDogDialog.findViewById(R.id.dogImageID);
     	Bitmap image = imageSelector.getBitmap();
@@ -222,7 +248,25 @@ public class DogSelectorActivity extends FragmentActivity
     			// TODO: Update the local database
     		}
     	}.execute(null,null,null);
+    	this.addDogDialog.cancel();
+    	this.syncWithServer();
     	//TODO: Close the dialog.  Currently left open for the purpose of debugging
+    }
+    
+
+    /**
+     * Checks to ensure all new dog data is valid
+     * @param dob
+     * @param name
+     * @param breed
+     * @param serviceType
+     * @return true or false depending on if program should continue adding the dog info to server
+     */
+    public boolean validateNewDogData(Calendar dob, String name, String breed, String serviceType)
+    {
+    	boolean allFieldsFull = !name.equals("") && !breed.equals("") && ! serviceType.equals("") && dob != null;
+    	if (!allFieldsFull) Toast.makeText(this, "Please fill all fields", Toast.LENGTH_LONG).show();
+    	return allFieldsFull;
     }
     /**
      * Event Handling for Individual menu item selected
@@ -242,28 +286,18 @@ public class DogSelectorActivity extends FragmentActivity
     public void syncWithServer()
     {
     	ConnectionsManager cm = ConnectionsManager.getInstance(this);
-    	cm.pullDogsFromServer(this);
+    	cm.pullDogsFromServer(this, this, this.DOG_HAS_SYNCED);
     	//TODO: UPDATE
     	//this.renderProfileWidgets();
     }
-   /* public void renderProfileWidgets()
-    {
-   	 	DatabaseHandler handler = new DatabaseHandler(this);
-   	 	profiles = handler.getDogProfiles(this);
-   	 	
-    	LinearLayout parent = (LinearLayout) this.findViewById(R.id.dogProfileLayoutID);
-    	parent.removeAllViews();
-		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    	for (DogProfile profile : this.profiles)
-    	{
-    		// Get and render widget
-    		RelativeLayout profileWidget = (RelativeLayout) inflater.inflate(R.layout.dog_profile_widget, null);
-    		ImageView imageView = (ImageView) profileWidget.findViewById(R.id.profileImageID);
-    		imageView.setImageBitmap(profile.getImage());
-    		TextView textView = (TextView) profileWidget.findViewById(R.id.dogNameTextID);
-    		textView.setText(profile.getName());
+	@Override
+	public void notifyOfEvent(int eventCode) 
+	{
+		if (eventCode == this.DOG_HAS_SYNCED)
+		{
+	    	this.refreshListDisplay();
+		}
+	}
 
-    		parent.addView(profileWidget);
-    	}
-    }*/
+
 }
