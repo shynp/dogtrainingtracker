@@ -1,5 +1,8 @@
 package com.upenn.trainingtracker;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 import android.graphics.Bitmap;
 import android.util.Log;
 
@@ -9,6 +12,7 @@ public class DogProfile
 	private String name;
 	private String skillsTableName;
 	private String birthDate;
+	private Calendar birthDateCalendar;
 	private String breed;
 	private String serviceType;
 	private Bitmap image;
@@ -23,6 +27,18 @@ public class DogProfile
 		this.breed = breed;
 		this.serviceType = serviceType;
 		this.image = image;
+
+		String[] parts = birthDate.split("-");
+		int year = Integer.parseInt(parts[0]);
+		int month = Integer.parseInt(parts[1]);
+		int day = Integer.parseInt(parts[2]);
+		
+		Calendar cal = GregorianCalendar.getInstance();
+		
+		cal.set(Calendar.YEAR, year);
+		cal.set(Calendar.MONTH, month);
+		cal.set(Calendar.DAY_OF_MONTH, day);
+		this.birthDateCalendar = cal;
 	}
 
 	public int getID() {
@@ -48,8 +64,12 @@ public class DogProfile
 		this.skillsTableName = skillsTableName;
 	}
 
-	public String getBirthDate() {
+	public String getBirthDateString() {
 		return birthDate;
+	}
+	public Calendar getBirthDateCalendar()
+	{
+		return this.birthDateCalendar;
 	}
 
 	public void setBirthDate(String birthDate) {

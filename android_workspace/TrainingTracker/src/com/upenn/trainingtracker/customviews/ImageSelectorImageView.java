@@ -131,6 +131,12 @@ public class ImageSelectorImageView extends ImageView
 			this.setImageBitmap(img);
 		}
 	}
+	public void setImageSelectorImage(Bitmap img)
+	{
+		this.img = img;
+		this.setImageBitmap(img);
+	}
+	
 	public void setCropGalleryResult()
 	{
         try {

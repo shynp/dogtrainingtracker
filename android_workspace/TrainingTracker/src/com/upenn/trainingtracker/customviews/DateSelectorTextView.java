@@ -20,10 +20,9 @@ import android.widget.TextView;
 
 public class DateSelectorTextView extends EditText
 {
-	private Calendar dateOfBirth;
-	
-	//private boolean dateDialogShowing = false;
+	private Calendar dateOfBirth;	
 	private FragmentActivity parentFragment;
+	
 	public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener
 	{
 		private DateSelectorTextView dateTextView;
@@ -53,7 +52,6 @@ public class DateSelectorTextView extends EditText
 		        month = c.get(Calendar.MONTH);
 		        day = c.get(Calendar.DAY_OF_MONTH);
 	    	}
-
 	        // Create a new instance of DatePickerDialog and return it
 	        return new DatePickerDialog(getActivity(), this, year, month, day);
 	    }
@@ -62,12 +60,7 @@ public class DateSelectorTextView extends EditText
 		public void onDateSet(DatePicker view, int year, int month,
 				int day) 
 		{
-			if (this.dateTextView.dateOfBirth == null)
-			{
-				this.dateTextView.dateOfBirth = GregorianCalendar.getInstance();
-			}
-			this.dateTextView.dateOfBirth.set(year,  month, day);
-			this.dateTextView.setDateText();
+			dateTextView.setDate(year, month, day);
 		}
 		
 	}
@@ -75,6 +68,19 @@ public class DateSelectorTextView extends EditText
 	public DateSelectorTextView(Context context) {
 		super(context);
 		this.init();
+	}
+	public void setDate(int year, int month, int day)
+	{
+		if (this.dateOfBirth == null)
+		{
+			this.dateOfBirth = GregorianCalendar.getInstance();
+		}
+		this.dateOfBirth.set(year,  month, day);
+		this.setDateText();
+	}
+	public void setDate(Calendar cal)
+	{
+		this.setDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
 	}
     public Calendar getDateOfBirth()
     {
@@ -113,12 +119,9 @@ public class DateSelectorTextView extends EditText
 					frag.setParent(DateSelectorTextView.this);
 					frag.show(DateSelectorTextView.this.parentFragment.getSupportFragmentManager(), "datePicker");
 				}
-				return true;
-				
+				return true;	
 			}
-			
 		});
-
 	}
 	
 	

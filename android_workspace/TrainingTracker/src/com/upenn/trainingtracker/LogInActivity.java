@@ -17,6 +17,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -116,13 +117,19 @@ public class LogInActivity extends Activity
     {
     	EditText usernameView = (EditText) this.findViewById(R.id.username);
     	EditText passwordView = (EditText) this.findViewById(R.id.password);
-    	String userName = usernameView.getText().toString();
-    	String password = passwordView.getText().toString();
+    	String userName = usernameView.getText().toString().trim();
+    	String password = passwordView.getText().toString().trim();
     	
     	DatabaseHandler db = new DatabaseHandler(this);
     	if (db.isValidUser(userName, password))
     	{
+    		SharedPreferences pref = this.getSharedPreferences(MainActivity.USER_PREFS, 0);
+    		Log.i("TAG","Saving preferences");
+    		pref.edit().putString(MainActivity.USER_NAME_KEY, userName).commit();
+    		pref.edit().putString(MainActivity.USER_PASSWORD_KEY, password).commit();
+    		
     		Intent intent = new Intent(this, DogSelectorActivity.class);
+    		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
     		LogInActivity.this.startActivity(intent);
     	}
     	else

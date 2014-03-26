@@ -1,9 +1,13 @@
 package com.upenn.trainingtracker;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Vector;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -14,17 +18,23 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicNameValuePair;
 
+import com.upenn.trainingtracker.customviews.AutoBreedSelector;
 import com.upenn.trainingtracker.customviews.DateSelectorTextView;
 import com.upenn.trainingtracker.customviews.ImageSelectorImageView;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -36,12 +46,16 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,6 +87,8 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
 		final LazyAdapter adapter = new LazyAdapter(this, profiles);
 		ListView list = (ListView) this.findViewById(R.id.list);
 		list.setAdapter(adapter);
+		this.setListSelectionBehavior(list);
+
 		Log.i("TAG","Calling Filter");
 		adapter.getFilter().filter("");
 		
@@ -96,8 +112,65 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
             public void afterTextChanged(Editable s) {
             }
         });
-		//this.renderProfileWidgets();
+        //String userName = null;
+        //String userName = savedInstanceState.getString(MainActivity.USER_NAME_KEY);
+        if (this.getIntent().hasExtra(MainActivity.USER_NAME_KEY))
+        {
+            Bundle extras = this.getIntent().getExtras();
+        	this.verifyUser(extras.getString(MainActivity.USER_NAME_KEY));
+        }
 	}
+	public void verifyUser(String userName)
+	{
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage("You are logged in as " + userName + " select Ok to continue or change account to login under different credentials");
+		builder.setPositiveButton("Ok", null);
+		builder.setNegativeButton("Switch Account", new DialogInterface.OnClickListener() 
+		{
+			@Override
+			public void onClick(DialogInterface arg0, int arg1) {
+				// TODO Auto-generated method stub
+				DogSelectorActivity.this.logOutOfAccount();
+			}
+		});
+	}
+	public void setListSelectionBehavior(ListView list)
+	{
+		//this.renderProfileWidgets();
+		list.setOnItemClickListener(new AdapterView.OnItemClickListener()
+		{
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View view, int arg2,
+					long arg3) {
+				final int dogID = view.getId();
+				String[] items = new String[] {"Train Dog", "View History", "Update Profile"};
+				ArrayAdapter<String> adapter = new ArrayAdapter<String> (DogSelectorActivity.this, android.R.layout.select_dialog_item, items);
+				AlertDialog.Builder builder = new AlertDialog.Builder(DogSelectorActivity.this);
+				builder.setTitle("Dog Selection");
+				builder.setAdapter(adapter, new DialogInterface.OnClickListener() 
+				{
+					@Override
+					public void onClick(DialogInterface dialog, int item) 
+					{
+						if (item == 0) // Train Dog
+						{
+
+						}
+						else if (item == 1) // View History
+						{
+							
+						}
+						else if (item == 2) // update profile
+						{
+							DogSelectorActivity.this.openUpdateDogPopUp(dogID);
+						}
+					}
+				});
+				builder.create().show();
+			}
+		});
+	}
+
 	public void refreshListDisplay()
 	{
 		DatabaseHandler handler = new DatabaseHandler(this);
@@ -146,6 +219,77 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
         menuInflater.inflate(R.menu.dog_selector_menu, menu);
         return true;
     }
+	public void openUpdateDogPopUp(int dogID)
+	{
+		// TODO: Should I use a hashmap
+		DogProfile targetProfile = null;
+		for (DogProfile profile : this.profiles)
+		{
+			if (profile.getID() == dogID) 
+			{
+				targetProfile = profile;
+				break;
+			}
+		}
+		
+		Dialog dialog = new Dialog(this);
+		dialog.setTitle("Update Profile");
+		dialog.setContentView(R.layout.add_dog_layout);
+		
+		TextView nameText = (TextView) dialog.findViewById(R.id.nameID);
+		nameText.setText(targetProfile.getName());
+		
+		DateSelectorTextView dateSelector = (DateSelectorTextView) dialog.findViewById(R.id.dateSelectorTextViewID); 
+    	dateSelector.setParentFragment(this);
+    	Log.i("TAG",targetProfile.getBirthDateString());
+    	dateSelector.setDate(targetProfile.getBirthDateCalendar());
+    	
+    	AutoBreedSelector breedSelector = (AutoBreedSelector) dialog.findViewById(R.id.breedID);
+    	breedSelector.initializeAutoBreeder(this);
+    	boolean breedSuccess = breedSelector.setValue(targetProfile.getBreed());
+    	
+    	Spinner serviceSpinner = (Spinner) dialog.findViewById(R.id.serviceTypeID);
+    	ArrayAdapter<String> adapter = (ArrayAdapter<String>) serviceSpinner.getAdapter();
+    	int position = adapter.getPosition(targetProfile.getServiceType());
+    	boolean serviceSuccess = position != -1;
+    	if (serviceSuccess) serviceSpinner.setSelection(position);
+    	
+    	imageSelector = (ImageSelectorImageView) dialog.findViewById(R.id.dogImageID); 
+    	imageSelector.setParentActivity(this);
+    	imageSelector.setImageSelectorImage(targetProfile.getImage());
+    	
+    	Button updateButton = (Button) dialog.findViewById(R.id.addNewDogButtonID);
+    	updateButton.setText("Update");
+    	
+    	// Set behavior of add-dog button
+    	Button addDogButton = (Button) dialog.findViewById(R.id.addNewDogButtonID);
+    	addDogButton.setOnClickListener(new OnClickListener()
+    	{
+			@Override
+			public void onClick(View view) 
+			{
+				//DogSelectorActivity.this.addNewDogEntry(view);
+			}    		
+    	});
+    	dialog.show();
+    	if (!serviceSuccess || !breedSuccess)
+    	{
+    		String warning = null;
+    		if (!serviceSuccess && !breedSuccess)
+    		{
+    			warning = "Breed and service type had invalid values.  Select valid values and click update.";
+    		}
+    		else if (!serviceSuccess)
+    		{
+    			warning = "Serivce type had an invalid value.  Select valid value and click update.";
+    		}
+    		else
+    		{
+    			warning = "Breed had invalid value.  Select valid value and lcick update.";
+    		}
+    		this.openAlertDialog(warning);
+    	}
+	}
     /**
      * This method is called by the add dog button (as defined in add_dog_layout.xml
      * Both the date-selector and image-selector need a reference to the parent activity. So, these elements
@@ -166,7 +310,9 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
     	imageSelector = (ImageSelectorImageView) addDogDialog.findViewById(R.id.dogImageID); 
     	imageSelector.setParentActivity(this);
     	
-
+    	AutoBreedSelector breedText = (AutoBreedSelector) this.addDogDialog.findViewById(R.id.breedID);
+    	breedText.initializeAutoBreeder(this);
+    	
     	// Set behavior of add-dog button
     	Button addDogButton = (Button) this.addDogDialog.findViewById(R.id.addNewDogButtonID);
     	addDogButton.setOnClickListener(new OnClickListener()
@@ -180,6 +326,13 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
     	addDogDialog.show();
 
     }
+    public void openAlertDialog(String message)
+    {
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	builder.setMessage(message);
+    	builder.setPositiveButton("Ok", null);
+    	builder.create().show();
+    }
     /**
      * This method is called when the user submits the new dog entry.  Values are retrieved from the fields
      * and then the values are pushed to the server with an AsyncTask
@@ -192,8 +345,16 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
     	if (!isEnabled) return;
     	
     	String name = ((TextView)this.addDogDialog.findViewById(R.id.nameID)).getText().toString().trim();
-    	String breed = ((TextView)this.addDogDialog.findViewById(R.id.breedID)).getText().toString().trim();
-    	String serviceType = ((TextView)this.addDogDialog.findViewById(R.id.serviceTypeID)).getText().toString().trim();
+    	
+    	AutoBreedSelector breedTextView = (AutoBreedSelector) this.addDogDialog.findViewById(R.id.breedID);
+    	String breed = breedTextView.getText().toString().trim();
+    	
+    	//String breed = ((TextView)this.addDogDialog.findViewById(R.id.breedID)).getText().toString().trim();
+    	
+    	Spinner serviceTypeSpinner = ((Spinner)this.addDogDialog.findViewById(R.id.serviceTypeID));
+    	String serviceType = serviceTypeSpinner.getSelectedItem().toString().trim();
+    	
+    	
     	
     	DateSelectorTextView dateSelector = (DateSelectorTextView) this.addDogDialog.findViewById(R.id.dateSelectorTextViewID);
     	Calendar dob = dateSelector.getDateOfBirth();
@@ -279,9 +440,21 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
          {
          case R.id.itemSyncID:
         	 this.syncWithServer();
+         case R.id.itemSwitchAccountID:
+        	 this.logOutOfAccount();
          default:
              return super.onOptionsItemSelected(item);
          }
+    }
+    public void logOutOfAccount()
+    {
+        SharedPreferences preferences = this.getSharedPreferences(MainActivity.USER_PREFS, 0);
+        preferences.edit().remove(MainActivity.USER_NAME_KEY).commit();
+        preferences.edit().remove(MainActivity.USER_PASSWORD_KEY).commit();
+        
+		Intent intent = new Intent(this, LogInActivity.class);
+		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		this.startActivity(intent);
     }
     public void syncWithServer()
     {

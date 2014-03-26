@@ -35,15 +35,28 @@ public class LazyAdapter extends BaseAdapter implements Filterable
 		@Override
 		public int compare(DogProfile profile1, DogProfile profile2) 
 		{
-			Log.i("TAG","In comparator");
 			String name1 = profile1.getName();
 			String name2 = profile2.getName();
 			if (constraint.trim().equals(""))
 			{
-				Log.i("TAG","COMPARING");
 				return name1.compareTo(name2);
 			}
-			
+			// If beginning exact match, then this ordering takes priority
+			boolean firstStarts = name1.toLowerCase().startsWith(constraint);
+			boolean secondStarts = name2.toLowerCase().startsWith(constraint);
+			if (firstStarts && secondStarts)
+			{
+				return name1.compareTo(name2);
+			}
+			if (firstStarts && !secondStarts)
+			{
+				return -10;
+			}
+			if (!firstStarts && secondStarts)
+			{
+				return 10;
+			}
+			// Otherwise use levenshtein
 			int distance1 = this.computeLevenshteinDistance(name1, constraint);
 			int distance2 = this.computeLevenshteinDistance(name2, constraint);
 			
@@ -53,7 +66,7 @@ public class LazyAdapter extends BaseAdapter implements Filterable
 		}
 		public void setConstraint(String constraint)
 		{
-			this.constraint = constraint;
+			this.constraint = constraint.toLowerCase();
 		}
 		private int minimum(int a, int b, int c) {
 			return Math.min(Math.min(a, b), c);
@@ -103,9 +116,11 @@ public class LazyAdapter extends BaseAdapter implements Filterable
 		
 		ImageView imageView = (ImageView) profileWidget.findViewById(R.id.profileImageID);
 		imageView.setImageBitmap(profile.getImage());
+
 		TextView textView = (TextView) profileWidget.findViewById(R.id.dogNameTextID);
 		textView.setText(profile.getName());
 		
+		profileWidget.setId(profile.getID());
 		return profileWidget;
 	}
 
