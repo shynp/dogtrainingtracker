@@ -73,8 +73,10 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
 	public final int DOG_HAS_SYNCED = 5;
 	private ArrayList<DogProfile> profiles;
 	private Dialog addDogDialog;
+	private DogProfile targetProfile;  //the one being updated
 
 	private ImageSelectorImageView imageSelector;
+	private Dialog updateDialog;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -222,7 +224,7 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
 	public void openUpdateDogPopUp(int dogID)
 	{
 		// TODO: Should I use a hashmap
-		DogProfile targetProfile = null;
+		targetProfile = null;
 		for (DogProfile profile : this.profiles)
 		{
 			if (profile.getID() == dogID) 
@@ -232,46 +234,46 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
 			}
 		}
 		
-		Dialog dialog = new Dialog(this);
-		dialog.setTitle("Update Profile");
-		dialog.setContentView(R.layout.add_dog_layout);
+		updateDialog = new Dialog(this);
+		updateDialog.setTitle("Update Profile");
+		updateDialog.setContentView(R.layout.add_dog_layout);
 		
-		TextView nameText = (TextView) dialog.findViewById(R.id.nameID);
+		TextView nameText = (TextView) updateDialog.findViewById(R.id.nameID);
 		nameText.setText(targetProfile.getName());
 		
-		DateSelectorTextView dateSelector = (DateSelectorTextView) dialog.findViewById(R.id.dateSelectorTextViewID); 
+		DateSelectorTextView dateSelector = (DateSelectorTextView) updateDialog.findViewById(R.id.dateSelectorTextViewID); 
     	dateSelector.setParentFragment(this);
     	Log.i("TAG",targetProfile.getBirthDateString());
     	dateSelector.setDate(targetProfile.getBirthDateCalendar());
     	
-    	AutoBreedSelector breedSelector = (AutoBreedSelector) dialog.findViewById(R.id.breedID);
+    	AutoBreedSelector breedSelector = (AutoBreedSelector) updateDialog.findViewById(R.id.breedID);
     	breedSelector.initializeAutoBreeder(this);
     	boolean breedSuccess = breedSelector.setValue(targetProfile.getBreed());
     	
-    	Spinner serviceSpinner = (Spinner) dialog.findViewById(R.id.serviceTypeID);
+    	Spinner serviceSpinner = (Spinner) updateDialog.findViewById(R.id.serviceTypeID);
     	ArrayAdapter<String> adapter = (ArrayAdapter<String>) serviceSpinner.getAdapter();
     	int position = adapter.getPosition(targetProfile.getServiceType());
     	boolean serviceSuccess = position != -1;
     	if (serviceSuccess) serviceSpinner.setSelection(position);
     	
-    	imageSelector = (ImageSelectorImageView) dialog.findViewById(R.id.dogImageID); 
+    	imageSelector = (ImageSelectorImageView) updateDialog.findViewById(R.id.dogImageID); 
     	imageSelector.setParentActivity(this);
     	imageSelector.setImageSelectorImage(targetProfile.getImage());
     	
-    	Button updateButton = (Button) dialog.findViewById(R.id.addNewDogButtonID);
+    	Button updateButton = (Button) updateDialog.findViewById(R.id.addNewDogButtonID);
     	updateButton.setText("Update");
     	
     	// Set behavior of add-dog button
-    	Button addDogButton = (Button) dialog.findViewById(R.id.addNewDogButtonID);
+    	Button addDogButton = (Button) updateDialog.findViewById(R.id.addNewDogButtonID);
     	addDogButton.setOnClickListener(new OnClickListener()
     	{
 			@Override
 			public void onClick(View view) 
 			{
-				//DogSelectorActivity.this.addNewDogEntry(view);
+				DogSelectorActivity.this.updateDogEntry(view);
 			}    		
     	});
-    	dialog.show();
+    	updateDialog.show();
     	if (!serviceSuccess || !breedSuccess)
     	{
     		String warning = null;
@@ -344,43 +346,22 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
     	boolean isEnabled = cm.checkForWifi(this, "Wifi is needed to add a new dog");
     	if (!isEnabled) return;
     	
-    	String name = ((TextView)this.addDogDialog.findViewById(R.id.nameID)).getText().toString().trim();
+    	DogProfile profile = this.getProfileFromDialog(this.addDogDialog);
+    	if (profile == null) return;
     	
-    	AutoBreedSelector breedTextView = (AutoBreedSelector) this.addDogDialog.findViewById(R.id.breedID);
-    	String breed = breedTextView.getText().toString().trim();
-    	
-    	//String breed = ((TextView)this.addDogDialog.findViewById(R.id.breedID)).getText().toString().trim();
-    	
-    	Spinner serviceTypeSpinner = ((Spinner)this.addDogDialog.findViewById(R.id.serviceTypeID));
-    	String serviceType = serviceTypeSpinner.getSelectedItem().toString().trim();
-    	
-    	
-    	
-    	DateSelectorTextView dateSelector = (DateSelectorTextView) this.addDogDialog.findViewById(R.id.dateSelectorTextViewID);
-    	Calendar dob = dateSelector.getDateOfBirth();
-    	
-    	boolean shouldContinue = this.validateNewDogData(dob, name, breed, serviceType);
-    	if (!shouldContinue) return;
-    	
-    	String dobString = dob.get(Calendar.YEAR) + "-" + dob.get(Calendar.MONTH) + "-" + dob.get(Calendar.DAY_OF_MONTH);
-    	
-    	// Get image and encode as string
-    	ImageSelectorImageView imageSelector = (ImageSelectorImageView) this.addDogDialog.findViewById(R.id.dogImageID);
-    	Bitmap image = imageSelector.getBitmap();
     	ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-    	image.compress(Bitmap.CompressFormat.JPEG, 90, outStream);
+    	profile.getImage().compress(Bitmap.CompressFormat.JPEG, 90, outStream);
     	byte[] byteArray = outStream.toByteArray();
 		String byteString = Base64.encodeToString(byteArray, 0);
     	
 		// Add pairs that will be sent via HTTP 
     	final List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 
-    	pairs.add(new BasicNameValuePair("name", name));
-    	pairs.add(new BasicNameValuePair("breed", breed));
-    	pairs.add(new BasicNameValuePair("serviceType", serviceType));
-    	pairs.add(new BasicNameValuePair("dob", dobString));
-    	pairs.add(new BasicNameValuePair("imageString", byteString));
-    	
+    	pairs.add(new BasicNameValuePair("name", profile.getName()));
+    	pairs.add(new BasicNameValuePair("breed", profile.getBreed()));
+    	pairs.add(new BasicNameValuePair("serviceType", profile.getServiceType()));
+    	pairs.add(new BasicNameValuePair("dob", profile.getBirthDateString()));
+		pairs.add(new BasicNameValuePair("imageString", byteString));
     	
     	new AsyncTask<String, String, String>() {
     		@Override
@@ -410,6 +391,103 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
     		}
     	}.execute(null,null,null);
     	this.addDogDialog.cancel();
+    	this.syncWithServer();
+    	//TODO: Close the dialog.  Currently left open for the purpose of debugging
+    }
+    /**
+     * Returns null if invalid data
+     * @param dialog
+     * @return
+     */
+    public DogProfile getProfileFromDialog(Dialog dialog)
+    {
+    	String name = ((TextView)dialog.findViewById(R.id.nameID)).getText().toString().trim();
+    	
+    	AutoBreedSelector breedTextView = (AutoBreedSelector) dialog.findViewById(R.id.breedID);
+    	String breed = breedTextView.getText().toString().trim();
+    	
+    	//String breed = ((TextView)this.addDogDialog.findViewById(R.id.breedID)).getText().toString().trim();
+    	
+    	Spinner serviceTypeSpinner = ((Spinner)dialog.findViewById(R.id.serviceTypeID));
+    	String serviceType = serviceTypeSpinner.getSelectedItem().toString().trim();
+    	
+    	DateSelectorTextView dateSelector = (DateSelectorTextView) dialog.findViewById(R.id.dateSelectorTextViewID);
+    	Calendar dob = dateSelector.getDateOfBirth();
+    	
+    	boolean shouldContinue = this.validateNewDogData(dob, name, breed, serviceType);
+    	if (!shouldContinue) return null;
+    	
+    	String dobString = dob.get(Calendar.YEAR) + "-" + dob.get(Calendar.MONTH) + "-" + dob.get(Calendar.DAY_OF_MONTH);
+    	
+    	// Get image and encode as string
+    	ImageSelectorImageView imageSelector = (ImageSelectorImageView) dialog.findViewById(R.id.dogImageID);
+    	Bitmap image = imageSelector.getBitmap();
+    	DogProfile profile = new DogProfile(-1, name, null, dobString, breed, serviceType, image);
+    	return profile;
+    }
+    public void updateDogEntry(final View view)
+    {
+    	ConnectionsManager cm = ConnectionsManager.getInstance(this);
+    	boolean isEnabled = cm.checkForWifi(this, "Wifi is needed to update a dog");
+    	if (!isEnabled) return;
+    	
+    	DogProfile profile = this.getProfileFromDialog(updateDialog);
+    	if (profile == null) return;
+    	
+    	ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+    	profile.getImage().compress(Bitmap.CompressFormat.JPEG, 90, outStream);
+    	byte[] byteArray = outStream.toByteArray();
+		String byteString = Base64.encodeToString(byteArray, 0);
+    	
+		// Add pairs that will be sent via HTTP 
+    	final List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+
+    	pairs.add(new BasicNameValuePair("name", profile.getName()));
+    	pairs.add(new BasicNameValuePair("breed", profile.getBreed()));
+    	pairs.add(new BasicNameValuePair("serviceType", profile.getServiceType()));
+    	pairs.add(new BasicNameValuePair("dob", profile.getBirthDateString()));
+    	pairs.add(new BasicNameValuePair("dogid", Integer.toString(this.targetProfile.getID())));
+    	
+    	if (profile.getImage() != targetProfile.getImage())
+    	{
+        	pairs.add(new BasicNameValuePair("imageString", byteString));
+
+    		Log.i("TAG","Adding image");
+    	}
+    	else
+    	{
+    		Log.i("TAG","Not adding image");
+    	}
+    	
+    	
+    	new AsyncTask<String, String, String>() {
+    		@Override
+    		protected String doInBackground(String... params) 
+    		{
+    			try
+    			{ 	
+    				HttpClient httpClient = new DefaultHttpClient();
+    				HttpPost httpPost = new HttpPost(Keys.SITE + "updateDog.php");
+    				httpPost.setEntity(new UrlEncodedFormEntity(pairs));
+    				HttpResponse response = httpClient.execute(httpPost);
+    				HttpEntity entity = response.getEntity();
+    				String result = ConnectionsManager.inputStreamToString(entity.getContent()).toString();
+    				Log.i("TAG",result);
+    				return result;
+    			}
+    			catch (Exception e)
+    			{
+    				e.printStackTrace();
+    			}
+    			return "";
+    		}
+    		@Override
+    		protected void onPostExecute(String result)
+    		{
+    			// TODO: Update the local database
+    		}
+    	}.execute(null,null,null);
+    	this.updateDialog.cancel();
     	this.syncWithServer();
     	//TODO: Close the dialog.  Currently left open for the purpose of debugging
     }
@@ -471,6 +549,5 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
 	    	this.refreshListDisplay();
 		}
 	}
-
 
 }
