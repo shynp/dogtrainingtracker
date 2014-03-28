@@ -124,9 +124,19 @@ public class ImageSelectorImageView extends ImageView
 	}
 	public void setCropResult()
 	{
-		Bitmap img = BitmapFactory.decodeFile(fileUri.getPath());
+		Bitmap receivedImage = BitmapFactory.decodeFile(fileUri.getPath());
+		if (receivedImage != null)
+		{
+			this.img = receivedImage;
+			this.setImageBitmap(img);
+		}
+	}
+	public void setImageSelectorImage(Bitmap img)
+	{
+		this.img = img;
 		this.setImageBitmap(img);
 	}
+	
 	public void setCropGalleryResult()
 	{
         try {

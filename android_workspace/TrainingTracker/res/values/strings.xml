@@ -10,5 +10,10 @@
     <string name="preparing_card">Preparing card</string>
     <string name="no_storage_card">No storage card</string>
     <string name="not_enough_space">Not enough space</string>
+	<string-array name="service_types">
+	    <item>Rescue</item>
+	    <item>Therapy</item>
+	    <item>Seeing Eye</item>
+	</string-array>
 
 </resources>

@@ -1,0 +1,29 @@
+[33mcommit b02f336962249eb01100b74af2394f93e8a5755c[m
+Author: Matthew MacLean <matthewtmaclean@gmailc.om>
+Date:   Wed Mar 12 22:47:59 2014 -0400
+
+    Updated DogSelectorActivity to format date properly
+
+[33mcommit 99a9448cd43c040aa2366c905a83d1bd0a9ad8f8[m
+Author: Matthew MacLean <matthewtmaclean@gmailc.om>
+Date:   Wed Mar 12 22:05:00 2014 -0400
+
+    Fixed wrong website url
+
+[33mcommit 3ea1056b60596c71778e2a614f5f780acc44e61f[m
+Author: Matthew MacLean <matthewtmaclean@gmailc.om>
+Date:   Wed Mar 12 21:49:53 2014 -0400
+
+    Files for addDog and constants
+
+[33mcommit 185d0c3e7a57def8495da494f70b2bb8ee5eccfb[m
+Author: Matthew MacLean <matthewtmaclean@gmailc.om>
+Date:   Wed Mar 12 21:47:08 2014 -0400
+
+    Initial files
+
+[33mcommit 8b530dbe7d7128a1c3e778919e328dc1149272bc[m
+Author: shynp <shayanp@seas.upenn.edu>
+Date:   Wed Mar 12 17:55:06 2014 -0700
+
+    Initial commit

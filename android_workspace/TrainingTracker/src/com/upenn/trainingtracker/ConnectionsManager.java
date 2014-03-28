@@ -18,7 +18,10 @@ import org.apache.http.message.BasicNameValuePair;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -42,12 +45,21 @@ public class ConnectionsManager
 		}
 		return instance;
 	}
+	/**
+	 * Checks to see if wifi is enabled and available
+	 * @return
+	 */
 	public boolean isWifiAvailable()
 	{
 		ConnectivityManager connManager = (ConnectivityManager) this.activity.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 		return mWifi.isConnected();
 	}
+	/**
+	 * Sends notification to the server to send a recovery email if the provided email is valid
+	 * @param activity
+	 * @param email
+	 */
 	public void promptRecoveryEmail(final Activity activity, String email)
 	{
     	final List<NameValuePair> pairs = new ArrayList<NameValuePair>();
@@ -98,6 +110,43 @@ public class ConnectionsManager
     		}
     	}.execute(null,null,null);
 	}
+	public void openWifiSettings(Activity activity)
+	{
+		  final Intent intent = new Intent(Intent.ACTION_MAIN, null);
+          intent.addCategory(Intent.CATEGORY_LAUNCHER);
+          final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.wifi.WifiSettings");
+          intent.setComponent(cn);
+          intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+          activity.startActivity( intent);
+	}
+	/**
+	 * Checks to see if wifi is enabled.  If it is not shows the given error message
+	 * @param activity
+	 * @param errorMessage
+	 */
+	public boolean checkForWifi(final Activity activity, String errorMessage)
+	{
+    	if (!this.isWifiAvailable())
+    	{
+    		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+    		builder.setMessage(errorMessage);
+    		builder.setNegativeButton("Select Network", new DialogInterface.OnClickListener(){
+				@Override
+				public void onClick(DialogInterface arg0, int arg1) 
+				{
+					ConnectionsManager.this.openWifiSettings(activity);
+				}
+    		});
+    		builder.setPositiveButton("Cancel", null);
+    		builder.create().show();
+    		return false;
+    	}
+    	return true;
+	}
+	/**
+	 * Pull the users from server and afterwards update the local database copy
+	 * @param activity
+	 */
 	public void pullUsersFromServer(final Activity activity)
 	{
     	final List<NameValuePair> pairs = new ArrayList<NameValuePair>();
@@ -138,7 +187,13 @@ public class ConnectionsManager
     		}
     	}.execute(null,null,null);
 	}
-	public void pullDogsFromServer(final Activity activity)
+	/**
+	 * Pull the dog information from the server and afterwards update the local copy.
+	 * This does not update the individual training data only the basic information for each dog
+	 * such as name, picture, category, etc.
+	 * @param activity
+	 */
+	public void pullDogsFromServer(final Activity activity, final Notifiable notifier, final int eventCode)
 	{
     	final List<NameValuePair> pairs = new ArrayList<NameValuePair>();
     	pairs.add(new BasicNameValuePair("validation", Keys.CONNECTION_PASSWORD));
@@ -173,11 +228,21 @@ public class ConnectionsManager
     				return;
     			}
     			Log.i("TAG","Creating database handler");
-    			//DatabaseHandler handler = new DatabaseHandler(activity.getApplicationContext());
-    			//handler.updateUsersWithJSON(result);
+    			DatabaseHandler handler = new DatabaseHandler(activity.getApplicationContext());
+    			handler.updateDogsWithJSON(result, activity);
+    			if (notifier != null)
+    			{
+    				notifier.notifyOfEvent(eventCode);
+    			}
     		}
     	}.execute(null,null,null);
 	}
+	/**
+	 * Takes the input stream returned from the HTTP request and returns a StringBuidler.  This can
+	 * then be converted to a string.
+	 * @param is
+	 * @return
+	 */
     public static StringBuilder inputStreamToString(InputStream is) {
         String rLine = "";
         StringBuilder answer = new StringBuilder();
@@ -194,10 +259,6 @@ public class ConnectionsManager
             e.printStackTrace();
         }
         return answer;
-    }
-    public static void pushValueToServer()
-    {
-    	
     }
 
 }

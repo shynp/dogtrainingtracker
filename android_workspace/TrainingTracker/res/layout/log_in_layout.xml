@@ -3,8 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:background="#D8D8D8"
+    android:background="#C8DCFA"
     android:orientation="vertical" >
+    
+    <!--  Old background of #D8D8D8 -->
     
     <Button
         android:id="@+id/textView1"
@@ -26,15 +28,7 @@
         android:background="@drawable/login_background_rectangle"
         android:gravity="center_horizontal"
         android:orientation="vertical" >
-<!--  
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Username"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
-            android:textSize="20sp"/>   -->
+
 
 	    <EditText
 	        android:id="@+id/username"
@@ -51,14 +45,6 @@
 	         <requestFocus />
 	    </EditText>
 	
-  <!--        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Password"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
-            android:textSize="20sp"/>   -->
         
 	    <EditText
 	        android:id="@+id/password"

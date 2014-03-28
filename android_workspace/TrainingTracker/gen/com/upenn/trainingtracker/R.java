@@ -8,6 +8,9 @@
 package com.upenn.trainingtracker;
 
 public final class R {
+    public static final class array {
+        public static final int service_types=0x7f070000;
+    }
     public static final class attr {
     }
     public static final class color {
@@ -32,55 +35,78 @@ public final class R {
         public static final int camera_crop_height=0x7f020002;
         public static final int camera_crop_width=0x7f020003;
         public static final int dog_thumb=0x7f020004;
-        public static final int ic_launcher=0x7f020005;
-        public static final int ic_rotate_left=0x7f020006;
-        public static final int ic_rotate_right=0x7f020007;
-        public static final int indicator_autocrop=0x7f020008;
-        public static final int log_in_background=0x7f020009;
-        public static final int log_in_sel=0x7f02000a;
-        public static final int log_in_selector=0x7f02000b;
-        public static final int log_in_unsel=0x7f02000c;
-        public static final int login_background_rectangle=0x7f02000d;
-        public static final int rounded_text_field=0x7f02000e;
-        public static final int roundex_text_field=0x7f02000f;
-        public static final int selector_crop_button=0x7f020010;
+        public static final int gradient_bg=0x7f020005;
+        public static final int gradient_bg_hover=0x7f020006;
+        public static final int ic_launcher=0x7f020007;
+        public static final int ic_rotate_left=0x7f020008;
+        public static final int ic_rotate_right=0x7f020009;
+        public static final int image_bg=0x7f02000a;
+        public static final int indicator_autocrop=0x7f02000b;
+        public static final int list_selector=0x7f02000c;
+        public static final int log_in_background=0x7f02000d;
+        public static final int log_in_sel=0x7f02000e;
+        public static final int log_in_selector=0x7f02000f;
+        public static final int log_in_unsel=0x7f020010;
+        public static final int login_background_rectangle=0x7f020011;
+        public static final int lookup_sel=0x7f020012;
+        public static final int lookup_selector=0x7f020013;
+        public static final int lookup_unsel=0x7f020014;
+        public static final int rounded_text_field=0x7f020015;
+        public static final int roundex_text_field=0x7f020016;
+        public static final int selector_crop_button=0x7f020017;
     }
     public static final class id {
-        public static final int action_settings=0x7f090015;
-        public static final int addNewDogButtonID=0x7f090005;
-        public static final int breedID=0x7f090002;
-        public static final int button1=0x7f090010;
-        public static final int createAccountButtonID=0x7f09000a;
-        public static final int dateSelectorTextViewID=0x7f090001;
-        public static final int discard=0x7f09000c;
-        public static final int dogImageID=0x7f090004;
-        public static final int emailID=0x7f090008;
-        public static final int image=0x7f09000b;
-        public static final int itemSyncID=0x7f090014;
-        public static final int nameID=0x7f090000;
-        public static final int password=0x7f090013;
-        public static final int passwordID=0x7f090007;
-        public static final int phoneID=0x7f090009;
-        public static final int rotateLeft=0x7f09000d;
-        public static final int rotateRight=0x7f09000e;
-        public static final int save=0x7f09000f;
-        public static final int serviceTypeID=0x7f090003;
-        public static final int textView1=0x7f090011;
-        public static final int userNmeID=0x7f090006;
-        public static final int username=0x7f090012;
+        public static final int action_settings=0x7f0a001f;
+        public static final int addNewDogButtonID=0x7f0a0005;
+        public static final int breedID=0x7f0a0002;
+        public static final int button1=0x7f0a0015;
+        public static final int categoryLayout=0x7f0a0006;
+        public static final int categorySelectorID=0x7f0a001b;
+        public static final int createAccountButtonID=0x7f0a000b;
+        public static final int dateSelectorTextViewID=0x7f0a0001;
+        public static final int discard=0x7f0a000d;
+        public static final int dogFilterTextID=0x7f0a0014;
+        public static final int dogImageID=0x7f0a0004;
+        public static final int dogNameTextID=0x7f0a0013;
+        public static final int emailID=0x7f0a0009;
+        public static final int image=0x7f0a000c;
+        public static final int itemSwitchAccountID=0x7f0a001e;
+        public static final int itemSyncID=0x7f0a001d;
+        public static final int list=0x7f0a0016;
+        public static final int lookupLayout=0x7f0a001a;
+        public static final int nameID=0x7f0a0000;
+        public static final int password=0x7f0a0019;
+        public static final int passwordID=0x7f0a0008;
+        public static final int phoneID=0x7f0a000a;
+        public static final int profileImageID=0x7f0a0012;
+        public static final int randomID=0x7f0a0011;
+        public static final int rotateLeft=0x7f0a000e;
+        public static final int rotateRight=0x7f0a000f;
+        public static final int save=0x7f0a0010;
+        public static final int selectedLayout=0x7f0a001c;
+        public static final int serviceTypeID=0x7f0a0003;
+        public static final int textView1=0x7f0a0017;
+        public static final int userNmeID=0x7f0a0007;
+        public static final int username=0x7f0a0018;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
         public static final int add_dog_layout=0x7f030001;
-        public static final int create_account_layout=0x7f030002;
-        public static final int cropimage=0x7f030003;
-        public static final int dog_selector_layout=0x7f030004;
-        public static final int log_in_layout=0x7f030005;
-        public static final int recover_account_layout=0x7f030006;
+        public static final int category_dialog_layout=0x7f030002;
+        public static final int create_account_layout=0x7f030003;
+        public static final int cropimage=0x7f030004;
+        public static final int dog_profile_widget=0x7f030005;
+        public static final int dog_selector_layout=0x7f030006;
+        public static final int log_in_layout=0x7f030007;
+        public static final int lookup_selected_widget=0x7f030008;
+        public static final int lookup_widget=0x7f030009;
+        public static final int recover_account_layout=0x7f03000a;
+        public static final int training_selector_layout=0x7f03000b;
     }
     public static final class menu {
-        public static final int dog_selector_menu=0x7f080000;
-        public static final int main=0x7f080001;
+        public static final int dog_selector_menu=0x7f090000;
+        public static final int log_in_menu=0x7f090001;
+        public static final int main=0x7f090002;
     }
     public static final class string {
         public static final int action_settings=0x7f060001;
@@ -124,14 +150,14 @@ public final class R {
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f070000;
+        public static final int AppBaseTheme=0x7f080000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f070001;
-        public static final int CropButton=0x7f070003;
-        public static final int TagTheme=0x7f070002;
+        public static final int AppTheme=0x7f080001;
+        public static final int CropButton=0x7f080003;
+        public static final int TagTheme=0x7f080002;
     }
 }
