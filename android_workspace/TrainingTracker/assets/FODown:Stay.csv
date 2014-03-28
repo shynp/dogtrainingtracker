@@ -1,0 +1,16 @@
+Session
+2
+Date & Start Time,U
+Location,8,None,T: Training Room,A: Agility Yard,R: Rubble Yard,P: Parking Lot,G: Grass,B: Building,X: Off Site
+Trials
+5
+K9 Position,O,5,None,G: Ground,U: Unstable Surface,E: Elevated,M: In Motion
+Handler Radius,O,5,None,0-3’,4-10’,11-20’,>20’
+Duration (for STAY),O,9,None,0-5 s,6-19 s,20-44 s,45-60 s,1-2 mins,2-3 mins,3-5 mins,>5 mins
+Other Dogs,O,3,None,S,M
+Humans,O,3,None,S,M
+Toys,O,3,None,S,M
+Food,C
+Noise,C
+Off Lead?,C
+Result,O,3,None,Y,N
