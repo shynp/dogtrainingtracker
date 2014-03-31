@@ -7,7 +7,7 @@ Trials
 Pattern,O,6,None,H: Home Plate,PS: Pitchers Mound,FB: First Base,SB: Second Base,TB: Third Base
 Hander Radius,O,6,None,0-3’,4-10’,11-20’,21-75’,76-100’
 Object Spacing,O,6,None,0-3’,4-10’,11-20’,21-75’,76-100’
-Object,O,5,None,et: To elevated target < 1 ft.,et+: To elevated target > 1-3ft,gt: To Ground Level Target,rw: To real world target (boulders, bench, hay bale)
+Object,O,4,None,To elevated target < 1 ft.,To elevated target > 1-3ft,To real world target (boulders - bench - hay bale)
 Other Dogs,O,3,None,S,M
 Humans,O,3,None,S,M
 Toys,O,3,None,S,M

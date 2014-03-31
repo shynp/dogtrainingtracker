@@ -7,7 +7,7 @@ Trials
 K9 Position,O,6,None,a: From Sit,b: From Stand,c: From Down,gl: Ground Level,fo: From Object
 Handler Radius,O,6,None,0-3’,4-10’,11-20’,21-75’,76-100’
 Back Distance,O,6,None,5-10’,11-15’,16-20’,21-75’,76-100’
-Object,O,5,None,et: To elevated target < 1 ft.,et+: To elevated target > 1-3ft,rw: To real world target (boulders, bench, hay bale)
+Object,O,4,None,To elevated target < 1 ft.,To elevated target > 1-3ft,To real world target (boulders - bench - hay bale)
 Other Dogs,O,3,None,S,M
 Humans,O,3,None,S,M
 Toys,O,3,None,S,M

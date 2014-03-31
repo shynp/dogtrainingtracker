@@ -55,6 +55,12 @@ public class ConnectionsManager
 		NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 		return mWifi.isConnected();
 	}
+	public boolean isGConnectionAvailable()
+	{
+		ConnectivityManager connManager = (ConnectivityManager) this.activity.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo gConn = connManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+		return gConn.isConnected();
+	}
 	/**
 	 * Sends notification to the server to send a recovery email if the provided email is valid
 	 * @param activity
@@ -126,7 +132,7 @@ public class ConnectionsManager
 	 */
 	public boolean checkForWifi(final Activity activity, String errorMessage)
 	{
-    	if (!this.isWifiAvailable())
+    	if (!this.isWifiAvailable() && !this.isGConnectionAvailable())
     	{
     		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
     		builder.setMessage(errorMessage);

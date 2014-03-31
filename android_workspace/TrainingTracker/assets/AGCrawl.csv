@@ -5,7 +5,7 @@ Location,8,None,T: Training Room,A: Agility Yard,R: Rubble Yard,P: Parking Lot,G
 Trials
 5
 Handler Position,O,3,None,Next to K9,From a Distance
-Obstacle Material,O,9,FN: Flexible Netting,OG: Open Grate,S: Solid,SL: Slippery,UN: Uneven,IN: Invented,VL: Visible Light,NL: Total Darkness
+Obstacle Material,O,8,Flexible Netting,Open Grate,Solid,Slippery,Uneven,Invented,Visible Light,Total Darkness
 Distance,O,4,None,3-6’,6-15’,>15’
 Direction,O,4,None,Forward,Backward,Other
 Hand Signal,C

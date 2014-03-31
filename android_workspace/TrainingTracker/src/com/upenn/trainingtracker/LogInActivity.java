@@ -46,10 +46,10 @@ public class LogInActivity extends Activity
      //   DatabaseHandler dbHandler = new DatabaseHandler(this);
         ConnectionsManager cm = ConnectionsManager.getInstance(this);
         this.setContentView(R.layout.log_in_layout);
-        if (cm.isWifiAvailable())
+    /*    if (cm.isWifiAvailable())
         {
         	//dbHandler.syncUsersAndDogs();
-        }
+        }*/
     }
     /**
      * Called by Anonymous Listener which was created inside openCreateAccountPopup().  Uses AsyncTask

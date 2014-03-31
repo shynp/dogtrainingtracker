@@ -7,7 +7,7 @@ Trials
 Handler Position,O,3,None,Next to K9,From a distance
 Direction,O,4,None,Forwards,Backwards,Other
 Distance,O,4,None,3-6’,6-15’,>15’
-Tunnel,O,11,ST: Straight,NT: 90° Turn,EE: Covered End,DD: Debris Inside,FF: Elevated,SL: Slippery,VV: Moving Tunnel,IN: Invented,DK: Dark Tunnel,IC: Inclined Angle
+Tunnel,O,10,Straight,90° Turn,Covered End,Debris Inside,Elevated,Slippery,Moving Tunnel,Invented,Dark Tunnel,Inclined Angle
 Hand Signal,C
 Command,C
 Other Dogs,O,3,None,S,M

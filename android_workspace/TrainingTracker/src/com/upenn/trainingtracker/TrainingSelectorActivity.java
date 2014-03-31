@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -40,6 +41,24 @@ public class TrainingSelectorActivity extends Activity
 		categorySelector.setParentAndInitialize(this);
 		
 		this.addLookUpButtons();
+	}
+    public void openAlertDialog(String message)
+    {
+    	AlertDialog.Builder builder = new AlertDialog.Builder(this);
+    	builder.setMessage(message);
+    	builder.setPositiveButton("Ok", null);
+    	builder.create().show();
+    }
+	public void checkOutCategories(final View view)
+	{
+		if (this.selectedCategories.isEmpty())
+		{
+			this.openAlertDialog("Please select at least one activity");
+			return;
+		}
+		Intent intent = new Intent(this, CheckOutActivity.class);
+		intent.putExtra("categories", this.selectedCategories.toArray(new String[selectedCategories.size()]));
+		this.startActivity(intent);
 	}
 	public void addNewCategory(final String category)
 	{

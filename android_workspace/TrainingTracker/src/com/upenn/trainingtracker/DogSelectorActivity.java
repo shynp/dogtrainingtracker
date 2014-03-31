@@ -156,7 +156,9 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
 					{
 						if (item == 0) // Train Dog
 						{
-
+					   		Intent intent = new Intent(DogSelectorActivity.this, TrainingSelectorActivity.class);
+					   		intent.putExtra("dogID", dogID);
+					   		DogSelectorActivity.this.startActivity(intent);
 						}
 						else if (item == 1) // View History
 						{
