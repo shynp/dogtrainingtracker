@@ -1,5 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+		    android:id="@+id/checkOutScrollBin"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent" >
+		
+<TableLayout 
+    android:id="@+id/tableLayoutBin"
+ 	android:background="@drawable/check_out_view_bin_background"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:padding="7dp"
+    android:paddingTop="45dp"
+    android:paddingBottom="45dp"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" />
+
+</ScrollView>
+   
+<!-- <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/viewBin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,7 +26,8 @@
     android:background="@drawable/check_out_view_bin_background"
     android:orientation="horizontal"
     android:padding="7dp" >
-	<LinearLayout
+
+	 <LinearLayout
 	    android:id="@+id/leftBin"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content" 
@@ -18,5 +37,5 @@
 	    android:layout_height="wrap_content"
 	    android:layout_width="0dp"
 	    android:layout_weight="1"
-	    android:orientation="vertical" />
-</LinearLayout>
+	    android:orientation="vertical" /> 
+</LinearLayout> -->
