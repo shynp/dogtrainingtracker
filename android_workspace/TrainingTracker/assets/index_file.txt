@@ -1,4 +1,4 @@
 Direction and Control,5,Go Out||DACGoOut.csv,Patterns||DACPatterns.csv,Hup and Off||DACHupAndOff.csv,Over||DACOver.csv,Back||DACBack.csv, 
 Agility,6,Walk It Plank||AGWalkItPlank.csv,Tunnel||AGTunnel.csv,Walk It Surface||AGWalkItSurface.csv,Climb||AGClimb.csv,Crawl||AGCrawl.csv,Balance||AGBalance.csv, 
-Foundation Obedience,6,Stay||FOStay.csv,Sit / Stay||FOStay.csv,Come - Recall||FOCome-Recall.csv,Down||FODown.csv,Heel||FOHeel.csv,Down / Stay||FOStay.csv, 
+Foundation Obedience,6,Stay||FOStay.csv,Sit-Stay||FOStay.csv,Come - Recall||FOCome-Recall.csv,Down||FODown.csv,Heel||FOHeel.csv,Down-Stay||FOStay.csv, 
 Search,3,Search||random.txt,Go Find||random.txt,Bark Alert||SBarkAlert.csv
