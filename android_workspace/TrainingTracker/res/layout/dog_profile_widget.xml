@@ -23,7 +23,7 @@
             android:layout_height="50dip"/>
  
     </LinearLayout>
-    <!-- Title Of Song-->
+    <!-- Dog Name-->
     <TextView
         android:id="@+id/dogNameTextID"
         android:layout_width="wrap_content"
@@ -32,7 +32,7 @@
         android:layout_toRightOf="@+id/randomID"
         android:textColor="#040404"
         android:typeface="sans"
-        android:textSize="15dip"
+        android:textSize="20sp"
         android:textStyle="bold"/>
 
  

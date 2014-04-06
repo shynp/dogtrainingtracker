@@ -4,16 +4,16 @@ Date & Start Time,U
 Location,8,None,T: Training Room,A: Agility Yard,R: Rubble Yard,P: Parking Lot,G: Grass,B: Building,X: Off Site
 Trials
 13
-Handler Position,O,3,None,Next to K9,From a distance
-Obstacle,O,9,None,1: Cart or Scooter,2: Rolling Plank,3: Swaying Bridge,4: Teeter Totter,5:Wobbly Plank,6: Unstable Surface,7: Moving Surface,8: Other
-Obstacle Height,O,5,None,0-2’,3-4’,5-6’,7-8’
-Direction,O,3,None,Up,Down
-Hand Signal,C
-Command,C
-Other Dogs,O,3,None,S,M
-Humans,O,3,None,S,M
-Toys,O,3,None,S,M
-Food,C
-Noise,C
-Off Lead?,C
-Result,O,3,None,Y,N
+Handler Position||handler_position,O,3,None||none,Next to K9||next_to_k9,From a distance||from_a_distance
+Obstacle||obstacle,O,9,None||none,Cart or Scooter||cart_or_scooter,Rolling Plank||rolling_plank,Swaying Bridge||swaying_bridge,Teeter Totter||teeter_totter,Wobbly Plank||wobbly_plank,Unstable Surface||unstable_surface,Moving Surface||moving_surface,Other||other
+Obstacle Height||obstacle_height,O,5,None||none,0-2’||0to2,3-4’||3to4,5-6’||5to6,7-8’||7to8
+Direction||direction,O,3,None||none,Up||up,Down||down
+Hand Signal||hand_signal,C
+Command||command,C
+Other Dogs||other_dogs,O,3,None||none,S||s,M||m
+Humans||humans,O,3,None||none,S||s,M||m
+Toys||toys,O,3,None||none,S||s,M||m
+Food||food,C
+Noise||noise,C
+Off Lead||off_lead,C
+Result||result,O,3,None||none,Y||y,N||n

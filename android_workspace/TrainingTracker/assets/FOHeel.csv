@@ -4,11 +4,11 @@ Date & Start Time,U
 Location,8,None,T: Training Room,A: Agility Yard,R: Rubble Yard,P: Parking Lot,G: Grass,B: Building,X: Off Site
 Trials
 5
-Degree of Difficulty,O,11,None,1: Standing Heel,2: 2-5 Paces Walking,3: 20 Yard Walk,4: Fast Paced 0-10 Yards,5: Fast Paced > 10 Yards,6: 90° Turn Walk,7: 90° Turn Fast,8: Slow,9: About Turn,10: Varied Pattern
-Other Dogs,O,3,None,S,M
-Humans,O,3,None,S,M
-Toys,O,3,None,S,M
-Food,C
-Noise,C
-Off Lead?,C
-Result,O,3,None,Y,N
+Degree of Difficulty||degree_of_difficulty,O,11,None||none,Standing Heel||standing_heel,2-5 Paces Walking||2to5_paces_walking,20 Yard Walk||20_yard_walk,Fast Paced 0-10 Yards||fast_paced_0to10_yards,Fast Paced > 10 Yards||fast_paced_greater10_yards,90° Turn Walk||90_turn_walk,90° Turn Fast||90_turn_fast,Slow||slow,About Turn||about_turn,Varied Pattern||varied_pattern
+Other Dogs||other_dogs,O,3,None||none,S||s,M||m
+Humans||humans,O,3,None||none,S||s,M||m
+Toys||toys,O,3,None||none,S||s,M||m
+Food||food,C
+Noise||noise,C
+Off Lead||off_lead,C
+Result||result,O,3,None||none,Y||y,N||n

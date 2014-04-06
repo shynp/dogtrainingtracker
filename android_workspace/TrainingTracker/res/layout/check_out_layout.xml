@@ -7,6 +7,7 @@
     android:gravity="center_horizontal"
     android:clickable="true"
     android:orientation="vertical" >
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,13 +24,34 @@
 	        android:layout_marginLeft="5dp"
 	        android:ems="10"
 	        android:inputType="text" />
-	    <LinearLayout
-	        android:id="@+id/checkOutScrollBin"
-	        android:layout_width="match_parent"
-	        android:layout_height="match_parent" 
-	        android:orientation="horizontal"/>
-
-
+		    <LinearLayout
+		        android:id="@+id/checkOutScrollBin"
+		        android:layout_width="match_parent"
+		        android:layout_height="0dp"
+		        android:layout_weight="1"
+		        android:orientation="horizontal"/>
+		    <LinearLayout
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content" 
+		        android:gravity="center" 
+		        android:orientation="horizontal" >
+			    <Button
+			        android:id="@+id/submitPlansButton"
+					android:padding="15dp"
+					android:layout_margin="10dp"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+					android:onClick="submitPlan"
+			        android:text="Submit Plans" />
+				<Button
+			        android:id="@+id/pressValuesButton"
+					android:padding="15dp"
+					android:layout_margin="10dp"
+			        android:onClick="pressValues"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:text="PressValues" />
+			</LinearLayout>
 	</LinearLayout>
 
 </LinearLayout>

@@ -4,13 +4,13 @@ Date & Start Time,U
 Location,8,None,T: Training Room,A: Agility Yard,R: Rubble Yard,P: Parking Lot,G: Grass,B: Building,X: Off Site
 Trials
 5
-K9 Position,O,5,None,G: Ground,U: Unstable Surface,E: Elevated,M: In Motion
-Handler Radius,O,5,None,0-3’,4-10’,11-20’,>20’
-Duration (for STAY),O,9,None,0-5 s,6-19 s,20-44 s,45-60 s,1-2 mins,2-3 mins,3-5 mins,>5 mins
-Other Dogs,O,3,None,S,M
-Humans,O,3,None,S,M
-Toys,O,3,None,S,M
-Food,C
-Noise,C
-Off Lead?,C
-Result,O,3,None,Y,N
+K9 Position||k9_position,O,5,None||none,Ground||ground,Unstable Surface||unstable_surface,Elevated||elevated,In Motion||in_motion
+Hander Radius||handler_radius,O,5,None||none,0-3’||0to3,4-10’||4to10,11-20’||11to20,>20’||greater20
+Duration (for STAY)||duration_for_stay,O,9,None||none,0-5 s||0to5s,6-19 s||6to19s,20-44 s||20to44s,45-60 s||45to60s,1-2 mins||1to2m,2-3 mins||2to3m,3-5 mins||3to5m,>5 mins||greater5m
+Other Dogs||other_dogs,O,3,None||none,S||s,M||m
+Humans||humans,O,3,None||none,S||s,M||m
+Toys||toys,O,3,None||none,S||s,M||m
+Food||food,C
+Noise||noise,C
+Off Lead||off_lead,C
+Result||result,O,3,None||none,Y||y,N||n

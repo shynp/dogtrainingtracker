@@ -30,6 +30,7 @@ import android.widget.LinearLayout.LayoutParams;
 public class TrainingSelectorActivity extends Activity
 {
 	private List<String> selectedCategories;
+	private int dogID;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -39,6 +40,10 @@ public class TrainingSelectorActivity extends Activity
 		this.selectedCategories = new ArrayList<String>();
 		AutoCategorySelector categorySelector = (AutoCategorySelector) this.findViewById(R.id.categorySelectorID);
 		categorySelector.setParentAndInitialize(this);
+		
+		Bundle extras = this.getIntent().getExtras();
+		this.dogID = extras.getInt("dogID");
+		
 		
 		this.addLookUpButtons();
 	}
@@ -58,6 +63,7 @@ public class TrainingSelectorActivity extends Activity
 		}
 		Intent intent = new Intent(this, CheckOutActivity.class);
 		intent.putExtra("categories", this.selectedCategories.toArray(new String[selectedCategories.size()]));
+		intent.putExtra("dogID", this.dogID);
 		this.startActivity(intent);
 	}
 	public void addNewCategory(final String category)
@@ -164,7 +170,7 @@ public class TrainingSelectorActivity extends Activity
 		TrainingReader reader = TrainingReader.getInstance(this);
 		final List<String> categories = reader.getSubCategories(parentCategory);
 		Log.i("TAG","num: " + categories.size());
-		button.setOnClickListener(new OnClickListener(){
+		button.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v){
 				final Dialog dialog = new Dialog(TrainingSelectorActivity.this);

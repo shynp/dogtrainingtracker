@@ -1,41 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-		<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-		    android:id="@+id/checkOutScrollBin"
-		    android:layout_width="match_parent"
-		    android:layout_height="match_parent" >
-		
-<TableLayout 
-    android:id="@+id/tableLayoutBin"
- 	android:background="@drawable/check_out_view_bin_background"
-    android:layout_marginLeft="15dp"
-    android:layout_marginRight="15dp"
-    android:padding="7dp"
-    android:paddingTop="45dp"
-    android:paddingBottom="45dp"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent" />
-
-</ScrollView>
-   
-<!-- <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/viewBin"
+<com.upenn.trainingtracker.customviews.PlanningBinLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/checkOutScrollBinOld"
+	android:background="@drawable/check_out_view_bin_background"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="15dp"
-    android:layout_marginRight="15dp"
-    android:background="@drawable/check_out_view_bin_background"
-    android:orientation="horizontal"
-    android:padding="7dp" >
+    android:layout_height="match_parent" >
 
-	 <LinearLayout
-	    android:id="@+id/leftBin"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content" 
-	    android:orientation="vertical" />
-	<LinearLayout
-	    android:id="@+id/rightBin"
-	    android:layout_height="wrap_content"
-	    android:layout_width="0dp"
-	    android:layout_weight="1"
-	    android:orientation="vertical" /> 
-</LinearLayout> -->
+    <TableLayout
+        android:id="@+id/tableLayoutBin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:padding="7dp"
+        android:paddingBottom="45dp"
+        android:paddingTop="45dp"
+        android:stretchColumns="1" />
+
+
+</com.upenn.trainingtracker.customviews.PlanningBinLayout>

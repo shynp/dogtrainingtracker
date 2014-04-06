@@ -4,16 +4,16 @@ Date & Start Time,U
 Location,8,None,T: Training Room,A: Agility Yard,R: Rubble Yard,P: Parking Lot,G: Grass,B: Building,X: Off Site
 Trials
 5
-Handler Position,O,3,None,Next to K9,From a distance
-Direction,O,4,None,Forwards,Backwards,Other
-Distance,O,4,None,3-6’,6-15’,>15’
-Tunnel,O,10,Straight,90° Turn,Covered End,Debris Inside,Elevated,Slippery,Moving Tunnel,Invented,Dark Tunnel,Inclined Angle
-Hand Signal,C
-Command,C
-Other Dogs,O,3,None,S,M
-Humans,O,3,None,S,M
-Toys,O,3,None,S,M
-Food,C
-Noise,C
-Off Lead?,C
-Result,O,3,None,Y,N
+Handler Position||handler_position,O,3,None||none,Next to K9||next_to_k9,From a distance||from_a_distance
+Direction||direction,O,4,None||none,Forwards||forwards,Backwards||backwards,Other||other
+Distance||distance,O,4,None||none,3-6’||3to6,6-15’||6to15,>15’||greater15
+Tunnel||tunnel,O,10,Straight||straight,90° Turn||90_turn,Covered End||covered_end,Debris Inside||debris_inside,Elevated||elevated,Slippery||slippery,Moving Tunnel||moving_tunnel,Invented||inverted,Dark Tunnel||dark_tunnel,Inclined Angle||inclined_angle
+Hand Signal||hand_signal,C
+Command||command,C
+Other Dogs||other_dogs,O,3,None||none,S||s,M||m
+Humans||humans,O,3,None||none,S||s,M||m
+Toys||toys,O,3,None||none,S||s,M||m
+Food||food,C
+Noise||noise,C
+Off Lead||off_lead,C
+Result||result,O,3,None||none,Y||y,N||n

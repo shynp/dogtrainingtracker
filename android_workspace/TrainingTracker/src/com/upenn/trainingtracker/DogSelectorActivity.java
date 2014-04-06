@@ -83,7 +83,11 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
 	{
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.dog_selector_layout);
+		
+		
+		
 		DatabaseHandler handler = new DatabaseHandler(this);
+		handler.copyDatabaseToSDCard();
    	 	profiles = handler.getDogProfiles(this);
    	 	
 		final LazyAdapter adapter = new LazyAdapter(this, profiles);
@@ -544,7 +548,7 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
     	//this.renderProfileWidgets();
     }
 	@Override
-	public void notifyOfEvent(int eventCode) 
+	public void notifyOfEvent(int eventCode, String message) 
 	{
 		if (eventCode == this.DOG_HAS_SYNCED)
 		{

@@ -4,15 +4,15 @@ Date & Start Time,U
 Location,8,None,T: Training Room,A: Agility Yard,R: Rubble Yard,P: Parking Lot,G: Grass,B: Building,X: Off Site
 Trials
 5
-K9 Position,O,4,None,From Sit,From Stand,From Heel
-Handler Radius,O,6,None,5-10’,11-15’,16-20’,21-75’,76-100’
-Object,O,5,None,et: To elevated target < 1 ft.,et+: To elevated target > 1-3ft,gt: To Ground Level Target,rw: To real world target (boulders - bench - hay bale)
-Go Out Distance,O,6,None,5-10’,11-15’,16-20’,21-75’,76-100’
+K9 Position||k9_position,O,4,None||none,From Sit||from_sit,From Stand||from_stand,From Heel||from_heel
+Handler Radius||handler_radius,O,6,None||none,5-10’||5to10,11-15’||11to15,16-20’||16to20,21-75’||21to75,76-100’||76to100
+Object||object,O,5,None||none,To elevated target < 1 ft.||to_elevated_target_less1ft,To elevated target > 1-3ft||to_elevated_target_greater1to3ft,To Ground Level Target||to_ground_level_target,To real world target (boulders - bench - hay bale)||to_real_world_target
+Go Out Distance||go_out_distance,O,6,None||none,5-10’||5to10,11-15’||11to15,16-20’||16to20,21-75’||21to75,76-100’||76to100
 Sequence, I, filenames
-Other Dogs,O,3,None,S,M
-Humans,O,3,None,S,M
-Toys,O,3,None,S,M
-Food,C
-Noise,C
-Off Lead?,C
-Result,O,3,None,Y,N
+Other Dogs||other_dogs,O,3,None||none,S||s,M||m
+Humans||humans,O,3,None||none,S||s,M||m
+Toys||toys,O,3,None||none,S||s,M||m
+Food||food,C
+Noise||noise,C
+Off Lead||off_lead,C
+Result||result,O,3,None||none,Y||y,N||n

@@ -1,4 +1,27 @@
-Direction and Control,5,Go Out||DACGoOut.csv,Patterns||DACPatterns.csv,Hup and Off||DACHupAndOff.csv,Over||DACOver.csv,Back||DACBack.csv, 
-Agility,6,Walk It Plank||AGWalkItPlank.csv,Tunnel||AGTunnel.csv,Walk It Surface||AGWalkItSurface.csv,Climb||AGClimb.csv,Crawl||AGCrawl.csv,Balance||AGBalance.csv, 
-Foundation Obedience,6,Stay||FOStay.csv,Sit / Stay||FOStay.csv,Come - Recall||FOCome-Recall.csv,Down||FODown.csv,Heel||FOHeel.csv,Down / Stay||FOStay.csv, 
-Search,3,Search||random.txt,Go Find||random.txt,Bark Alert||SBarkAlert.csv
+Direction and Control,5,
+Go Out||go_out||DACGoOut.csv,
+Patterns||patterns||DACPatterns.csv,
+Hup and Off||hup_and_off||DACHupAndOff.csv,
+Over||over||DACOver.csv,
+Back||back||DACBack.csv, 
+
+Agility,6,
+Walk It Plank||walk_it_plank||AGWalkItPlank.csv,
+Tunnel||tunnel||AGTunnel.csv,
+Walk It Surface||walk_it_surface||AGWalkItSurface.csv,
+Climb||climb||AGClimb.csv,
+Crawl||crawl||AGCrawl.csv,
+Balance||balance||AGBalance.csv, 
+
+Foundation Obedience,6,
+Stay||stay||FOStay.csv,
+Sit / Stay||sit_stay||FOStay.csv,
+Come - Recall||come_recall||FOCome-Recall.csv,
+Down||down||FODown.csv,
+Heel||heel||FOHeel.csv,
+Down / Stay||down_stay||FOStay.csv, 
+
+Search,3,
+Search||search||random.txt,
+Go Find||go_find||random.txt,
+Bark Alert||bark_alert||SBarkAlert.csv

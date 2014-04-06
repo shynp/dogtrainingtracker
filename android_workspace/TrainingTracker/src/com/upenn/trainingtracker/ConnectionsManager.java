@@ -13,8 +13,12 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -138,7 +142,7 @@ public class ConnectionsManager
     		builder.setMessage(errorMessage);
     		builder.setNegativeButton("Select Network", new DialogInterface.OnClickListener(){
 				@Override
-				public void onClick(DialogInterface arg0, int arg1) 
+				public void onClick(DialogInterface arg0, int arg1)
 				{
 					ConnectionsManager.this.openWifiSettings(activity);
 				}
@@ -193,6 +197,42 @@ public class ConnectionsManager
     		}
     	}.execute(null,null,null);
 	}
+	public void pushJSONObjectToServer(final Activity activity, final String scriptName, final JSONObject jsonObject, final Notifiable notifier, final int eventCode)
+	{
+    	new AsyncTask<String, String, String>() {
+    		@Override
+    		protected String doInBackground(String... params) 
+    		{
+    			try
+    			{
+    				HttpClient httpClient = new DefaultHttpClient();
+    				HttpPost httpPost = new HttpPost(Keys.SITE + scriptName);
+    				StringEntity entity =  new StringEntity(jsonObject.toString());
+    				entity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE,  "application/json"));
+    				httpPost.setEntity(entity);
+    				httpClient.execute(httpPost);
+    				
+    				HttpResponse response = httpClient.execute(httpPost);
+    				HttpEntity responseEntity = response.getEntity();
+    				String result = ConnectionsManager.inputStreamToString(responseEntity.getContent()).toString();
+    				return result;
+    			}
+    			catch (Exception e)
+    			{
+    				e.printStackTrace();
+    			}
+    			return "";
+    		}
+    		@Override
+    		protected void onPostExecute(String result)
+    		{
+    			if (notifier != null)
+    			{
+    				notifier.notifyOfEvent(eventCode, result);
+    			}
+    		}
+    	}.execute(null,null,null);
+	}
 	/**
 	 * Pull the dog information from the server and afterwards update the local copy.
 	 * This does not update the individual training data only the basic information for each dog
@@ -238,7 +278,7 @@ public class ConnectionsManager
     			handler.updateDogsWithJSON(result, activity);
     			if (notifier != null)
     			{
-    				notifier.notifyOfEvent(eventCode);
+    				notifier.notifyOfEvent(eventCode, null);
     			}
     		}
     	}.execute(null,null,null);

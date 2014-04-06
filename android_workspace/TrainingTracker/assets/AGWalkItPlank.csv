@@ -4,15 +4,15 @@ Date & Start Time,U
 Location,8,None,T: Training Room,A: Agility Yard,R: Rubble Yard,P: Parking Lot,G: Grass,B: Building,X: Off Site
 Trials
 5
-Handler Position,O,3,None,Next to K9,From a distance
-Plank Height,O,6,None,0-2’,3-4’,5-6’,7-9’,>9’
-Plank Material,O,9,None,S: Straight (12-18” W),G: 1-8’ length,GG: >9’ length,ST: Stable Plank,B: 2(2X4) Boards,DE: Plank with Debris,MV: Moving Planks,TH: 4-6” Width
-Hand Signal,C
-Command,C
-Other Dogs,O,3,None,S,M
-Humans,O,3,None,S,M
-Toys,O,3,None,S,M
-Food,C
-Noise,C
-Off Lead?,C
-Result,O,3,None,Y,N
+Handler Position||handler_position,O,3,None||none,Next to K9||next_to_k9,From a distance||from_a_distance
+Plank Height||plank_height,O,6,None||none,0-2’||0to2,3-4’||3to4,5-6’||5to6,7-9’||7to9,>9’||greater9
+Plank Material||plank_material,O,9,None||none,Straight (12-18” W)||straight_12to18,1-8’ length||1to8_length,>9’ length||greater9_length,Stable Plank||stable_plank,2(2X4) Boards||2_2by4_boards,Plank with Debris||plank_with_debris,Moving Planks||moving_planks,4-6” Width||4to6_width
+Hand Signal||hand_signal,C
+Command||command,C
+Other Dogs||other_dogs,O,3,None||none,S||s,M||m
+Humans||humans,O,3,None||none,S||s,M||m
+Toys||toys,O,3,None||none,S||s,M||m
+Food||food,C
+Noise||noise,C
+Off Lead||off_lead,C
+Result||result,O,3,None||none,Y||y,N||n

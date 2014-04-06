@@ -4,18 +4,18 @@ Date & Start Time,U
 Location,8,None,T: Training Room,A: Agility Yard,R: Rubble Yard,P: Parking Lot,G: Grass,B: Building,X: Off Site
 Trials
 15
-Distance from Scent Source,O,11,None,0-3’,4-10’,11-20’,21-30’,31-40’,41-50’,51-60’,61-70’,71-80’,>80’
-Hidden In,O,7,None,Bark Barrel,Box,Rubble,Closet,Plexiglass Box,Other
-Duration of Bark Alert,O,9,None,3-5s,6-9s,10-13s,14-17s,18-21s,22-26s,27-30s,>30s
-Number of Barks,O,9,None,1-5,6-10,11-15,16-20,21-25,26-30,31-35,36-40
-Handler Position at Time of Reward,O,10,None,a,b > 50’ from dog,b 40-50’ from dog,b 30-39’ from dog,b 20-29’ from dog,b 10-19’ from dog,b 5-9’,b 1-4’,next to dog
-Other Dogs,O,3,None,S,M
-Humans,O,3,None,S,M
-Toys,O,3,None,S,M
-Food,C
-Noise,C
-Familiar Person Hidden,C
-Unfamiliar Person Hidden,C
-Victim Reward,C
-Handler Reward,C
-Result,O,3,None,Y,N
+Distance from Scent Source||distance_from_scent_source,O,11,None||none,0-3’||0to3,4-10’||4to10,11-20’||11to20,21-30’||21to30,31-40’||31to40,41-50’||41to50,51-60’||51to60,61-70’||61to70,71-80’||71to80,>80’||greater80
+Hidden In||hidden_in,O,7,None||none,Bark Barrel||bark_barrel,Box||box,Rubble||rubble,Closet||closet,Plexiglass Box||plexiglass_box,Other||other
+Duration of Bark Alert||duration_of_bark_alert,O,9,None||none,3-5s||3to5s,6-9s||6to9s,10-13s||10to13s,14-17s||14to17s,18-21s||18to21s,22-26s||22to26s,27-30s||27to30s,>30s||greater30s
+Number of Barks||number_of_barks,O,9,None||none,1-5||1to5,6-10||6to10,11-15||11to15,16-20||16to20,21-25||21to25,26-30||26to30,31-35||31to35,36-40||36to40
+Handler Position at Time of Reward||handler_position_at_time_of_reward,O,10,None||none,a||a,b > 50’ from dog||b_greater50_from_dog,b 40-50’ from dog||b_40to50_from_dog,b 30-39’ from dog||b_30to39_from_dog,b 20-29’ from dog||b_20to29_from_dog,b 10-19’ from dog||b_10to19_from_dog,b 5-9’||b_5to9,b 1-4’||b_1to4,next to dog||next_to_dog
+Other Dogs||other_dogs,O,3,None||none,S||s,M||m
+Humans||humans,O,3,None||none,S||s,M||m
+Toys||toys,O,3,None||none,S||s,M||m
+Food||food,C
+Noise||noise,C
+Familiar Person Hidden||familiar_person_hidden,C
+Unfamiliar Person Hidden||unfamiliar_person_hidden,C
+Victim Reward||victim_reward,C
+Handler Reward||handler_reward,C
+Result||result,O,3,None||none,Y||y,N||n

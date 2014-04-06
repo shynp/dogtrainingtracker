@@ -4,15 +4,15 @@ Date & Start Time,U
 Location,8,None,T: Training Room,A: Agility Yard,R: Rubble Yard,P: Parking Lot,G: Grass,B: Building,X: Off Site
 Trials
 5
-Handler Position,O,3,None,Next to K9,From a distance
-Obstacle,O,8,None,HZ: Horizontal,IN: Inclined,EL: Elevated,MV: Moving,G: 0-8’ Length,GG: >8’ Length,DE: With Debris
-Surface,O,8,None,1: Tile,2: Metal,3: Carpet,4: Plastic,5: Concrete,6: Wood,7: Invented
-Hand Signal,C
-Command,C
-Other Dogs,O,3,None,S,M
-Humans,O,3,None,S,M
-Toys,O,3,None,S,M
-Food,C
-Noise,C
-Off Lead?,C
-Result,O,3,None,Y,N
+Handler Position||handler_position,O,3,None||none,Next to K9||next_to_k9,From a distance||from_a_distance
+Obstacle||obstacle,O,8,None||none,Horizontal||horizontal,Inclined||inclined,Elevated||elevated,Moving||moving,0-8’ Length||0to8_length,>8’ Length||greater8_length,With Debris||with_debtris
+Surface||surface,O,8,None||none,Tile||tile,Metal||metal,Carpet||carpet,Plastic||plastic,Concrete||concrete,Wood||wood,Invented||invented
+Hand Signal||hand_signal,C
+Command||command,C
+Other Dogs||other_dogs,O,3,None||none,S||s,M||m
+Humans||humans,O,3,None||none,S||s,M||m
+Toys||toys,O,3,None||none,S||s,M||m
+Food||food,C
+Noise||noise,C
+Off Lead||off_lead,C
+Result||result,O,3,None||none,Y||y,N||n

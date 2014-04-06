@@ -4,14 +4,14 @@ Date & Start Time,U
 Location,8,None,T: Training Room,A: Agility Yard,R: Rubble Yard,P: Parking Lot,G: Grass,B: Building,X: Off Site
 Trials
 5
-Pattern,O,6,None,H: Home Plate,PS: Pitchers Mound,FB: First Base,SB: Second Base,TB: Third Base
-Hander Radius,O,6,None,0-3’,4-10’,11-20’,21-75’,76-100’
-Object Spacing,O,6,None,0-3’,4-10’,11-20’,21-75’,76-100’
-Object,O,4,None,To elevated target < 1 ft.,To elevated target > 1-3ft,To real world target (boulders - bench - hay bale)
-Other Dogs,O,3,None,S,M
-Humans,O,3,None,S,M
-Toys,O,3,None,S,M
-Food,C
-Noise,C
-Off Lead?,C
-Result,O,3,None,Y,N
+Pattern||pattern,O,6,None||none,Home Plate||home_plate,Pitchers Mound||pitchers_mound,First Base||first_base,Second Base||second_base,Third Base||third_base
+Hander Radius||handler_radius,O,6,None||none,0-3’||0to3,4-10’||4to10,11-20’||11to20,21-75’||21to75,76-100’||76to100
+Object Spacing||object_spacing,O,6,None||none,0-3’||0to3,4-10’||4to10,11-20’||11to20,21-75’||21to75,76-100’||76to100
+Object||object,O,4,None||none,To elevated target < 1 ft.||to_elevated_target_less1ft,To elevated target > 1-3ft||to_elevated_target_greater1to3ft,To real world target (boulders - bench - hay bale)||to_real_world_target
+Other Dogs||other_dogs,O,3,None||none,S||s,M||m
+Humans||humans,O,3,None||none,S||s,M||m
+Toys||toys,O,3,None||none,S||s,M||m
+Food||food,C
+Noise||noise,C
+Off Lead||off_lead,C
+Result||result,O,3,None||none,Y||y,N||n

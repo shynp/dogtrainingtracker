@@ -35,8 +35,30 @@ public class Keys
     }
     public static class SkillsKeys
     {
-    	public static final String SKILL_NAME = "skill_name";
-    	public static final String SESSIONS_TABLE_NAME = "sessions_table_name";
-    	public static final String SYNCED = "synced";
+    	public static final String CATEGORY_NAME = "category_name";
+    }
+    public static class CategoryKeys
+    {
+    	public static final String SESSION_DATE = "session_date";
+    	public static final String PLAN = "plan";
+    	public static final String TRIALS_PASSED = "trials_passed";
+    	public static final String TRIALS_FAILED = "trials_failed";
+    	public static final String SYNCED = "is_synced";
+    }
+    public static class SyncKeys
+    {
+    	public static final String CATEGORY_TABLE_NAME = "category_name";
+    }
+    public static String getTableNameForCategory(String category, int dogID)
+    {
+    	// Can send null reference since has already been created by this point
+    	TrainingReader reader = TrainingReader.getInstance(null);
+    	String catKey = reader.categoryToCatKey(category);
+    	
+    	return catKey + "_" + dogID;
+    }
+    public static String getSkillsTableName(int dogID)
+    {
+    	return "skills_table_" + dogID;
     }
 }
