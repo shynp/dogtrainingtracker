@@ -32,10 +32,13 @@ public class Keys
     	public static final String SERVICE_TYPE = "service_type";
     	public static final String IMAGE_NAME = "image_name";
     	public static final String SYNCED = "synced";
+    	public static final String VERSION_NUMBER = "version_number";
     }
     public static class SkillsKeys
     {
     	public static final String CATEGORY_NAME = "category_name";
+    	public static final String COMPLETED = "completed";
+    	public static final String PLANNED = "planned";
     }
     public static class CategoryKeys
     {

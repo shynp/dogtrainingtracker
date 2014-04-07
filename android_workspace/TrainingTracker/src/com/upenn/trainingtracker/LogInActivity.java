@@ -30,7 +30,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-public class LogInActivity extends Activity
+public class LogInActivity extends Activity implements Notifiable
 {
 	/*
 	 *  A dialog is created in openCreateAccountPopup and logInCallBack() determines 
@@ -38,6 +38,9 @@ public class LogInActivity extends Activity
 	 *  to allow for global access.
 	 */
 	private Dialog dialog;
+	private final int RESULT_GET_USERS = 1;
+	private final int RESULT_GET_USERS_AFTER_ADD = 2;
+	private final int RESULT_ADD_USER = 3;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -63,49 +66,19 @@ public class LogInActivity extends Activity
     private void addNewUserToServer(String name, String username, String password,
     		String email, String phone)
     {
-    	final List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-
+    	// Verify wifi is present
+		ConnectionsManager cm = ConnectionsManager.getInstance(this);
+    	boolean isAvailable = cm.checkForWifi(this, "A data connection is needed to sync users");
+    	if (!isAvailable) return;
+    	
+    	List<NameValuePair> pairs = new ArrayList<NameValuePair>();
     	pairs.add(new BasicNameValuePair("name", name));
     	pairs.add(new BasicNameValuePair("username", username));
     	pairs.add(new BasicNameValuePair("password", password));
     	pairs.add(new BasicNameValuePair("email", email));
     	pairs.add(new BasicNameValuePair("phone", phone));
-
-    	new AsyncTask<String, String, String>() {
-    		@Override
-    		protected String doInBackground(String... params) 
-    		{
-    			try
-    			{
-    				HttpClient httpClient = new DefaultHttpClient();
-    				HttpPost httpPost = new HttpPost(Keys.SITE + "addUser.php");
-    				httpPost.setEntity(new UrlEncodedFormEntity(pairs));
-    				HttpResponse response = httpClient.execute(httpPost);
-    				HttpEntity entity = response.getEntity();
-    				String result = ConnectionsManager.inputStreamToString(entity.getContent()).toString();
-    				Log.i("TAG",result);
-    				return result;
-    			}
-    			catch (Exception e)
-    			{
-    				e.printStackTrace();
-    			}
-    			return "";
-    		}
-    		@Override
-    		protected void onPostExecute(String result)
-    		{
-    			if (result.equals("invalid_username"))
-    			{
-    				Toast.makeText(LogInActivity.this, "Username has already been taken", Toast.LENGTH_LONG).show();
-    			}
-    			else
-    			{
-    				dialog.cancel();
-    			}
-    		}
-    	}.execute(null,null,null);
-
+    	
+    	cm.postToServer("addUser.php", pairs, this, this.RESULT_ADD_USER);
     }
 
     /**
@@ -174,11 +147,50 @@ public class LogInActivity extends Activity
          {
          case R.id.itemSyncID:
         	 ConnectionsManager cm = ConnectionsManager.getInstance(this);
-        	 cm.pullUsersFromServer(this);
+        	 boolean isAvailable = cm.checkForWifi(this, "A data connection is needed to sync users");
+        	 if (!isAvailable) return false;
+        	 cm.postToServer("getUsers.php", null, this, this.RESULT_GET_USERS);
          default:
              return super.onOptionsItemSelected(item);
          }
     }
+	@Override
+	public void notifyOfEvent(int eventCode, String message) 
+	{
+		if (eventCode == this.RESULT_GET_USERS || eventCode == this.RESULT_GET_USERS_AFTER_ADD)
+		{
+			ConnectionsManager cm = ConnectionsManager.getInstance(this);
+			boolean isValid = cm.isValidJSON(message);
+			
+			if (!isValid)
+			{
+				ViewUtils utils = ViewUtils.getInstance();
+				utils.showAlertMessage(this, "Unable to connect to server.  Please try again later.");
+				return;
+			}
+			DatabaseHandler handler = new DatabaseHandler(this.getApplicationContext());
+			handler.updateUsersWithJSON(message);	
+			Log.i("TAG",message);
+		}
+		else if (eventCode == this.RESULT_ADD_USER)
+		{
+			if (message.equals("invalid_username"))
+			{
+				ViewUtils utils = ViewUtils.getInstance();
+				utils.showAlertMessage(this, "Username is already taken");
+				return;
+			}
+			if (!message.equals("success"))
+			{
+				ViewUtils utils = ViewUtils.getInstance();
+				utils.showAlertMessage(this, "Unable to connect to server.  Please try again later.");
+				return;
+			}
+			ConnectionsManager cm = ConnectionsManager.getInstance(this);
+			cm.postToServer("getUsers.php", null, this, this.RESULT_GET_USERS);
+			this.dialog.dismiss();
+		}
+	}
      // Initiating Menu XML file (menu.xml)
 	 @Override
 	 public boolean onCreateOptionsMenu(Menu menu)
@@ -233,9 +245,9 @@ public class LogInActivity extends Activity
 		    	}
 		    	Log.i("TAG", "New Account: " + fullName + " " + userName + " " + password + " " + email + " " + phone);
 		    	LogInActivity.this.addNewUserToServer(fullName, userName, password, email, phone);
-		    	cm.pullUsersFromServer(LogInActivity.this);
 			}
     	});
     	dialog.show();
     }
+
 }

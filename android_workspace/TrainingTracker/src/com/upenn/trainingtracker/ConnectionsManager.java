@@ -18,6 +18,8 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.protocol.HTTP;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -64,6 +66,39 @@ public class ConnectionsManager
 		ConnectivityManager connManager = (ConnectivityManager) this.activity.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo gConn = connManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 		return gConn.isConnected();
+	}
+	public void openWifiSettings(Activity activity)
+	{
+		  final Intent intent = new Intent(Intent.ACTION_MAIN, null);
+          intent.addCategory(Intent.CATEGORY_LAUNCHER);
+          final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.wifi.WifiSettings");
+          intent.setComponent(cn);
+          intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+          activity.startActivity( intent);
+	}
+	/**
+	 * Checks to see if wifi is enabled.  If it is not shows the given error message
+	 * @param activity
+	 * @param errorMessage
+	 */
+	public boolean checkForWifi(final Activity activity, String errorMessage)
+	{
+    	if (!this.isWifiAvailable() && !this.isGConnectionAvailable())
+    	{
+    		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+    		builder.setMessage(errorMessage);
+    		builder.setNegativeButton("Select Network", new DialogInterface.OnClickListener(){
+				@Override
+				public void onClick(DialogInterface arg0, int arg1)
+				{
+					ConnectionsManager.this.openWifiSettings(activity);
+				}
+    		});
+    		builder.setPositiveButton("Cancel", null);
+    		builder.create().show();
+    		return false;
+    	}
+    	return true;
 	}
 	/**
 	 * Sends notification to the server to send a recovery email if the provided email is valid
@@ -120,47 +155,22 @@ public class ConnectionsManager
     		}
     	}.execute(null,null,null);
 	}
-	public void openWifiSettings(Activity activity)
-	{
-		  final Intent intent = new Intent(Intent.ACTION_MAIN, null);
-          intent.addCategory(Intent.CATEGORY_LAUNCHER);
-          final ComponentName cn = new ComponentName("com.android.settings", "com.android.settings.wifi.WifiSettings");
-          intent.setComponent(cn);
-          intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-          activity.startActivity( intent);
-	}
 	/**
-	 * Checks to see if wifi is enabled.  If it is not shows the given error message
-	 * @param activity
-	 * @param errorMessage
+	 * For posting key-value pairs to server and receiving back either text or JSON encoded values
+	 * @param script path which is just the script name if script is not in any subfolders
+	 * @param pairs The key-value pairs that will be posted
+	 * @param notifier  The object of type Notifier that will be notified once the post is finished
+	 * @param eventCode The event code that will be sent back to the Notifier object
 	 */
-	public boolean checkForWifi(final Activity activity, String errorMessage)
+	public void postToServer(final String scriptName, List<NameValuePair> pairs, final Notifiable notifier, final int eventCode)
 	{
-    	if (!this.isWifiAvailable() && !this.isGConnectionAvailable())
-    	{
-    		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
-    		builder.setMessage(errorMessage);
-    		builder.setNegativeButton("Select Network", new DialogInterface.OnClickListener(){
-				@Override
-				public void onClick(DialogInterface arg0, int arg1)
-				{
-					ConnectionsManager.this.openWifiSettings(activity);
-				}
-    		});
-    		builder.setPositiveButton("Cancel", null);
-    		builder.create().show();
-    		return false;
-    	}
-    	return true;
-	}
-	/**
-	 * Pull the users from server and afterwards update the local database copy
-	 * @param activity
-	 */
-	public void pullUsersFromServer(final Activity activity)
-	{
-    	final List<NameValuePair> pairs = new ArrayList<NameValuePair>();
+		if (pairs == null)
+		{
+			pairs = new ArrayList<NameValuePair>();
+		}
     	pairs.add(new BasicNameValuePair("validation", Keys.CONNECTION_PASSWORD));
+    	
+    	final List<NameValuePair> pairsFinal = pairs;
     	
     	new AsyncTask<String, String, String>() {
     		@Override
@@ -169,8 +179,8 @@ public class ConnectionsManager
     			try
     			{
     				HttpClient httpClient = new DefaultHttpClient();
-    				HttpPost httpPost = new HttpPost(Keys.SITE + "getUsers.php");
-    				httpPost.setEntity(new UrlEncodedFormEntity(pairs));
+    				HttpPost httpPost = new HttpPost(Keys.SITE + scriptName);
+    				httpPost.setEntity(new UrlEncodedFormEntity(pairsFinal));
     				HttpResponse response = httpClient.execute(httpPost);
     				HttpEntity entity = response.getEntity();
     				String result = ConnectionsManager.inputStreamToString(entity.getContent()).toString();
@@ -186,16 +196,12 @@ public class ConnectionsManager
     		@Override
     		protected void onPostExecute(String result)
     		{
-    			if (result.equals("invalid_id"))
+    			if (notifier != null)
     			{
-    				Log.i("TAG","Invalid id");
-    				return;
+    				notifier.notifyOfEvent(eventCode, result);
     			}
-    			Log.i("TAG","Creating database handler");
-    			DatabaseHandler handler = new DatabaseHandler(activity.getApplicationContext());
-    			handler.updateUsersWithJSON(result);
     		}
-    	}.execute(null,null,null);
+    	}.execute(null,null,null);	
 	}
 	public void pushJSONObjectToServer(final Activity activity, final String scriptName, final JSONObject jsonObject, final Notifiable notifier, final int eventCode)
 	{
@@ -234,54 +240,37 @@ public class ConnectionsManager
     	}.execute(null,null,null);
 	}
 	/**
-	 * Pull the dog information from the server and afterwards update the local copy.
-	 * This does not update the individual training data only the basic information for each dog
-	 * such as name, picture, category, etc.
-	 * @param activity
+	 * Returns true if provided string is either a valid json object or a json array
+	 * @param jsonString
+	 * @return
 	 */
-	public void pullDogsFromServer(final Activity activity, final Notifiable notifier, final int eventCode)
+	public boolean isValidJSON(String jsonString)
 	{
-    	final List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-    	pairs.add(new BasicNameValuePair("validation", Keys.CONNECTION_PASSWORD));
-    	
-    	new AsyncTask<String, String, String>() {
-    		@Override
-    		protected String doInBackground(String... params) 
-    		{
-    			try
-    			{
-    				HttpClient httpClient = new DefaultHttpClient();
-    				HttpPost httpPost = new HttpPost(Keys.SITE + "getDogs.php");
-    				httpPost.setEntity(new UrlEncodedFormEntity(pairs));
-    				HttpResponse response = httpClient.execute(httpPost);
-    				HttpEntity entity = response.getEntity();
-    				String result = ConnectionsManager.inputStreamToString(entity.getContent()).toString();
-    				Log.i("QUERY RESULT",result);
-    				return result;
-    			}
-    			catch (Exception e)
-    			{
-    				e.printStackTrace();
-    			}
-    			return "";
-    		}
-    		@Override
-    		protected void onPostExecute(String result)
-    		{
-    			if (result.equals("invalid_id"))
-    			{
-    				Log.i("TAG","Invalid id");
-    				return;
-    			}
-    			Log.i("TAG","Creating database handler");
-    			DatabaseHandler handler = new DatabaseHandler(activity.getApplicationContext());
-    			handler.updateDogsWithJSON(result, activity);
-    			if (notifier != null)
-    			{
-    				notifier.notifyOfEvent(eventCode, null);
-    			}
-    		}
-    	}.execute(null,null,null);
+		return isValidJSONObject(jsonString) || isValidJSONArray(jsonString);
+	}
+	public boolean isValidJSONObject(String jsonString)
+	{
+		try
+		{
+			JSONObject object = new JSONObject(jsonString);
+		}
+		catch (JSONException e)
+		{
+			return false;
+		}
+		return true;
+	}
+	public boolean isValidJSONArray(String jsonString)
+	{
+		try
+		{
+			JSONArray object = new JSONArray(jsonString);
+		}
+		catch (JSONException e)
+		{
+			return false;
+		}
+		return true;
 	}
 	/**
 	 * Takes the input stream returned from the HTTP request and returns a StringBuidler.  This can
@@ -306,5 +295,4 @@ public class ConnectionsManager
         }
         return answer;
     }
-
 }

@@ -6,7 +6,9 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -41,7 +43,7 @@ import android.widget.Toast;
 public class DatabaseHandler extends SQLiteOpenHelper implements Notifiable
 { 
     // Database Version
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 13;
  
     // Database Name
     private static final String DATABASE_NAME = "service_manager.db";
@@ -82,7 +84,8 @@ public class DatabaseHandler extends SQLiteOpenHelper implements Notifiable
         		Keys.DogKeys.BIRTH_DATE + " TEXT, " +
                 Keys.DogKeys.BREED + " TEXT, " +
         		Keys.DogKeys.SERVICE_TYPE + " TEXT, " + 
-                Keys.DogKeys.IMAGE_NAME + " INTEGER" + ")";
+                Keys.DogKeys.IMAGE_NAME + " INTEGER, " +
+        		Keys.DogKeys.VERSION_NUMBER + " INTEGER)";
         db.execSQL(CREATE_USERS_TABLE);
         db.execSQL(CREATE_DOGS_TABLE);
     }
@@ -102,9 +105,35 @@ public class DatabaseHandler extends SQLiteOpenHelper implements Notifiable
 
     	onCreate(db);
 	}
+    /**
+     * Mapping of dogID to version_number
+     * @return
+     */
+    public JSONObject getDogEntryVersionNumbers()
+    {
+    	SQLiteDatabase db = this.getReadableDatabase();
+    	Cursor cursor = db.query(this.TABLE_DOGS, new String[] {Keys.DogKeys.ID,  Keys.DogKeys.VERSION_NUMBER},
+    			null, null, null, null, null);
+    	JSONObject object = new JSONObject();
+    	while (cursor.moveToNext())
+    	{
+    		int dogID = cursor.getInt(cursor.getColumnIndex(Keys.DogKeys.ID));
+    		int versionNumber = cursor.getInt(cursor.getColumnIndex(Keys.DogKeys.VERSION_NUMBER));
+    		try 
+    		{
+				object.put(Integer.toString(dogID), Integer.toString(versionNumber));
+			} 
+    		catch (JSONException e) 
+    		{
+				e.printStackTrace();
+			}
+    	}
+    	db.close();
+    	return object;
+    }
     public void copyDatabaseToSDCard()
     {
-    	Log.i("TAG","*************************copying database");
+    	/*Log.i("TAG","*************************copying database");
         try {
             //File sd = Environment.getExternalStorageDirectory();
             File sd = new File("sdcard/");
@@ -128,7 +157,7 @@ public class DatabaseHandler extends SQLiteOpenHelper implements Notifiable
             }
         } catch (Exception e) {
         	e.printStackTrace();
-        }
+        }*/
     }
 	/**
 	 * This is called by ConnectionsManager after the users are fetched
@@ -177,11 +206,40 @@ public class DatabaseHandler extends SQLiteOpenHelper implements Notifiable
     public void updateDogsWithJSON(String JSON, Activity activity)
     {
     	SQLiteDatabase db = this.getWritableDatabase();
-    	db.execSQL("DELETE FROM " + this.TABLE_DOGS);
+    	SQLiteDatabase dbR = this.getReadableDatabase();
+    	//db.execSQL("DELETE FROM " + this.TABLE_DOGS);
     	try 
     	{
     		Log.i("DATABASE","DATBASE CONTENTS ----------------------");
-    		JSONArray jsonArray = new JSONArray(JSON);
+    		JSONObject jsonObject = new JSONObject(JSON);
+    		JSONArray ids = jsonObject.getJSONArray("ids");
+    		JSONArray jsonArray = jsonObject.getJSONArray("dogs");
+    		
+    		//********* REMOVING ENTRIES NOT CONTAINED IN "ids" JSONArray
+    		// Get JSONArray as integer set
+    		Set<Integer> serverIdSet = new HashSet<Integer>();
+    		for (int index = 0; index < ids.length(); ++index)
+    		{
+    			serverIdSet.add(ids.getInt(index));
+    		}
+    		Cursor idCursor = dbR.query(TABLE_DOGS, new String[] {Keys.DogKeys.ID},null, null, null, null, null, null);
+    		List<Integer> removeList = new ArrayList<Integer>();
+    		Set<Integer> deviceIdSet = new HashSet<Integer>();
+    		while (idCursor.moveToNext())
+    		{
+    			int id = idCursor.getInt(idCursor.getColumnIndex(Keys.DogKeys.ID));
+    			deviceIdSet.add(id);
+    			if (!serverIdSet.contains(id))
+    			{
+    				removeList.add(id);
+    			}
+    		}
+    		for (int id : removeList)
+    		{
+    			db.delete(TABLE_DOGS, Keys.DogKeys.ID + " = " + id, null);
+    			//TODO: Remove the skills table and any associated tables
+    		}
+    		//********* ITERATE OVER jsonArray update or add accordingly
         	for (int index = 0; index < jsonArray.length(); ++index)
         	{
             	JSONObject dogObject = jsonArray.getJSONObject(index);
@@ -192,9 +250,10 @@ public class DatabaseHandler extends SQLiteOpenHelper implements Notifiable
             	String breed = dogObject.getString("breed");
             	String serviceType = dogObject.getString("service_type");
             	String imageEncoded = dogObject.getString("image");
+            	int versionNumber = dogObject.getInt("version_number");
+            	
     			byte[] byteArray = Base64.decode(imageEncoded, 0);
 				Bitmap img = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-				//Log.i("TAG",imageEncoded);
             	String imgPath = "dog_image_" + id + ".png";
             	
             	// Save the image
@@ -212,21 +271,31 @@ public class DatabaseHandler extends SQLiteOpenHelper implements Notifiable
             	row.put(Keys.DogKeys.BREED, breed);
             	row.put(Keys.DogKeys.SERVICE_TYPE, serviceType);
             	row.put(Keys.DogKeys.IMAGE_NAME, imgPath);
-            	db.insert(this.TABLE_DOGS, null, row);
+            	row.put(Keys.DogKeys.VERSION_NUMBER, versionNumber);
             	
-            	this.createSkillsTable(skillsTableName);
-            	// Create the skills table if it does not exist
-            	
+            	if (deviceIdSet.contains(id))
+            	{
+                	db.update(this.TABLE_DOGS, row, Keys.DogKeys.ID + " = " + id, null);
+            	}
+            	else
+            	{
+            		db.insert(this.TABLE_DOGS, null, row);
+            		// Create the skills table if it does not exist
+            		this.createSkillsTable(skillsTableName);
+            	}
         	}
 		} 
     	catch (JSONException e) {
 			e.printStackTrace();
 		}
+    	db.close();
+    	dbR.close();
     }
     public void createSkillsTable(String tableName)
     {
         String CREATE_SKILLS_TABLE = "CREATE TABLE IF NOT EXISTS " + tableName + " ("
-                + Keys.SkillsKeys.CATEGORY_NAME + " TEXT)";
+                + Keys.SkillsKeys.CATEGORY_NAME + " TEXT, " + 
+        		Keys.SkillsKeys.PLANNED + " INTEGER, " + Keys.SkillsKeys.COMPLETED + " INTEGER)";
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL(CREATE_SKILLS_TABLE);
     }
@@ -412,7 +481,24 @@ public class DatabaseHandler extends SQLiteOpenHelper implements Notifiable
     	Cursor cursor = db.query(TABLE_USERS, columnNames, whereClause,null,null,null,null,null);
     	return cursor.moveToFirst();
     }
-    
+    public String getPlan(String category, int dogID)
+    {
+    	TrainingReader reader = TrainingReader.getInstance(null);
+    	String catKey = reader.categoryToCatKey(category);
+    	String skillsTableName = Keys.getSkillsTableName(dogID);
+    	SQLiteDatabase db = this.getReadableDatabase();
+    	String whereClause = Keys.SkillsKeys.PLANNED + " = '" + 1 + "' AND " + Keys.SkillsKeys.CATEGORY_NAME + " = '" + catKey + "'";
+    	Cursor result = db.query(skillsTableName, new String[]{Keys.SkillsKeys.PLANNED}, whereClause, null, null, null, null);
+    	if (result.getCount() == 0)
+    	{
+    		return null;
+    	}
+    	String catTableName = Keys.getTableNameForCategory(category, dogID);
+    	result = db.query(catTableName, new String[] {Keys.CategoryKeys.PLAN},Keys.CategoryKeys.TRIALS_FAILED + " = '" + -1 + "'", null, null, null, null, null);
+    	result.moveToFirst();
+    	String plan = result.getString(result.getColumnIndex(Keys.CategoryKeys.PLAN));
+    	return plan;
+    }
     public void addPlan(String plan, String category, int dogID)
     {    
     	String skillsTableName = Keys.getSkillsTableName(dogID);
@@ -425,9 +511,13 @@ public class DatabaseHandler extends SQLiteOpenHelper implements Notifiable
     	if (result.getCount() == 0)
     	{
     		db = this.getWritableDatabase();
-        	ContentValues values = new ContentValues();
+        	
+    		ContentValues values = new ContentValues();
         	TrainingReader reader = TrainingReader.getInstance(null);
         	values.put(Keys.SkillsKeys.CATEGORY_NAME, reader.categoryToCatKey(category));
+        	values.put(Keys.SkillsKeys.PLANNED, 1);
+        	values.put(Keys.SkillsKeys.COMPLETED, 0);
+        	
         	db.insert(skillsTableName, null, values);
         	// Also need to create the table
         	String CREATE_CATEGORY_TABLE = "CREATE TABLE " + categoryTableName + "("
@@ -440,7 +530,8 @@ public class DatabaseHandler extends SQLiteOpenHelper implements Notifiable
     	}
     	ContentValues values = new ContentValues();
     	values.put(Keys.CategoryKeys.PLAN, plan);
-    	values.put(Keys.CategoryKeys.SESSION_DATE, "");
+    	values.put(Keys.CategoryKeys.TRIALS_FAILED, -1);
+    	values.put(Keys.CategoryKeys.TRIALS_PASSED, -1);
     	db.insert(categoryTableName, null, values);    	
     }
 

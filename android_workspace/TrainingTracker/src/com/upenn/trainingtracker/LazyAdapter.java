@@ -39,7 +39,7 @@ public class LazyAdapter extends BaseAdapter implements Filterable
 			String name2 = profile2.getName();
 			if (constraint.trim().equals(""))
 			{
-				return name1.compareTo(name2);
+				return name1.toLowerCase().compareTo(name2.toLowerCase());
 			}
 			// If beginning exact match, then this ordering takes priority
 			boolean firstStarts = name1.toLowerCase().startsWith(constraint);

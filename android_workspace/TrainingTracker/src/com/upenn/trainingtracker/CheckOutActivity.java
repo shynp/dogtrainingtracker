@@ -121,12 +121,12 @@ public class CheckOutActivity extends Activity
 					value = binLayout.getSpinnerValueByCategory(entry.getNameKey());
 				}
 				plan += entry.getNameKey() + "==" + value;
-				if (index != entries.size())
+				if (index != entries.size() - 1)
 				{
 					plan += "||";
 				}
 			}
-			//db.addPlan(plan, category, dogID);
+			db.addPlan(plan, category, dogID);
 			Log.i("TAG","Plan for " + category + ": " + plan);
 		}
 	}
@@ -200,6 +200,10 @@ public class CheckOutActivity extends Activity
 	}
 	private PlanningBinLayout getViewForCategory(String category)
 	{
+		DatabaseHandler handler = new DatabaseHandler(this);
+		String plan = handler.getPlan(category, this.dogID);
+		Log.i("TAG",(plan == null ? "null" : plan));
+		
 		Log.i("TAG","------------Getting view for category: " + category);
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		PlanningBinLayout viewBinParent = (PlanningBinLayout) inflater.inflate(R.layout.check_out_view_bin, null);
