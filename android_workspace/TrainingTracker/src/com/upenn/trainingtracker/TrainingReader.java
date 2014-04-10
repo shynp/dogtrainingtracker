@@ -11,6 +11,7 @@ import java.util.Scanner;
 import java.util.regex.Pattern;
 
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 public class TrainingReader 
@@ -28,9 +29,9 @@ public class TrainingReader
 	private HashMap<String, ArrayList<PlanEntry>> categoryToComposition;
 	private boolean isInitialized;
 	
-	private Activity activity;
+	private Context activity;
 	
-	private TrainingReader(Activity activity)
+	private TrainingReader(Context activity)
 	{
 		this.activity = activity;
 		this.parentCategories = new ArrayList<String>();
@@ -44,7 +45,7 @@ public class TrainingReader
 		Log.i("TAG","Getting cateogry key for: " + category);
 		return this.categoryToKey.get(category);
 	}
-	public static TrainingReader getInstance(Activity activity)
+	public static TrainingReader getInstance(Context activity)
 	{
 		if (reader == null) reader = new TrainingReader(activity);
 		return TrainingReader.reader;
@@ -92,6 +93,7 @@ public class TrainingReader
 		String fileName = subToFileName.get(category);
 		Log.i("TAG","For file: " + fileName);
 		BufferedReader in = null;
+		
 		try {
 			in = new BufferedReader(new InputStreamReader(activity.getAssets().open(fileName)));
 		} catch (IOException e) {

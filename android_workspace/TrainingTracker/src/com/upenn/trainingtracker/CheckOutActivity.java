@@ -201,8 +201,8 @@ public class CheckOutActivity extends Activity
 	private PlanningBinLayout getViewForCategory(String category)
 	{
 		DatabaseHandler handler = new DatabaseHandler(this);
-		String plan = handler.getPlan(category, this.dogID);
-		Log.i("TAG",(plan == null ? "null" : plan));
+    	
+		Map<String, String> plan = handler.getPlan(category, this.dogID);
 		
 		Log.i("TAG","------------Getting view for category: " + category);
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -217,15 +217,29 @@ public class CheckOutActivity extends Activity
 			{
 				case CHECKBOX: 
 					canvasLayout = (TableRow) this.getCheckBoxFromEntry(entry, viewBinParent);
+					if (plan != null)
+					{
+						viewBinParent.setCheckBoxByKeys(entry.getNameKey(), plan.get(entry.getNameKey()));
+					}
 				break;
 				case OPTIONS: 
 					canvasLayout = (TableRow) this.getSpinnerFromEntry(entry, viewBinParent);
+					if (plan != null)
+					{
+						viewBinParent.setSpinnerByKeys(entry.getNameKey(), plan.get(entry.getNameKey()));
+						Log.i("TAG","changing");
+					}
+					else
+					{
+						Log.i("TAG", "null");
+					}
 				break;
 				case IMAGE_OPTIONS:// view = this.getImageSpinnerFromEntry(entry);
 				break;
 			}
 			viewBin.addView(canvasLayout);
 		}
+		
 		this.attachSwipeListener(viewBin);
 		return viewBinParent;
 	}

@@ -6,12 +6,15 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.Pattern;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -43,7 +46,7 @@ import android.widget.Toast;
 public class DatabaseHandler extends SQLiteOpenHelper implements Notifiable
 { 
     // Database Version
-    private static final int DATABASE_VERSION = 13;
+    private static final int DATABASE_VERSION = 16;
  
     // Database Name
     private static final String DATABASE_NAME = "service_manager.db";
@@ -93,6 +96,37 @@ public class DatabaseHandler extends SQLiteOpenHelper implements Notifiable
     @Override
 	public void onUpgrade(SQLiteDatabase db, int arg1, int arg2) 
 	{
+    	Cursor c = db.rawQuery("SELECT name FROM sqlite_master WHERE type='table'", null);
+    	String tableName="";
+    	  if (c.moveToFirst()) {
+
+    	      while ( !c.isAfterLast() ) {
+
+    	          tableName = c.getString( c.getColumnIndex("name"));
+    	          Log.i("TAG",tableName);
+    	          if(!tableName.equals("android_metadata"))
+    	          {
+    	            db.execSQL("DROP TABLE '"+tableName+"'");
+    	          }
+    	          c.moveToNext();
+    	      }
+    	  }
+
+    	c.close();
+    	/*Cursor cursor = db.query(TABLE_DOGS, new String[] {"MAX(" + Keys.DogKeys.ID + ")"}, null, null, null, null, null);
+    	if (cursor.getCount() != 0)
+    	{
+    		cursor.moveToFirst();
+    		TrainingReader reader = TrainingReader.getInstance(null);
+    		String[] categories = 
+    		int maxID = cursor.getInt(cursor.getColumnIndex(Keys.DogKeys.ID));
+    		for (int id = 1; id <= maxID; ++id)
+    		{
+    			String skillsTableName = Keys.getSkillsTableName(id);
+    			db.execSQL("DROP TABLE IF EXISTS " + skillsTableName);
+    			
+    		}
+    	}
     	// Drop all skillstable
     	Cursor result = db.query(TABLE_DOGS, new String[] {Keys.DogKeys.SKILLS_TABLE_NAME}, null, null, null, null, null);
     	while (result.moveToNext())
@@ -101,7 +135,7 @@ public class DatabaseHandler extends SQLiteOpenHelper implements Notifiable
     	}
     	
     	db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
-    	db.execSQL("DROP TABLE IF EXISTS " + TABLE_DOGS);
+    	db.execSQL("DROP TABLE IF EXISTS " + TABLE_DOGS);*/
 
     	onCreate(db);
 	}
@@ -481,7 +515,14 @@ public class DatabaseHandler extends SQLiteOpenHelper implements Notifiable
     	Cursor cursor = db.query(TABLE_USERS, columnNames, whereClause,null,null,null,null,null);
     	return cursor.moveToFirst();
     }
-    public String getPlan(String category, int dogID)
+    public boolean hasPlan(String category, int dogID)
+    {
+    	return !(this.getPlan(category, dogID) == null);
+    }
+    /*
+     * Mapping of NameKey to ValueKey
+     */
+    public Map<String, String> getPlan(String category, int dogID)
     {
     	TrainingReader reader = TrainingReader.getInstance(null);
     	String catKey = reader.categoryToCatKey(category);
@@ -497,23 +538,32 @@ public class DatabaseHandler extends SQLiteOpenHelper implements Notifiable
     	result = db.query(catTableName, new String[] {Keys.CategoryKeys.PLAN},Keys.CategoryKeys.TRIALS_FAILED + " = '" + -1 + "'", null, null, null, null, null);
     	result.moveToFirst();
     	String plan = result.getString(result.getColumnIndex(Keys.CategoryKeys.PLAN));
-    	return plan;
+    	
+		String[] planParts = plan.split(Pattern.quote("||"));
+		Map<String, String> mapping = new HashMap<String, String>();
+		for (String part : planParts)
+		{
+			String[] subParts = part.split("==");
+			mapping.put(subParts[0], subParts[1]);
+		}
+		return mapping;
     }
     public void addPlan(String plan, String category, int dogID)
     {    
     	String skillsTableName = Keys.getSkillsTableName(dogID);
     	String categoryTableName = Keys.getTableNameForCategory(category, dogID);
-    	
+    	TrainingReader reader = TrainingReader.getInstance(null);
+    	String categoryKey = reader.categoryToCatKey(category);
     	// Get skills table and see if it contains the category table
     	SQLiteDatabase db = this.getReadableDatabase();
     	
-    	Cursor result = db.query(skillsTableName, new String[] {Keys.SkillsKeys.CATEGORY_NAME}, Keys.SkillsKeys.CATEGORY_NAME + "='" + category + "'", null, null, null, null, null);
+    	Cursor result = db.query(skillsTableName, new String[] {Keys.SkillsKeys.CATEGORY_NAME}, Keys.SkillsKeys.CATEGORY_NAME + "='" + categoryKey + "'", null, null, null, null, null);
+    	Log.i("TAG","Checking for: " + skillsTableName);
     	if (result.getCount() == 0)
     	{
     		db = this.getWritableDatabase();
         	
     		ContentValues values = new ContentValues();
-        	TrainingReader reader = TrainingReader.getInstance(null);
         	values.put(Keys.SkillsKeys.CATEGORY_NAME, reader.categoryToCatKey(category));
         	values.put(Keys.SkillsKeys.PLANNED, 1);
         	values.put(Keys.SkillsKeys.COMPLETED, 0);
@@ -528,6 +578,19 @@ public class DatabaseHandler extends SQLiteOpenHelper implements Notifiable
                     Keys.CategoryKeys.SYNCED + "  INTEGER)";
         	db.execSQL(CREATE_CATEGORY_TABLE);
     	}
+    	else
+    	{
+	    	// If the table does exist delete any previous plans that weren't executed
+	    	db.delete(categoryTableName, Keys.CategoryKeys.TRIALS_FAILED + " = " + "'-1'", null);
+	    	// Ensure that skillsTable indicates that the activity is planned
+    		ContentValues values = new ContentValues();
+        	String catKey = reader.categoryToCatKey(category);
+        	values.put(Keys.SkillsKeys.CATEGORY_NAME, catKey);
+        	values.put(Keys.SkillsKeys.PLANNED, 1);
+        	db.update(skillsTableName, values, Keys.SkillsKeys.CATEGORY_NAME + " = '" + catKey + "'", null);
+    	}
+    	
+    	// Add the new plan
     	ContentValues values = new ContentValues();
     	values.put(Keys.CategoryKeys.PLAN, plan);
     	values.put(Keys.CategoryKeys.TRIALS_FAILED, -1);

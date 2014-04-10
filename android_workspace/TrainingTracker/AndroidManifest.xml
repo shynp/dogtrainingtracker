@@ -10,12 +10,16 @@
 	<uses-permission android:name="android.permission.INTERNET" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-
+<instrumentation android:name="android.test.InstrumentationTestRunner"
+    android:targetPackage="com.upenn.trainingtracker"
+    android:label="your tests label" />
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
+<uses-library android:name="android.test.runner" />
+        
         <activity
             android:name="com.upenn.trainingtracker.MainActivity"
             android:screenOrientation="portrait"

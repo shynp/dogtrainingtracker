@@ -5,6 +5,7 @@ import java.util.Map;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ScrollView;
@@ -48,6 +49,43 @@ public class PlanningBinLayout extends ScrollView
 		int index = spinner.getSelectedItemPosition();
 		String[] optionKeys = this.catKeyToOptionsKeys.get(categoryKey);
 		return optionKeys[index];
+	}
+	public void setSpinnerByKeys(String categoryKey, String optionsKey)
+	{
+		Spinner spinner = this.spinnerMap.get(categoryKey);
+		if (spinner == null)
+		{
+			throw new IllegalArgumentException("Invalid categoryKey: " + categoryKey);
+		}
+		String[] options = this.catKeyToOptionsKeys.get(categoryKey);
+		int valueIndex = -1;
+		for (int index = 0; index < options.length; ++index)
+		{
+			if (options[index].equals(optionsKey))
+			{
+				valueIndex = index;
+				break;
+			}
+		}
+		if (valueIndex == -1) throw new IllegalArgumentException("Invalid optionsKey: " + optionsKey);
+		spinner.setSelection(valueIndex);
+	}
+	public void setCheckBoxByKeys(String categoryKey, String boolValue)
+	{
+		Log.i("TAG",boolValue);
+		CheckBox checkBox = this.checkBoxMap.get(categoryKey);
+		if (checkBox == null)
+		{
+			throw new IllegalArgumentException("Invalid categoryKey: " + categoryKey);
+		}
+		if (boolValue.equals("1"))
+		{
+			checkBox.setChecked(true);
+		}
+		else
+		{
+			checkBox.setChecked(false);
+		}
 	}
 	public String getCheckBoxValueByCategory(String categoryKey)
 	{
