@@ -143,12 +143,14 @@ public class LogInActivity extends Activity implements Notifiable
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
+    	Log.i("TAG","SYncing");
     	 switch (item.getItemId())
          {
          case R.id.itemSyncID:
         	 ConnectionsManager cm = ConnectionsManager.getInstance(this);
         	 boolean isAvailable = cm.checkForWifi(this, "A data connection is needed to sync users");
         	 if (!isAvailable) return false;
+        	 Log.i("TAG","Posted");
         	 cm.postToServer("getUsers.php", null, this, this.RESULT_GET_USERS);
          default:
              return super.onOptionsItemSelected(item);
@@ -157,6 +159,7 @@ public class LogInActivity extends Activity implements Notifiable
 	@Override
 	public void notifyOfEvent(int eventCode, String message) 
 	{
+		Log.i("TAG",message);
 		if (eventCode == this.RESULT_GET_USERS || eventCode == this.RESULT_GET_USERS_AFTER_ADD)
 		{
 			ConnectionsManager cm = ConnectionsManager.getInstance(this);

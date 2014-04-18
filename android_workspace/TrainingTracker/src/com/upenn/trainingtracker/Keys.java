@@ -39,18 +39,20 @@ public class Keys
     	public static final String CATEGORY_NAME = "category_name";
     	public static final String COMPLETED = "completed";
     	public static final String PLANNED = "planned";
+    	public static final String VERSION_NUMBER = "version_number";
     }
     public static class CategoryKeys
     {
     	public static final String SESSION_DATE = "session_date";
     	public static final String PLAN = "plan";
-    	public static final String TRIALS_PASSED = "trials_passed";
-    	public static final String TRIALS_FAILED = "trials_failed";
+    	public static final String TRIALS_RESULT = "trials_result";
     	public static final String SYNCED = "is_synced";
+    	public static final String TRAINER_USERNAME = "trainer_username";
     }
     public static class SyncKeys
     {
-    	public static final String CATEGORY_TABLE_NAME = "category_name";
+    	public static final String CATEGORY_KEY = "category_name";
+    	public static final String DOG_ID = "dog_id";
     }
     public static String getTableNameForCategory(String category, int dogID)
     {
@@ -58,6 +60,10 @@ public class Keys
     	TrainingReader reader = TrainingReader.getInstance(null);
     	String catKey = reader.categoryToCatKey(category);
     	
+    	return catKey + "_" + dogID;
+    }
+    public static String getTableNameForCatKey(String catKey, int dogID)
+    {
     	return catKey + "_" + dogID;
     }
     public static String getSkillsTableName(int dogID)

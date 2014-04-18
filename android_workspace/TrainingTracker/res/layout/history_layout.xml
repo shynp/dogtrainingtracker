@@ -5,7 +5,7 @@
     android:background="#C8DCFA"
     android:orientation="vertical" >
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
 	    android:layout_marginLeft="10dp"
 	    android:layout_marginRight="10dp"
@@ -15,31 +15,29 @@
         android:gravity="center_horizontal"
         android:background="#C8DCFA"
         android:orientation="vertical" >
-	    <LinearLayout
+	   <LinearLayout
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_marginTop="10dp"
 	        android:layout_marginBottom="10dp"
 	        android:gravity="center_horizontal"
-	        android:orientation="horizontal" >
-	        <EditText
-	            android:id="@+id/dogFilterTextID"
-	            android:layout_width="0dp"
+	        android:orientation="vertical" >
+	        <AutoCompleteTextView
+	            android:id="@+id/historyFilterID"
+	            android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"
 	            android:layout_weight="1" 
 				android:background="#FFFFFF"
 				android:padding="8dp"
-				android:textSize="25dp"
-				android:hint="Enter Dog Name"/>
-	        <Button
-	            android:id="@+id/button1"
-	            android:onClick="openAddDogPopUp"
-	            android:layout_width="wrap_content"
-	            android:layout_height="fill_parent"
-	            android:text="+" />
-	        
+				android:textSize="18dp"
+				android:hint="Add Filter"/>
+	        <com.upenn.trainingtracker.customviews.FlowLayout
+	            android:id="@+id/filterBinID"
+	            android:layout_marginTop="10dp"
+	            android:layout_marginBottom="10dp"
+	            android:layout_width="fill_parent"
+	            android:layout_height="wrap_content"/>
 	    </LinearLayout>
-
 	    <ListView android:id="@+id/list"
 	        android:layout_width="fill_parent"
 	        android:layout_marginRight="3dp"
@@ -51,6 +49,5 @@
 	        android:layout_weight="1" 
 	        android:dividerHeight="5.0sp"
 	         /> 
-    </LinearLayout>
-
+	</LinearLayout>
 </LinearLayout>

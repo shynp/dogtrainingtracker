@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_margin="10dp"
     android:textColor="#626262"
+    android:textSize="22dp"
     android:background="@drawable/lookup_selector"/>
     
 

@@ -8,10 +8,13 @@ import java.util.Map;
 import java.util.Set;
 
 import com.upenn.trainingtracker.customviews.AutoCategorySelector;
+import com.upenn.trainingtracker.customviews.CheckOutProgressView;
 import com.upenn.trainingtracker.customviews.PlanningBinLayout;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -36,7 +39,7 @@ import android.widget.Toast;
 
 public class CheckOutActivity extends Activity
 {
-	Map<String, ArrayList<PlanEntry>> categoryToPlanEntries;
+	Map<String, List<PlanEntry>> categoryToPlanEntries;
 	Map<String, PlanningBinLayout> categoryToView;
 	
 	Map<PlanEntry, View> planEntryToView;
@@ -47,6 +50,7 @@ public class CheckOutActivity extends Activity
 	private GestureDetector gestureDetector;
 	private CheckOutActivity.MyGestureDetector gestureDetectorInner;
 	private int dogID;
+	private CheckOutProgressView progressView;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -60,12 +64,19 @@ public class CheckOutActivity extends Activity
 		String[] categories = extras.getStringArray("categories");
 		this.categories = Arrays.asList(categories);
 		
+		this.initializeCheckOutProgressView(categories.length);
+		
 		this.planEntryToView = new HashMap<PlanEntry, View>();
 		this.dogID = extras.getInt("dogID");
 		this.currentCategory = categories[0];
 		gestureDetectorInner = new MyGestureDetector();
 		gestureDetector = new GestureDetector(this, gestureDetectorInner);
 		this.initializeLayout(categories);
+	}
+	private void initializeCheckOutProgressView(int numViews)
+	{
+		progressView = (CheckOutProgressView) this.findViewById(R.id.checkOutProgressView);
+		progressView.initializeCheckOutProgressView(numViews);
 	}
 	private void initializeLayout(String[] categories)
 	{
@@ -86,13 +97,14 @@ public class CheckOutActivity extends Activity
 		});
 		
 		TrainingReader reader = TrainingReader.getInstance(this);
-		this.categoryToPlanEntries = new HashMap<String, ArrayList<PlanEntry>>();
+		this.categoryToPlanEntries = new HashMap<String, List<PlanEntry>>();
 		this.categoryToView = new HashMap<String, PlanningBinLayout>();
 				
 		// Initialize category to entries structure and category to view structure
 		for (String category : categories)
 		{
-			ArrayList<PlanEntry> entries = reader.getViewCompositionByCategory(category);
+			String catKey = reader.categoryToCatKey(category);
+			List<PlanEntry> entries = reader.getViewCompositionListByCategoryKey(catKey);
 			this.categoryToPlanEntries.put(category, entries);
 			this.categoryToView.put(category, this.getViewForCategory(category));
 		}
@@ -101,11 +113,11 @@ public class CheckOutActivity extends Activity
 	}
 	public void recordPlanInformation()
 	{
-		DatabaseHandler db = new DatabaseHandler(this);
+		TrainingInfoTether tether = TrainingInfoTether.getInstance();
 		for (String category : this.categories)
 		{
 			PlanningBinLayout binLayout = this.categoryToView.get(category);
-			ArrayList<PlanEntry> entries = this.categoryToPlanEntries.get(category);
+			List<PlanEntry> entries = this.categoryToPlanEntries.get(category);
 			
 			String plan = "";
 			for (int index = 0; index < entries.size(); ++index)
@@ -126,7 +138,9 @@ public class CheckOutActivity extends Activity
 					plan += "||";
 				}
 			}
-			db.addPlan(plan, category, dogID);
+			SharedPreferences preferences = this.getSharedPreferences(MainActivity.USER_PREFS, 0);
+			String userName = preferences.getString(MainActivity.USER_NAME_KEY, "");
+			tether.addPlan(plan, category, dogID, userName, this);
 			Log.i("TAG","Plan for " + category + ": " + plan);
 		}
 	}
@@ -139,7 +153,7 @@ public class CheckOutActivity extends Activity
 	 */
 	public void pressValues(final View view)
 	{
-		ArrayList<PlanEntry> entries = this.categoryToPlanEntries.get(this.currentCategory);
+		List<PlanEntry> entries = this.categoryToPlanEntries.get(this.currentCategory);
 		
 		for (PlanEntry entry : entries)
 		{
@@ -147,7 +161,7 @@ public class CheckOutActivity extends Activity
 			{
 				if (category.equals(this.currentCategory)) continue;
 				
-				ArrayList<PlanEntry> otherEntries = this.categoryToPlanEntries.get(category);
+				List<PlanEntry> otherEntries = this.categoryToPlanEntries.get(category);
 				for (PlanEntry otherEntry : otherEntries)
 				{
 					if (otherEntry.equals(entry))
@@ -179,6 +193,17 @@ public class CheckOutActivity extends Activity
 	{
 		Log.i("TAG","Submiting info");
 		this.recordPlanInformation();
+		
+		String[] catKeys = new String[this.categories.size()];
+		TrainingReader reader = TrainingReader.getInstance(this);
+		for (int index = 0; index < catKeys.length; ++index)
+		{
+			String catKey = reader.categoryToCatKey(this.categories.get(index));
+			catKeys[index] = catKey;
+		}
+		Intent intent = new Intent(CheckOutActivity.this, SessionActivity.class);
+		intent.putExtra("categoryKeys", catKeys);
+		this.startActivity(intent);
 	}
 	
 	/*
@@ -197,12 +222,14 @@ public class CheckOutActivity extends Activity
 		View view = this.categoryToView.get(category);
 		this.currentCategory = category;
 		parentLayout.addView(view);
+		int catIndex = this.categories.indexOf(category);
+		this.progressView.setSelected(catIndex);
 	}
 	private PlanningBinLayout getViewForCategory(String category)
 	{
-		DatabaseHandler handler = new DatabaseHandler(this);
+		TrainingInfoTether tether = TrainingInfoTether.getInstance();
     	
-		Map<String, String> plan = handler.getPlan(category, this.dogID);
+		Map<String, String> plan = tether.getPlan(category, this.dogID, this);
 		
 		Log.i("TAG","------------Getting view for category: " + category);
 		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);

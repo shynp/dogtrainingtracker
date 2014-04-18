@@ -4,6 +4,8 @@
         android:title="Sync"/>
     <item android:id="@+id/itemSwitchAccountID" 
         android:title="Switch Account"/>
+    <item android:id="@+id/itemSyncCategories" 
+        android:title="Sync Category Data"/>
     
 
 </menu>
