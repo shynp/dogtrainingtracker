@@ -46,6 +46,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Adapter;
 import android.widget.AdapterView;
@@ -71,8 +72,10 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
 	public final static int CROP_INTENT_RESULT_CODE = 2;   // Returning from cropping after camera app
 	public final static int GALLERY_INTENT_RESULT_CODE = 3; // Retruning from gallery
 	public final static int CROP_INTENT_RESULT_CODE_FROM_GALLERY = 4; // Returning from cropping after gallery
+	
 	public final static int RESULT_ADD_DOG = 6;
 	public final static int RESULT_UPDATE_DOG = 7;
+
 	
 	public final int DOG_HAS_SYNCED = 5;
 	private ArrayList<DogProfile> profiles;
@@ -89,8 +92,8 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
 		super.onCreate(savedInstanceState);
 		this.setContentView(R.layout.dog_selector_layout);
 
-		DatabaseHandler handler = new DatabaseHandler(this);
-   	 	profiles = handler.getDogProfiles(this);
+		DogInfoTether tether = DogInfoTether.getInstance();
+   	 	profiles = tether.getDogProfiles(this);
    	 	
 		final LazyAdapter adapter = new LazyAdapter(this, profiles);
 		ListView list = (ListView) this.findViewById(R.id.list);
@@ -135,7 +138,7 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
 	public void verifyUser(String userName)
 	{
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage("You are logged in as " + userName + " select Ok to continue or switch account to login under different credentials");
+		builder.setMessage("Welcome " + userName + "! \nSelect OK to continue or Switch Account to login under different credentials");
 		builder.setPositiveButton("Ok", null);
 		builder.setNegativeButton("Switch Account", new DialogInterface.OnClickListener() 
 		{
@@ -172,7 +175,9 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
 						}
 						else if (item == 1) // View History
 						{
-							
+							Intent intent = new Intent(DogSelectorActivity.this, HistoryActivity.class);
+							intent.putExtra("dogID", dogID);
+							DogSelectorActivity.this.startActivity(intent);
 						}
 						else if (item == 2) // update profile
 						{
@@ -187,8 +192,8 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
 
 	public void refreshListDisplay()
 	{
-		DatabaseHandler handler = new DatabaseHandler(this);
-   	 	profiles = handler.getDogProfiles(this);
+		DogInfoTether tether = DogInfoTether.getInstance();
+   	 	profiles = tether.getDogProfiles(this);
    	 	
 		final LazyAdapter adapter = new LazyAdapter(this, profiles);
 		ListView list = (ListView) this.findViewById(R.id.list);
@@ -250,7 +255,8 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
 			}
 		}
 		updateDialog = new Dialog(this);
-		updateDialog.setTitle("Update Profile");
+		//updateDialog.setTitle("Update Profile");
+		updateDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		updateDialog.setContentView(R.layout.add_dog_layout);
 		
 		TextView nameText = (TextView) updateDialog.findViewById(R.id.nameID);
@@ -318,9 +324,10 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
     	ConnectionsManager cm = ConnectionsManager.getInstance(this);
     	boolean isEnabled = cm.checkForWifi(this, "Wifi is needed to add a new dog");
     	if (!isEnabled) return;
-    	
     	this.addDogDialog = new Dialog(this);
-    	addDogDialog.setTitle("Add New Dog");
+    	this.addDogDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+    	//addDogDialog.setTitle("Add New Dog");
     	addDogDialog.setContentView(R.layout.add_dog_layout);
     	DateSelectorTextView dateSelector = (DateSelectorTextView) addDogDialog.findViewById(R.id.dateSelectorTextViewID); 
     	dateSelector.setParentFragment(this);
@@ -472,16 +479,22 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
+    	SyncManager sm = null;
     	 switch (item.getItemId())
          {
          case R.id.itemSyncID:
         	 ConnectionsManager cm = ConnectionsManager.getInstance(this);
         	 boolean isAvailable = cm.checkForWifi(this, "A data connection is needed to sync dogs");
         	 if (!isAvailable) return false;
-        	 this.syncWithServer();
+        	 sm = SyncManager.getInstance(this);
+        	 sm.syncDogInfoWithServer(this, this, this.RESULT_UPDATE_DOG);
         	 break;
          case R.id.itemSwitchAccountID:
         	 this.logOutOfAccount();
+        	 break;
+         case R.id.itemSyncCategories:
+        	 sm = SyncManager.getInstance(this);
+        	 sm.syncCategoryDataWithServer(this);
         	 break;
          default:
              return super.onOptionsItemSelected(item);
@@ -498,37 +511,12 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
 		intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
 		this.startActivity(intent);
     }
-    public void syncWithServer()
-    {
-    	Log.i("TAG","Syncing");
-    	ConnectionsManager cm = ConnectionsManager.getInstance(this);
-    	DatabaseHandler db = new DatabaseHandler(this);
-    	JSONObject idToVersionNumber = db.getDogEntryVersionNumbers();
-    	//cm.pushJSONObjectToServer(this, "getDogs.php", idToVersionNumber, this, this.DOG_HAS_SYNCED);
-    	List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-    	pairs.add(new BasicNameValuePair("idToVersionNumber", idToVersionNumber.toString()));
-    	//pairs.add(new BasicNameValuePair("idToVersion", idToVersionNumber));
-   	 	cm.postToServer("getDogs.php", pairs, this, this.DOG_HAS_SYNCED);
-    }
+    
 	@Override
 	public void notifyOfEvent(int eventCode, String message) 
 	{
-		Log.i("TAG","received event " + message);
-		if (eventCode == this.DOG_HAS_SYNCED)
-		{
-			Log.i("TAG",message);
-			ConnectionsManager cm = ConnectionsManager.getInstance(this);
-			if (!cm.isValidJSON(message))
-			{
-				ViewUtils utils = ViewUtils.getInstance();
-				utils.showAlertMessage(this, "Unable to connect to server.  Please try again later.");
-				return;
-			}
-			DatabaseHandler handler = new DatabaseHandler(this.getApplicationContext());
-			handler.updateDogsWithJSON(message, this);
-	    	this.refreshListDisplay();
-		}
-		else if (eventCode == this.RESULT_ADD_DOG)
+
+		if (eventCode == this.RESULT_ADD_DOG)
 		{
 			Log.i("TAG","here: " + message);
 			if (!message.equals("success"))
@@ -537,18 +525,12 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
 				utils.showAlertMessage(this, "Unable to connect to server.  Please try again later.");
 				return;
 			}
-	    	this.syncWithServer();
+			SyncManager sm = SyncManager.getInstance(this);
+			sm.syncDogInfoWithServer(this, this, this.RESULT_UPDATE_DOG);
 		}
 		else if (eventCode == this.RESULT_UPDATE_DOG)
 		{
-			Log.i("TAG","MESSAGE: " + message);
-			if (!message.equals("success"))
-			{
-				ViewUtils utils = ViewUtils.getInstance();
-				utils.showAlertMessage(this, "Unable to connect to server.  Please try again later.");
-				return;
-			}
-	    	this.syncWithServer();
+			this.refreshListDisplay();
 		}
 	}
 }

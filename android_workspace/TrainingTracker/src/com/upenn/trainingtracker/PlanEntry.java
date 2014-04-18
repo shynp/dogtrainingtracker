@@ -1,6 +1,7 @@
 package com.upenn.trainingtracker;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import android.util.Log;
@@ -14,13 +15,14 @@ public class PlanEntry
 	
 	private PlanEntry.Type type;
 	private String nameKey;
+	private HashMap<String, String> optionKeyToOption;
 
 	
 	public static enum Type {
 		CHECKBOX, OPTIONS, IMAGE_OPTIONS
 	}
 	// nameKey is the value used in constructing the "plan" that is stored in the database
-	
+		
 	public String getNameKey() {
 		return nameKey;
 	}
@@ -55,6 +57,7 @@ public class PlanEntry
 		this.options = options;
 		this.optionKeys = optionKeys;
 		this.type = type;
+		init();
 	}
 	public PlanEntry(String name, String nameKey, char type, String[] options, String[] optionKeys)
 	{
@@ -63,6 +66,7 @@ public class PlanEntry
 		this.options = options;
 		this.optionKeys = optionKeys;
 		this.type = this.typeFromCharacter(type);	
+		init();
 	}
 	public PlanEntry(String name, String nameKey, PlanEntry.Type type)
 	{
@@ -84,6 +88,18 @@ public class PlanEntry
 		this.type = typeC;
 		this.name = name;
 		this.nameKey = nameKey;
+	}
+	public void init()
+	{
+		this.optionKeyToOption = new HashMap<String, String>();
+		for (int index = 0; index < options.length; ++index)
+		{
+			this.optionKeyToOption.put(this.optionKeys[index], this.options[index]);
+		}
+	}
+	public String getOptionFromOptionKey(String optionKey)
+	{
+		return this.optionKeyToOption.get(optionKey);
 	}
 	public static PlanEntry.Type typeFromCharacter(char character)
 	{
