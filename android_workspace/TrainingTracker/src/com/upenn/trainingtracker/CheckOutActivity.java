@@ -13,6 +13,7 @@ import com.upenn.trainingtracker.customviews.PlanningBinLayout;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -192,6 +193,17 @@ public class CheckOutActivity extends Activity
 	{
 		Log.i("TAG","Submiting info");
 		this.recordPlanInformation();
+		
+		String[] catKeys = new String[this.categories.size()];
+		TrainingReader reader = TrainingReader.getInstance(this);
+		for (int index = 0; index < catKeys.length; ++index)
+		{
+			String catKey = reader.categoryToCatKey(this.categories.get(index));
+			catKeys[index] = catKey;
+		}
+		Intent intent = new Intent(CheckOutActivity.this, SessionActivity.class);
+		intent.putExtra("categoryKeys", catKeys);
+		this.startActivity(intent);
 	}
 	
 	/*

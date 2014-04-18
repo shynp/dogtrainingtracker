@@ -124,11 +124,14 @@ containing a value of this type.
         public static final int rounded_text_field=0x7f020017;
         public static final int roundex_text_field=0x7f020018;
         public static final int selector_crop_button=0x7f020019;
-        public static final int tag_button=0x7f02001a;
+        public static final int session_widget_background=0x7f02001a;
+        public static final int session_widget_buttons=0x7f02001b;
+        public static final int tag_button=0x7f02001c;
     }
     public static final class id {
-        public static final int action_settings=0x7f040031;
+        public static final int action_settings=0x7f040032;
         public static final int addNewDogButtonID=0x7f040007;
+        public static final int bin=0x7f04002b;
         public static final int breedID=0x7f040004;
         public static final int button1=0x7f040020;
         public static final int categoryLayout=0x7f040008;
@@ -138,7 +141,7 @@ containing a value of this type.
         public static final int checkOutScrollBin=0x7f04000c;
         public static final int checkOutScrollBinOld=0x7f040010;
         public static final int checkOutSuperParent=0x7f04000a;
-        public static final int checkoutButton=0x7f04002d;
+        public static final int checkoutButton=0x7f04002e;
         public static final int createAccountButtonID=0x7f040016;
         public static final int dateSelectorTextViewID=0x7f040003;
         public static final int discard=0x7f040018;
@@ -150,11 +153,11 @@ containing a value of this type.
         public static final int historyFilterID=0x7f040022;
         public static final int horizontal=0x7f040000;
         public static final int image=0x7f040017;
-        public static final int itemSwitchAccountID=0x7f04002f;
-        public static final int itemSyncCategories=0x7f040030;
-        public static final int itemSyncID=0x7f04002e;
+        public static final int itemSwitchAccountID=0x7f040030;
+        public static final int itemSyncCategories=0x7f040031;
+        public static final int itemSyncID=0x7f04002f;
         public static final int list=0x7f040021;
-        public static final int lookupLayout=0x7f04002b;
+        public static final int lookupLayout=0x7f04002c;
         public static final int nameID=0x7f040002;
         public static final int optionsCheckWidget=0x7f040028;
         public static final int optionsCheckWidgetText=0x7f040027;
@@ -169,7 +172,7 @@ containing a value of this type.
         public static final int rotateLeft=0x7f040019;
         public static final int rotateRight=0x7f04001a;
         public static final int save=0x7f04001b;
-        public static final int selectedLayout=0x7f04002c;
+        public static final int selectedLayout=0x7f04002d;
         public static final int serviceTypeID=0x7f040005;
         public static final int submitPlansButton=0x7f04000e;
         public static final int tableLayoutBin=0x7f040011;
@@ -195,7 +198,9 @@ containing a value of this type.
         public static final int options_check_widget=0x7f03000d;
         public static final int options_widget=0x7f03000e;
         public static final int recover_account_layout=0x7f03000f;
-        public static final int training_selector_layout=0x7f030010;
+        public static final int session_category_widget=0x7f030010;
+        public static final int session_layout=0x7f030011;
+        public static final int training_selector_layout=0x7f030012;
     }
     public static final class menu {
         public static final int dog_selector_menu=0x7f0a0000;
