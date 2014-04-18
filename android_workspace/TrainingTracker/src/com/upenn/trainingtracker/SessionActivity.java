@@ -1,5 +1,9 @@
 package com.upenn.trainingtracker;
 
+import java.util.Map;
+
+import com.upenn.trainingtracker.customviews.SessionCategoryWidget;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -17,19 +21,24 @@ public class SessionActivity extends Activity
 		
 		Bundle extras = this.getIntent().getExtras();
 		String[] catKeys = extras.getStringArray("categoryKeys");
+		int dogID = extras.getInt("dogID");
 		
 		LinearLayout binLayout = (LinearLayout) this.findViewById(R.id.bin);
 		
 		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		TrainingInfoTether tether = TrainingInfoTether.getInstance();
 		
 		for (String cat : catKeys)
 		{
-			LinearLayout view = (LinearLayout) inflater.inflate(R.layout.session_category_widget, null);
-			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-			params.setMargins(0, 10, 0, 10);
-			view.setLayoutParams(params);
-			binLayout.addView(view);
+			SessionCategoryWidget widget = (SessionCategoryWidget) inflater.inflate(R.layout.session_category_widget, null);
+			Map<String,String> planMap = tether.getPlanByCategoryKey(cat, dogID, this);
+			widget.initializeView(cat, planMap);
+			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+			params.setMargins(20, 10, 20, 10);
+			widget.setLayoutParams(params);
+			binLayout.addView(widget);
 		}
+		
 	}
 	
 }

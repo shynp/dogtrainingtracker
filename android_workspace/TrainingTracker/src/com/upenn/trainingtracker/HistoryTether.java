@@ -33,19 +33,14 @@ public class HistoryTether
 		Map<String, List<TrainingSession>> catKeyToSessions = new HashMap<String, List<TrainingSession>>();
 		Map<String, List<TrainingSession>> userNameToSessions = new HashMap<String, List<TrainingSession>>();
 		List<TrainingSession> allSessions = new ArrayList<TrainingSession>();
-		Log.i("TAG","A");
 		DatabaseHandler db = new DatabaseHandler(activity);
-		Log.i("TAG","A");
 		String skillsTableName = Keys.getSkillsTableName(dogID);
-		Log.i("TAG","A");
 		Cursor skillCursor = db.queryFromTable(skillsTableName, new String[] {Keys.SkillsKeys.CATEGORY_NAME}, null, null);
 		// Iterate over each entry in skill table
 		while (skillCursor.moveToNext())
 		{
-			Log.i("TAG","Ab");
 			String catKey = skillCursor.getString(skillCursor.getColumnIndex(Keys.SkillsKeys.CATEGORY_NAME));
 			String catTableName = Keys.getTableNameForCatKey(catKey, dogID);
-			Log.i("TAG","A");
 			Cursor catCursor = db.queryFromTable(catTableName, new String[]{Keys.CategoryKeys.PLAN,  Keys.CategoryKeys.SESSION_DATE,
 					Keys.CategoryKeys.TRAINER_USERNAME, Keys.CategoryKeys.TRIALS_RESULT}, null, null);
 			
@@ -53,30 +48,20 @@ public class HistoryTether
 			// Iterate over each entry in category table
 			while (catCursor.moveToNext())
 			{
-				Log.i("TAG","A");
 				String plan = catCursor.getString(catCursor.getColumnIndex(Keys.CategoryKeys.PLAN));
-				Log.i("TAG","Ac");
 				String sessionDate = catCursor.getString(catCursor.getColumnIndex(Keys.CategoryKeys.SESSION_DATE));
-				Log.i("TAG","A");
 				String trainerUserName = catCursor.getString(catCursor.getColumnIndex(Keys.CategoryKeys.TRAINER_USERNAME));
-				Log.i("TAG","A");
 				String trialsResult = catCursor.getString(catCursor.getColumnIndex(Keys.CategoryKeys.TRIALS_RESULT));
-				Log.i("TAG","Ad");
 				TrainingSession session = new TrainingSession(catKey, sessionDate, plan, trialsResult, trainerUserName, null);
-				Log.i("TAG","Ae");
 				catList.add(session);
-				Log.i("TAG","Af");
 				allSessions.add(session);
 				if (userNameToSessions.containsKey(trainerUserName))
 				{
-					
-					Log.i("TAG","A");
 					List<TrainingSession> userNameList = userNameToSessions.get(trainerUserName);
 					userNameList.add(session);
 				}
 				else
 				{
-					Log.i("TAG","A");
 					List<TrainingSession> userNameList = new ArrayList<TrainingSession>();
 					userNameList.add(session);
 					userNameToSessions.put(trainerUserName, userNameList);

@@ -203,6 +203,7 @@ public class CheckOutActivity extends Activity
 		}
 		Intent intent = new Intent(CheckOutActivity.this, SessionActivity.class);
 		intent.putExtra("categoryKeys", catKeys);
+		intent.putExtra("dogID", this.dogID);
 		this.startActivity(intent);
 	}
 	

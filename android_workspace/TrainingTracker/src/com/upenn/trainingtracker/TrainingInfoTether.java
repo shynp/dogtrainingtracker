@@ -261,6 +261,7 @@ public class TrainingInfoTether
     {
     	return !(this.getPlan(category, dogID, activity) == null);
     }
+    //TODO: Get rid of method below so only getPlanByCategoryKey is used
     /*
      * Mapping of NameKey to ValueKey
      */
@@ -278,6 +279,35 @@ public class TrainingInfoTether
     		return null;
     	}
     	String catTableName = Keys.getTableNameForCategory(category, dogID);
+    	result = db.queryFromTable(catTableName, new String[] {Keys.CategoryKeys.PLAN},Keys.CategoryKeys.TRIALS_RESULT + " = 'EMPTY'", null);
+    	result.moveToFirst();
+    	String plan = result.getString(result.getColumnIndex(Keys.CategoryKeys.PLAN));
+    	
+		String[] planParts = plan.split(Pattern.quote("||"));
+		Map<String, String> mapping = new HashMap<String, String>();
+		for (String part : planParts)
+		{
+			String[] subParts = part.split("==");
+			mapping.put(subParts[0], subParts[1]);
+		}
+		return mapping;
+    }
+    /*
+     * Mapping of NameKey to ValueKey
+     */
+    public Map<String, String> getPlanByCategoryKey(String catKey, int dogID, Activity activity)
+    {
+    	TrainingReader reader = TrainingReader.getInstance(null);
+    	String skillsTableName = Keys.getSkillsTableName(dogID);
+    	DatabaseHandler db = new DatabaseHandler(activity);
+    	
+    	String whereClause = Keys.SkillsKeys.PLANNED + " = '" + 1 + "' AND " + Keys.SkillsKeys.CATEGORY_NAME + " = '" + catKey + "'";
+    	Cursor result = db.queryFromTable(skillsTableName, new String[]{Keys.SkillsKeys.PLANNED}, whereClause, null);
+    	if (result.getCount() == 0)
+    	{
+    		return null;
+    	}
+    	String catTableName = Keys.getTableNameForCatKey(catKey, dogID);
     	result = db.queryFromTable(catTableName, new String[] {Keys.CategoryKeys.PLAN},Keys.CategoryKeys.TRIALS_RESULT + " = 'EMPTY'", null);
     	result.moveToFirst();
     	String plan = result.getString(result.getColumnIndex(Keys.CategoryKeys.PLAN));

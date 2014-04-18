@@ -1,39 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.upenn.trainingtracker.customviews.SessionCategoryWidget xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 	android:layout_marginTop="10dp"
 	android:layout_marginBottom="10dp"
+	android:padding="10dp"
 	android:background="@drawable/session_widget_background"
     android:orientation="vertical" >
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:orientation="horizontal" >
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:layout_alignParentLeft="true"
+            android:text="Walk it Plank" />
+        <TextView
+            android:id="@+id/collapseID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:layout_alignParentRight="true"
+            android:text="+/-" />
+	</RelativeLayout>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
         <Button
+            android:id="@+id/success"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/session_widget_buttons"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:padding="5dp"
+            android:layout_height="40dp"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
+            android:background="#2A5830"
+            android:layout_marginLeft="1dp"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:layout_marginRight="20dp"
+            android:includeFontPadding="false"
+            android:gravity="center"
             android:text="Success" />
         <Button
+            android:id="@+id/failure"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:padding="5dp"
-            android:background="@drawable/session_widget_buttons"
+            android:layout_height="40dp"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="25dp"
+            android:textSize="20sp"
+            android:includeFontPadding="false"
+            android:textColor="#FFFFFF"
+            android:background="#940000"
+            android:gravity="center"
             android:text="Failure" />
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:padding="5dp"
-            android:background="@drawable/session_widget_buttons"
-            android:text="Remove Last" />
+            android:id="@+id/delete"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:paddingLeft="3dp"
+            android:paddingRight="3dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
+            android:textSize="20sp"
+            android:includeFontPadding="false"
+            android:textColor="#FFFFFF"
+            android:background="#575757"
+            android:text="x" />
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/resultsBin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="12dp"
+        android:orientation="horizontal" >
 
-</LinearLayout>
+	</LinearLayout>
+	<TableLayout
+	    android:id="@+id/tableID"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content" >
+
+	</TableLayout>
+	    
+
+</com.upenn.trainingtracker.customviews.SessionCategoryWidget>
