@@ -118,7 +118,8 @@ public final class R {
         public static final int options_check_widget=0x7f03000c;
         public static final int options_widget=0x7f03000d;
         public static final int recover_account_layout=0x7f03000e;
-        public static final int training_selector_layout=0x7f03000f;
+        public static final int training_param_selector_layout=0x7f03000f;
+        public static final int training_selector_layout=0x7f030010;
     }
     public static final class menu {
         public static final int dog_selector_menu=0x7f090000;
