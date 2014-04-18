@@ -10,10 +10,14 @@ import android.test.AndroidTestCase;
 
 public class TrainingReaderGetParentCategories extends AndroidTestCase 
 {
+	private TrainingReader reader;
+	private List<String> categories;
 	@Override
 	protected void setUp() throws Exception 
 	{
 		super.setUp();
+		reader = TrainingReader.getInstance(this.getContext());
+		categories = reader.getParentCategories();
 	}
 	@Override
 	protected void tearDown() throws Exception 
@@ -26,32 +30,22 @@ public class TrainingReaderGetParentCategories extends AndroidTestCase
 	}
 	public void testGetDAC() throws Throwable
 	{
-		TrainingReader reader = TrainingReader.getInstance(this.getContext());
-		List<String> categories = reader.getParentCategories();
-		AndroidTestCase.assertTrue(categories.contains("Direciton and Control"));
+		AndroidTestCase.assertTrue(categories.contains("Direction and Control"));
 	}
 	public void testGetAG() throws Throwable
 	{
-		TrainingReader reader = TrainingReader.getInstance(this.getContext());
-		List<String> categories = reader.getParentCategories();
 		AndroidTestCase.assertTrue(categories.contains("Agility"));
 	}
 	public void testGetFOB() throws Throwable
 	{
-		TrainingReader reader = TrainingReader.getInstance(this.getContext());
-		List<String> categories = reader.getParentCategories();
-		AndroidTestCase.assertTrue(categories.contains("Walk It Plank"));	
+		AndroidTestCase.assertTrue(categories.contains("Foundation Obedience"));	
 	}
 	public void testGetSearch() throws Throwable 
 	{
-		TrainingReader reader = TrainingReader.getInstance(this.getContext());
-		List<String> categories = reader.getParentCategories();
 		AndroidTestCase.assertTrue(categories.contains("Search"));	
 	}
 	public void testCatSize() throws Throwable
 	{
-		TrainingReader reader = TrainingReader.getInstance(this.getContext());
-		List<String> categories = reader.getParentCategories();
 		AndroidTestCase.assertTrue(categories.size() == 4);	
 	}	
 }
