@@ -87,6 +87,10 @@ public class TrainingSession
 	{
 		return this.view;
 	}
+	public String getUserName()
+	{
+		return this.userName;
+	}
 	public String getSessionDateString()
 	{
 		return this.sessionDateString;

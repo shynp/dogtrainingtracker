@@ -6,13 +6,14 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import com.upenn.trainingtracker.HistoryActivity;
 import com.upenn.trainingtracker.R;
 import com.upenn.trainingtracker.customviews.FlowLayout.LayoutParams;
 
 public class TagButton extends Button
 {
 
-	public TagButton(Context context, String text) 
+	public TagButton(final HistoryActivity context, final String text) 
 	{
 		super(context);
 		this.setTextSize(12);
@@ -34,6 +35,7 @@ public class TagButton extends Button
 			{
 				FlowLayout flow = (FlowLayout) buttonF.getParent();
 				flow.removeView(buttonF);
+				context.removeCriteria(text);
 			}
 		});
 	}

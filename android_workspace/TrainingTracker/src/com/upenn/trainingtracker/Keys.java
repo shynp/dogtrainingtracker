@@ -1,5 +1,7 @@
 package com.upenn.trainingtracker;
 
+import java.util.Calendar;
+
 public class Keys 
 {
 	/**
@@ -69,5 +71,19 @@ public class Keys
     public static String getSkillsTableName(int dogID)
     {
     	return "skills_table_" + dogID;
+    }
+    public static String getCurrentDateString()
+    {
+		Calendar c = Calendar.getInstance(); 
+		int month = c.get(Calendar.MONTH) + 1;
+		int day = c.get(Calendar.DAY_OF_MONTH);
+		int year = c.get(Calendar.YEAR);
+		
+		int hours = c.get(Calendar.HOUR_OF_DAY);
+		int minutes = c.get(Calendar.MINUTE);
+		int second = c.get(Calendar.SECOND);
+		String dateString = month + "-" + day + "-" + year + "-" + hours + ":" + minutes + ":" + second;
+		
+		return dateString;
     }
 }

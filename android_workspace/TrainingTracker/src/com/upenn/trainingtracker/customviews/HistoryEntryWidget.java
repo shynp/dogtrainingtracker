@@ -28,6 +28,12 @@ public class HistoryEntryWidget extends LinearLayout
 	private TableLayout table;
 	private boolean planVisible;
 	private LinearLayout resultsBin;
+	private HistoryEntryWidget.Type type;
+	
+	public enum Type 
+	{
+		Passed, Failed, Aborted, Planned
+	}
 	
 	public HistoryEntryWidget(Context context)
 	{
@@ -47,12 +53,40 @@ public class HistoryEntryWidget extends LinearLayout
 		this.initializePlanTable(catKey, planMap);
 		this.setCollapseBehavior();
 	}
+	public HistoryEntryWidget.Type getType()
+	{
+		return this.type;
+	}
 	public void initializeSuccessFailureButtons(List<Boolean> resultSequence)
 	{
+		int numSuccess = 0;
 		for (Boolean sf : resultSequence)
 		{
+			if (sf) ++numSuccess;
 			this.addSuccessFailureButton(sf);
 		}
+		if (numSuccess >= 4) // success
+		{
+			type = Type.Passed;
+			this.setBackground(this.getResources().getDrawable(R.drawable.history_widget_passed));
+		}
+		else if (numSuccess < 4 && resultSequence.size() == 5) // failed
+		{
+			type = Type.Failed;
+			this.setBackground(this.getResources().getDrawable(R.drawable.history_widget_failed));
+		}
+		else if (numSuccess < 4 && resultSequence.size() > 0) // aborted
+		{
+			type = Type.Aborted;
+			this.setBackground(this.getResources().getDrawable(R.drawable.history_widget_aborted));
+		}
+		else if (resultSequence.size() == 0) // planned
+		{
+			type = Type.Planned;
+			this.setBackground(this.getResources().getDrawable(R.drawable.history_widget_planned));
+		}
+		int padding = (int)ViewUtils.convertDpToPixel(10, this.getContext());
+		this.setPadding(padding, padding, padding, padding);
 	}
 	private void addSuccessFailureButton(boolean sf)
 	{

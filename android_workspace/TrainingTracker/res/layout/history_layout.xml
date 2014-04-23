@@ -22,16 +22,26 @@
 	        android:layout_marginBottom="10dp"
 	        android:gravity="center_horizontal"
 	        android:orientation="vertical" >
-	        <AutoCompleteTextView
-	            android:id="@+id/historyFilterID"
+	        <LinearLayout
 	            android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"
-	            android:layout_weight="1" 
-				android:background="#FFFFFF"
-				android:padding="8dp"
-				android:textSize="18dp"
-				android:hint="Add Filter"/>
+	            android:orientation="horizontal">
+		        <AutoCompleteTextView
+		            android:id="@+id/historyFilterID"
+		            android:layout_width="0dp"
+		            android:layout_weight="1"
+		            android:layout_height="wrap_content"
+					android:background="#FFFFFF"
+					android:padding="8dp"
+					android:textSize="18dp"
+					android:hint="Add Filter"/>
+		        <Spinner
+		            android:id="@+id/filterTypeSpinnerID"
+		            android:layout_width="wrap_content"
+		            android:layout_height="wrap_content" />
+			</LinearLayout>
 	        <com.upenn.trainingtracker.customviews.FlowLayout
+	            android:layout_marginTop="10dp"
 	            android:id="@+id/filterBinID"
 	            android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"/>

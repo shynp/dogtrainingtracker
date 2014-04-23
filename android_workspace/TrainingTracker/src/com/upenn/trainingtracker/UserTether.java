@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 
 public class UserTether 
@@ -24,7 +25,7 @@ public class UserTether
 		}
 		return instance;
 	}
-	public List<String> getUserNames(Activity activity)
+	public List<String> getUserNames(Context activity)
 	{
 		DatabaseHandler db = new DatabaseHandler(activity);
 		Cursor userCursor = db.queryFromTable(DatabaseHandler.TABLE_USERS, new String[]{Keys.UserKeys.USERNAME}, null, null);
@@ -38,7 +39,7 @@ public class UserTether
 		}
 		return userNames;
 	}
-	public List<String> getUserFullNames(Activity activity)
+	public List<String> getUserFullNames(Context activity)
 	{
 		DatabaseHandler db = new DatabaseHandler(activity);
 		Cursor userCursor = db.queryFromTable(DatabaseHandler.TABLE_USERS, new String[]{Keys.UserKeys.NAME}, null, null);
@@ -52,7 +53,7 @@ public class UserTether
 		}
 		return userNames;
 	}
-	public Map<String, String> getUserNameToUserFullName(Activity activity)
+	public Map<String, String> getUserNameToUserFullName(Context activity)
 	{
 		Map<String, String> userNameToFullName = new HashMap<String, String>();
 		List<String> userNames = this.getUserNames(activity);

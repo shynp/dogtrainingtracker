@@ -2,6 +2,7 @@ package com.upenn.trainingtracker;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -383,6 +384,41 @@ public class TrainingInfoTether
     	{
     		values = new ContentValues();
     		values.put(Keys.SyncKeys.CATEGORY_KEY, categoryKey);
+    		values.put(Keys.SyncKeys.DOG_ID, dogID);
+    		db.insertIntoTable(DatabaseHandler.TABLE_SYNC, null, values);
+    	}
+    }
+    public void addEntry(String date, String catKey, int dogID, String userName, List<Boolean> resultSequence, Activity activity)
+    {
+    	String skillsTableName = Keys.getSkillsTableName(dogID);
+    	String categoryTableName = Keys.getTableNameForCatKey(catKey, dogID);
+    			
+    	DatabaseHandler db = new DatabaseHandler(activity);
+    	// Make sure that skills table indicates that it is not planned
+    	ContentValues values = new ContentValues();
+    	values.put(Keys.SkillsKeys.CATEGORY_NAME, catKey);
+    	values.put(Keys.SkillsKeys.PLANNED, 0);
+    	db.updateTable(skillsTableName, values, Keys.SkillsKeys.CATEGORY_NAME + " = '" + catKey + "'", null);	
+    	// Add the entry in the category table where "EMPTY" word is
+    	String resultString = "";
+    	for (Boolean bool : resultSequence)
+    	{
+    		resultString += bool ? "1" : "0";
+    	}
+    	values = new ContentValues();
+    	values.put(Keys.CategoryKeys.TRIALS_RESULT, resultString);
+    	values.put(Keys.CategoryKeys.TRAINER_USERNAME, userName);
+    	values.put(Keys.CategoryKeys.SESSION_DATE, Keys.getCurrentDateString());
+    	String whereClause = Keys.CategoryKeys.TRIALS_RESULT + " = " + "'EMPTY'";
+    	db.updateTable(categoryTableName, values, whereClause, null);
+    	// Tell sync table that this needs to be updated
+    	whereClause = Keys.SyncKeys.CATEGORY_KEY + "='" + catKey + "' AND " + Keys.SyncKeys.DOG_ID + "='" + dogID + "'";
+    	Cursor result = db.queryFromTable(DatabaseHandler.TABLE_SYNC, new String[] {Keys.SyncKeys.CATEGORY_KEY}, whereClause, null);
+    	// If not add the entry
+    	if (result.getCount() == 0)
+    	{
+    		values = new ContentValues();
+    		values.put(Keys.SyncKeys.CATEGORY_KEY, catKey);
     		values.put(Keys.SyncKeys.DOG_ID, dogID);
     		db.insertIntoTable(DatabaseHandler.TABLE_SYNC, null, values);
     	}

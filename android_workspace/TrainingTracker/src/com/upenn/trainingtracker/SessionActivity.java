@@ -1,6 +1,7 @@
 package com.upenn.trainingtracker;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,6 +12,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -25,6 +27,8 @@ public class SessionActivity extends Activity
 {
 	private String[] catKeys;
 	private Map<String, SessionCategoryWidget> catKeyToWidget;
+	private int dogID;
+	private String userName;
 	
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -34,7 +38,9 @@ public class SessionActivity extends Activity
 		
 		Bundle extras = this.getIntent().getExtras();
 		this.catKeys = extras.getStringArray("categoryKeys");
-		int dogID = extras.getInt("dogID");
+		this.dogID = extras.getInt("dogID");
+		SharedPreferences preferences = this.getSharedPreferences(MainActivity.USER_PREFS, 0);
+		this.userName = preferences.getString(MainActivity.USER_NAME_KEY, "");
 		
 		LinearLayout binLayout = (LinearLayout) this.findViewById(R.id.bin);
 		
@@ -71,7 +77,15 @@ public class SessionActivity extends Activity
 			@Override
 			public void onClick(DialogInterface dialog, int which) 
 			{
-				
+				for (String catKey : catKeys)
+				{
+					SessionCategoryWidget widget = catKeyToWidget.get(catKey);
+					if (widget.isStarted())
+					{
+						SessionActivity.this.recordCategory(catKey);
+					}
+				}
+				SessionActivity.this.finish();
 			}
     	});
     	builder.setNegativeButton("No", null);
@@ -127,7 +141,10 @@ public class SessionActivity extends Activity
 	}
 	public void recordCategory(String catKey)
 	{
-		
+		String dateString = Keys.getCurrentDateString();
+		SessionCategoryWidget widget = catKeyToWidget.get(catKey);
+		TrainingInfoTether tether = TrainingInfoTether.getInstance();
+	    tether.addEntry(dateString, catKey, dogID, userName, widget.getResultSequence(), this);
 	}
     /**
      * Event Handling for Individual menu item selected

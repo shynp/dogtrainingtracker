@@ -9,6 +9,7 @@ import java.util.Map;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import com.upenn.trainingtracker.CheckOutActivity.MyGestureDetector;
 import com.upenn.trainingtracker.customviews.FlowLayout;
@@ -36,6 +38,8 @@ public class HistoryActivity extends Activity
 	private int dogID;
 	private FlowLayout filterBin;
 	private ArrayAdapter<String> autoAdapter;
+	private List<String> filterCriteria = new ArrayList<String>();
+	private HistoryAdapter entryAdapter;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -53,17 +57,58 @@ public class HistoryActivity extends Activity
 		HistoryTether tether = HistoryTether.getInstance();
 		try
 		{
-			HistoryAdapter adapter = tether.getTrainingSessionAdapterForDog(dogID, this);
-			list.setAdapter(adapter);
+			entryAdapter = tether.getTrainingSessionAdapterForDog(dogID, this);
+			list.setAdapter(entryAdapter);
 
 		}
 		catch(Exception e)
 		{
 			e.printStackTrace();
 		}
+		this.initializeFilterTypeSpinner();
 	}
+	public void initializeFilterTypeSpinner()
+	{
+		Spinner spinner = (Spinner) this.findViewById(R.id.filterTypeSpinnerID);
+		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+		        R.array.filter_types, android.R.layout.simple_spinner_item);
+		// Specify the layout to use when the list of choices appears
+		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		// Apply the adapter to the spinner
+		spinner.setAdapter(adapter);
+		spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+		{
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int position, long arg3) 
+			{
+				if (position == 0) // Unity
+				{
+					Log.i("TAG","Unity");
+					HistoryActivity.this.entryAdapter.setSelectionType(HistoryAdapter.SelectionType.UNITY);
+				}
+				else // Intersection
+				{
+					Log.i("TAG","Intersection");
+					HistoryActivity.this.entryAdapter.setSelectionType(HistoryAdapter.SelectionType.INTERSECTION);
+				}
+				
+			}
 
-	
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) 
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+		});
+	}
+	public void removeCriteria(String criteria)
+	{
+		this.filterCriteria.remove(criteria);
+		this.entryAdapter.applyFilterStrings(filterCriteria);
+	}
 	public void initializeFilterCriteria()
 	{
 		TrainingReader reader = TrainingReader.getInstance(this);
@@ -78,6 +123,7 @@ public class HistoryActivity extends Activity
 		autoList.addAll(this.subCats);
 		autoList.addAll(this.userNames);
 		autoList.addAll(this.userFullNames);
+		autoList.add("Passed");autoList.add("Failed");autoList.add("Aborted");autoList.add("Planned");
 		
 		final AutoCompleteTextView textView = (AutoCompleteTextView) this.findViewById(R.id.historyFilterID);
 		autoAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, autoList);
@@ -102,7 +148,9 @@ public class HistoryActivity extends Activity
 					return;
 				}
 				TagButton tag = new TagButton(HistoryActivity.this, selected);
+				HistoryActivity.this.filterCriteria.add(selected);
 				HistoryActivity.this.filterBin.addView(tag);
+				HistoryActivity.this.entryAdapter.applyFilterStrings(filterCriteria);
 				textView.setText("");
 			}
 		});

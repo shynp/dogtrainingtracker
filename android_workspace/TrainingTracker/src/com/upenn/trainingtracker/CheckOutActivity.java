@@ -140,7 +140,7 @@ public class CheckOutActivity extends Activity
 				}
 			}
 			Calendar c = Calendar.getInstance(); 
-			int month = c.get(Calendar.MONTH);
+			int month = c.get(Calendar.MONTH) + 1;
 			int day = c.get(Calendar.DAY_OF_MONTH);
 			int year = c.get(Calendar.YEAR);
 			
@@ -153,7 +153,6 @@ public class CheckOutActivity extends Activity
 			String userName = preferences.getString(MainActivity.USER_NAME_KEY, "");
 			tether.addPlan(dateString, plan, category, dogID, userName, this);
 			
-
 			Log.i("TAG","Plan for " + category + ": " + plan);
 		}
 	}
@@ -217,6 +216,7 @@ public class CheckOutActivity extends Activity
 		Intent intent = new Intent(CheckOutActivity.this, SessionActivity.class);
 		intent.putExtra("categoryKeys", catKeys);
 		intent.putExtra("dogID", this.dogID);
+		this.finish();
 		this.startActivity(intent);
 	}
 	

@@ -40,6 +40,10 @@ public class SessionCategoryWidget extends LinearLayout
 	{
 		super(context);
 	}
+	public List<Boolean> getResultSequence()
+	{
+		return this.resultSequence;
+	}
 	public SessionCategoryWidget(Context context, AttributeSet attrs) {
 		super(context, attrs);
 	}
