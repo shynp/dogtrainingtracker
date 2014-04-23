@@ -1,7 +1,9 @@
 package com.upenn.trainingtracker;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -13,17 +15,20 @@ import com.upenn.trainingtracker.PlanEntry.Type;
 public class TrainingSession 
 {
 	private String trainerUserName;
+	private String userName;
+	private String trainerName;
 	private String dogName;
 
 	private Calendar sessionDate;
+	private String sessionDateString;
 	
 	private String catKey;
 	private String category;
+	private List<Boolean> resultSequence;
 	
 	public boolean success;
 	
-	private String[] entryTitles;
-	private String[] entryValues;
+	private Map<String, String> plan;
 	
 	private View view;
 	
@@ -31,26 +36,48 @@ public class TrainingSession
 	{
 		return this.category;
 	}
-	public TrainingSession(String catKey, String sessionDate, String plan, String trialsResult, String trainerUserName, String dogName)
+	public String getCategoryKey()
 	{
-		Log.i("TAG","b");
+		return this.catKey;
+	}
+	public Map<String, String> getPlanMap()
+	{
+		return this.plan;
+	}
+	public List<Boolean> getResultSequence()
+	{
+		return this.resultSequence;
+	}
+	public String getTrainerName()
+	{
+		return this.trainerName;
+	}
+	public TrainingSession(String catKey, String sessionDate, Map<String, String> plan, String trialsResult, String trainerUserName, String trainerName, String dogName)
+	{
+		this.trainerName = trainerName;
+		Log.i("TAG","**************: " + trialsResult);
 		this.catKey = catKey;
-		Log.i("TAG","b");
 		TrainingReader reader = TrainingReader.getInstance(null);
-		Log.i("TAG","b");
 		if (!reader.isInitialized())
 		{
 			throw new IllegalStateException("Cannot create TrainingSession object before TrainingReader has been initialized");
 		}
 		this.category = reader.catKeyToCategory(catKey);
-		Log.i("TAG","b");
 		this.initializeDate(sessionDate);
-		Log.i("TAG","b");
-		this.initializedPlan(plan);
-		Log.i("TAG","b");
+		this.plan = plan;
 		this.trainerUserName = trainerUserName;
-		Log.i("TAG","b");
+		this.initializeTrialsResult(trialsResult);
 		this.dogName = dogName;
+	}
+	private void initializeTrialsResult(String resultString)
+	{
+		this.resultSequence = new ArrayList<Boolean>();
+		if (resultString.equals("EMPTY")) return;
+		for (int index = 0; index < resultString.length(); ++index)
+		{
+			boolean result = resultString.charAt(index) == '1' ? true : false;
+			this.resultSequence.add(result);
+		}
 	}
 	public void setView(View view)
 	{
@@ -60,36 +87,13 @@ public class TrainingSession
 	{
 		return this.view;
 	}
-	private void initializedPlan(String plan)
+	public String getSessionDateString()
 	{
-		String[] planParts = plan.split(Pattern.quote("||"));
-		this.entryTitles = new String[planParts.length];
-		this.entryValues = new String[planParts.length];
-		TrainingReader reader = TrainingReader.getInstance(null);
-		
-		Map<String, PlanEntry> entryKeyToPlanEntry = reader.getViewCompositionMapByCategoryKey(this.catKey);
-		
-		for (int index = 0; index < planParts.length; ++index)
-		{
-			String[] entryParts = planParts[index].split("==");
-			String entryTitleKey = entryParts[0];
-			String optionKey = entryParts[1];
-			
-			Log.i("TAG",entryTitleKey + " for " + this.catKey);
-			PlanEntry entry = entryKeyToPlanEntry.get(entryTitleKey);
-			this.entryTitles[index] = entry.getNameKey();
-			if (entry.getType() == Type.OPTIONS)
-			{
-				this.entryValues[index] = entry.getOptionFromOptionKey(optionKey);
-			}
-			else
-			{
-				this.entryValues[index] = (optionKey.equals("1") ? "True" : "False");
-			}	
-		}
+		return this.sessionDateString;
 	}
 	private void initializeDate(String sessionDate)
 	{
+		this.sessionDateString = sessionDate;
 		if (sessionDate == null)
 		{
 			// Occurs for planned but not executed activity

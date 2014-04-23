@@ -2,6 +2,7 @@ package com.upenn.trainingtracker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -138,9 +139,21 @@ public class CheckOutActivity extends Activity
 					plan += "||";
 				}
 			}
+			Calendar c = Calendar.getInstance(); 
+			int month = c.get(Calendar.MONTH);
+			int day = c.get(Calendar.DAY_OF_MONTH);
+			int year = c.get(Calendar.YEAR);
+			
+			int hours = c.get(Calendar.HOUR_OF_DAY);
+			int minutes = c.get(Calendar.MINUTE);
+			int second = c.get(Calendar.SECOND);
+			String dateString = month + "-" + day + "-" + year + "-" + hours + ":" + minutes + ":" + second;
+			
 			SharedPreferences preferences = this.getSharedPreferences(MainActivity.USER_PREFS, 0);
 			String userName = preferences.getString(MainActivity.USER_NAME_KEY, "");
-			tether.addPlan(plan, category, dogID, userName, this);
+			tether.addPlan(dateString, plan, category, dogID, userName, this);
+			
+
 			Log.i("TAG","Plan for " + category + ": " + plan);
 		}
 	}

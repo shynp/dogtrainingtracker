@@ -18,19 +18,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.Toast;
 
 public class SessionCategoryWidget extends LinearLayout
 {
-	private boolean tableVisible = false;
+	private boolean planVisible = false;
+	private LinearLayout planLayout;
 	private TableLayout table;
 	private LinearLayout resultsBin;
 	
 	private List<View> resultViews = new ArrayList<View>();
+	private List<Boolean> resultSequence = new ArrayList<Boolean>();
 	
 	public SessionCategoryWidget(Context context)
 	{
@@ -46,6 +50,7 @@ public class SessionCategoryWidget extends LinearLayout
 	public void initializeView(String catKey, Map<String, String> planMap)
 	{
 		this.setCollapseBehavior();
+		this.setEditPlanBehavior();
 		this.initializePlanTable(catKey, planMap);
 		this.setSuccessFailureButtons();
 		this.setDeleteLastButton();
@@ -53,6 +58,77 @@ public class SessionCategoryWidget extends LinearLayout
 		String catName = reader.catKeyToCategory(catKey);
 		TextView titleText = (TextView) this.findViewById(R.id.title);
 		titleText.setText(catName);
+		this.setCompleteDeleteBehavior();
+	}
+	private void setEditPlanBehavior()
+	{
+		ImageView changePlan = (ImageView) this.findViewById(R.id.editPlanButton);
+		if (changePlan == null)
+		{
+			Log.i("TAG","it is null");
+		}
+		changePlan.setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View arg0) 
+			{
+				AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+		    	builder.setMessage("Would you like to edit this plan? Current trial data will still be recorded.");
+		    	builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+		    	{
+					@Override
+					public void onClick(DialogInterface dialog, int which) 
+					{
+						
+					}
+		    	});
+		    	builder.setNegativeButton("No", null);
+		    	builder.create().show();		
+			}
+		});
+	}
+	private void setCompleteDeleteBehavior()
+	{
+		this.setOnLongClickListener(new OnLongClickListener()
+		{
+			@Override
+			public boolean onLongClick(View arg0) 
+			{
+				AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+		    	builder.setMessage("Would you like to delete this category from the training session? All recorded trials will be lost.");
+		    	builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+		    	{
+					@Override
+					public void onClick(DialogInterface dialog, int which) 
+					{
+
+					}
+		    	});
+		    	builder.setNegativeButton("No", null);
+		    	builder.create().show();		
+				return false;
+			}
+		});
+	}
+	private void deleteLastTrial()
+	{
+    	AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+    	builder.setMessage("Would you like to delete the last trial?");
+    	builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
+    	{
+			@Override
+			public void onClick(DialogInterface dialog, int which) 
+			{
+				if (resultViews.isEmpty()) return;
+				int index = resultViews.size() - 1;
+				SessionCategoryWidget.this.resultsBin.removeView(resultViews.get(index));
+				resultViews.remove(resultViews.size() - 1);
+				resultSequence.remove(resultSequence.size() - 1);
+				SessionCategoryWidget.this.invalidate();
+			}
+    	});
+    	builder.setNegativeButton("No", null);
+    	builder.create().show();		
 	}
 	private void setDeleteLastButton()
 	{
@@ -62,46 +138,48 @@ public class SessionCategoryWidget extends LinearLayout
 			@Override
 			public void onClick(View v) 
 			{
-		    	AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-		    	builder.setMessage("Would you like to delete the last trial?");
-		    	builder.setPositiveButton("Yes", new DialogInterface.OnClickListener()
-		    	{
-					@Override
-					public void onClick(DialogInterface dialog, int which) 
-					{
-						if (resultViews.isEmpty()) return;
-						int index = resultViews.size() - 1;
-						SessionCategoryWidget.this.resultsBin.removeView(resultViews.get(index));
-						resultViews.remove(resultViews.size() - 1);
-						SessionCategoryWidget.this.invalidate();
-					}
-		    	});
-		    	builder.setNegativeButton("No", null);
-		    	builder.create().show();				
+				SessionCategoryWidget.this.deleteLastTrial();
 			}
 		});
 	}
+	private void addSuccessFailureButton(boolean sf)
+	{
+		if (resultSequence.size() == 5)
+		{
+			Toast.makeText(this.getContext(), "Maximum of 5 trials are allowed", Toast.LENGTH_LONG).show();
+			return;
+		}
+		Button button = null;
+		final LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		if (sf) // success
+		{
+			button = (Button) inflater.inflate(R.layout.session_success_button, null);
+		}
+		else
+		{
+			button = (Button) inflater.inflate(R.layout.session_failure_button, null);
+		}
+		int dim = (int) ViewUtils.convertDpToPixel(20, getContext());
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dim, dim);
+		params.setMargins(0, 0, (int) ViewUtils.convertDpToPixel(2, getContext()), 0);
+		button.setLayoutParams(params);
+		resultsBin.addView(button);
+		resultSequence.add(sf);
+		resultViews.add(button);
+	}
 	private void setSuccessFailureButtons()
 	{
+		this.resultsBin = (LinearLayout) this.findViewById(R.id.resultsBin);
+
 		Button successButton = (Button) this.findViewById(R.id.success);
 		Button failureButton = (Button) this.findViewById(R.id.failure);
-		
-		
-		resultsBin = (LinearLayout) this.findViewById(R.id.resultsBin);
-		final LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		
 		successButton.setOnClickListener(new OnClickListener()
 		{
 			@Override
 			public void onClick(View arg0) 
 			{
-				Button button = (Button) inflater.inflate(R.layout.session_success_button, null);
-				int dim = (int) ViewUtils.convertDpToPixel(20, getContext());
-				LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dim, dim);
-				params.setMargins(0, 0, (int) ViewUtils.convertDpToPixel(2, getContext()), 0);
-				button.setLayoutParams(params);
-				resultsBin.addView(button);
-				resultViews.add(button);
+				SessionCategoryWidget.this.addSuccessFailureButton(true);
 			}
 		});
 		failureButton.setOnClickListener(new OnClickListener()
@@ -109,13 +187,7 @@ public class SessionCategoryWidget extends LinearLayout
 			@Override
 			public void onClick(View arg0) 
 			{
-				Button button = (Button) inflater.inflate(R.layout.session_failure_button, null);
-				int dim = (int) ViewUtils.convertDpToPixel(20, getContext());
-				LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(dim, dim);
-				params.setMargins(0, 0, (int) ViewUtils.convertDpToPixel(2, getContext()), 0);
-				button.setLayoutParams(params);
-				resultsBin.addView(button);
-				resultViews.add(button);
+				SessionCategoryWidget.this.addSuccessFailureButton(false);
 			}
 		});
 	}
@@ -127,6 +199,7 @@ public class SessionCategoryWidget extends LinearLayout
 		Iterator<String> iter = planMap.keySet().iterator();
 		LayoutInflater inflater = (LayoutInflater) this.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.table = (TableLayout) this.findViewById(R.id.tableID);
+		this.planLayout = (LinearLayout) this.findViewById(R.id.planLayout);
 		
 		while (iter.hasNext())
 		{
@@ -149,34 +222,57 @@ public class SessionCategoryWidget extends LinearLayout
 			}
 			this.table.addView(row);
 		}
-		SessionCategoryWidget.this.removeView(this.table);
+		SessionCategoryWidget.this.removeView(this.planLayout);
 		SessionCategoryWidget.this.invalidate();
 	}
 	private void setCollapseBehavior()
 	{
-		this.table = (TableLayout) this.findViewById(R.id.tableID);
 		TextView text = (TextView) this.findViewById(R.id.collapseID);
 		text.setOnClickListener(new OnClickListener()
 		{
 			@Override
 			public void onClick(View view) 
 			{
-				if (SessionCategoryWidget.this.tableVisible)
+				if (SessionCategoryWidget.this.planVisible)
 				{
-					//SessionCategoryWidget.this.table.setVisibility(View.INVISIBLE);
-					SessionCategoryWidget.this.removeView(table);
+					SessionCategoryWidget.this.collapseView();
 				}
 				else
 				{
-					SessionCategoryWidget.this.addView(table);
-					//SessionCategoryWidget.this.table.setVisibility(View.VISIBLE);
+					SessionCategoryWidget.this.explandView();
 				}
-				SessionCategoryWidget.this.tableVisible = !SessionCategoryWidget.this.tableVisible;
-				SessionCategoryWidget.this.invalidate();
-				Log.i("TAG", (SessionCategoryWidget.this.tableVisible ? "Visible" : "Hidden"));
+				Log.i("TAG", (SessionCategoryWidget.this.planVisible ? "Visible" : "Hidden"));
 			}	
 		});
 		
+	}
+	public void collapseView()
+	{
+		if (!this.planVisible)
+		{
+			return;
+		}
+		this.removeView(planLayout);
+		this.planVisible = false;
+		this.invalidate();
+	}
+	public void explandView()
+	{
+		if (this.planVisible)
+		{
+			return;
+		}
+		SessionCategoryWidget.this.addView(planLayout);
+		this.planVisible = true;
+		this.invalidate();
+	}
+	public boolean isStarted()
+	{
+		return this.resultSequence.size() > 0;
+	}
+	public boolean isCompleted()
+	{
+		return this.resultSequence.size() == 5;
 	}
 	
 }

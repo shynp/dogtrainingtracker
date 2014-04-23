@@ -30,12 +30,15 @@ public class HistoryTether
 	 */
 	public HistoryAdapter getTrainingSessionAdapterForDog(int dogID, Activity activity)
 	{
+		TrainingInfoTether infoTether = TrainingInfoTether.getInstance();
 		Map<String, List<TrainingSession>> catKeyToSessions = new HashMap<String, List<TrainingSession>>();
 		Map<String, List<TrainingSession>> userNameToSessions = new HashMap<String, List<TrainingSession>>();
 		List<TrainingSession> allSessions = new ArrayList<TrainingSession>();
 		DatabaseHandler db = new DatabaseHandler(activity);
 		String skillsTableName = Keys.getSkillsTableName(dogID);
 		Cursor skillCursor = db.queryFromTable(skillsTableName, new String[] {Keys.SkillsKeys.CATEGORY_NAME}, null, null);
+		UserTether userTether = UserTether.getInstance();
+		Map<String, String> userNameToFullName = userTether.getUserNameToUserFullName(activity);
 		// Iterate over each entry in skill table
 		while (skillCursor.moveToNext())
 		{
@@ -49,10 +52,12 @@ public class HistoryTether
 			while (catCursor.moveToNext())
 			{
 				String plan = catCursor.getString(catCursor.getColumnIndex(Keys.CategoryKeys.PLAN));
+				Map<String, String> planMap = infoTether.planStringToPlanMap(plan);
 				String sessionDate = catCursor.getString(catCursor.getColumnIndex(Keys.CategoryKeys.SESSION_DATE));
 				String trainerUserName = catCursor.getString(catCursor.getColumnIndex(Keys.CategoryKeys.TRAINER_USERNAME));
 				String trialsResult = catCursor.getString(catCursor.getColumnIndex(Keys.CategoryKeys.TRIALS_RESULT));
-				TrainingSession session = new TrainingSession(catKey, sessionDate, plan, trialsResult, trainerUserName, null);
+				String fullName = userNameToFullName.get(trainerUserName);
+				TrainingSession session = new TrainingSession(catKey, sessionDate, planMap, trialsResult, trainerUserName, fullName, null);
 				catList.add(session);
 				allSessions.add(session);
 				if (userNameToSessions.containsKey(trainerUserName))

@@ -4,19 +4,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.upenn.trainingtracker.CheckOutActivity.MyGestureDetector;
 import com.upenn.trainingtracker.customviews.FlowLayout;
+import com.upenn.trainingtracker.customviews.SessionCategoryWidget;
 import com.upenn.trainingtracker.customviews.TagButton;
 
 import android.widget.AdapterView.OnItemClickListener;
@@ -56,8 +61,8 @@ public class HistoryActivity extends Activity
 		{
 			e.printStackTrace();
 		}
-		
 	}
+
 	
 	public void initializeFilterCriteria()
 	{

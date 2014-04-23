@@ -1,7 +1,9 @@
 package com.upenn.trainingtracker;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.database.Cursor;
@@ -49,5 +51,16 @@ public class UserTether
 			userNames.add(userName);
 		}
 		return userNames;
+	}
+	public Map<String, String> getUserNameToUserFullName(Activity activity)
+	{
+		Map<String, String> userNameToFullName = new HashMap<String, String>();
+		List<String> userNames = this.getUserNames(activity);
+		List<String> fullNames = this.getUserFullNames(activity);
+		for (int index = 0; index < userNames.size(); ++index)
+		{
+			userNameToFullName.put(userNames.get(index), fullNames.get(index));
+		}
+		return userNameToFullName;
 	}
 }

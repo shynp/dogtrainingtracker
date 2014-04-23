@@ -311,7 +311,11 @@ public class TrainingInfoTether
     	result = db.queryFromTable(catTableName, new String[] {Keys.CategoryKeys.PLAN},Keys.CategoryKeys.TRIALS_RESULT + " = 'EMPTY'", null);
     	result.moveToFirst();
     	String plan = result.getString(result.getColumnIndex(Keys.CategoryKeys.PLAN));
+    	return this.planStringToPlanMap(plan);
     	
+    }
+    public Map<String, String> planStringToPlanMap(String plan)
+    {
 		String[] planParts = plan.split(Pattern.quote("||"));
 		Map<String, String> mapping = new HashMap<String, String>();
 		for (String part : planParts)
@@ -324,7 +328,7 @@ public class TrainingInfoTether
     /*
      * 
      */
-    public void addPlan(String plan, String category, int dogID, String userName, Activity activity)
+    public void addPlan(String date, String plan, String category, int dogID, String userName, Activity activity)
     {    
     	String skillsTableName = Keys.getSkillsTableName(dogID);
     	String categoryTableName = Keys.getTableNameForCategory(category, dogID);
@@ -367,6 +371,7 @@ public class TrainingInfoTether
     	values.put(Keys.CategoryKeys.TRIALS_RESULT, "EMPTY"); // The flag used to see unexecuted plan
     	values.put(Keys.CategoryKeys.SYNCED, 0);
     	values.put(Keys.CategoryKeys.TRAINER_USERNAME, userName);
+    	values.put(Keys.CategoryKeys.SESSION_DATE, date);
     	db.insertIntoTable(categoryTableName, null, values);  
     	
     	// Tell sync table that this category table needs to be updated

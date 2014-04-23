@@ -33,8 +33,6 @@
 				android:hint="Add Filter"/>
 	        <com.upenn.trainingtracker.customviews.FlowLayout
 	            android:id="@+id/filterBinID"
-	            android:layout_marginTop="10dp"
-	            android:layout_marginBottom="10dp"
 	            android:layout_width="fill_parent"
 	            android:layout_height="wrap_content"/>
 	    </LinearLayout>

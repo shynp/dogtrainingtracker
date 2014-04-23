@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.upenn.trainingtracker.customviews.HistoryEntryWidget xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+	android:layout_marginTop="10dp"
+	android:layout_marginBottom="10dp"
+	android:padding="10dp"
+	android:background="@drawable/session_widget_background"
+    android:orientation="vertical" >
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:orientation="horizontal" >
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_alignParentLeft="true"
+            android:text="Walk it Plank" />
+        <TextView
+            android:id="@+id/collapseID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_alignParentRight="true"
+            android:text="+/-" />
+	</RelativeLayout>
+
+	<TableLayout
+	    android:id="@+id/infoTableID"
+	    android:layout_width="fill_parent"
+		android:layout_height="wrap_content" >
+		<TableRow
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content">
+			<TextView 
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:layout_marginRight="10dp"
+			    android:text="Date" />
+			<TextView 
+			    android:id="@+id/date"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"/>
+		</TableRow>
+		<TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" >
+            <TextView
+				android:layout_marginRight="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Trainer Name" />
+            <TextView
+                android:id="@+id/trainerName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </TableRow>
+	</TableLayout>
+    <LinearLayout
+        android:id="@+id/resultsBin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="12dp"
+        android:orientation="horizontal" >
+	</LinearLayout>
+	<LinearLayout
+	    android:id="@+id/planLayout"
+	    android:layout_width="fill_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="vertical" >
+		<TableLayout
+		    android:id="@+id/tableID"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content" />
+	</LinearLayout>
+
+	    
+
+</com.upenn.trainingtracker.customviews.HistoryEntryWidget>
