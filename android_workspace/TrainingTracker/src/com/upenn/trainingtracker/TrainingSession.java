@@ -15,7 +15,6 @@ import com.upenn.trainingtracker.PlanEntry.Type;
 public class TrainingSession 
 {
 	private String trainerUserName;
-	private String userName;
 	private String trainerName;
 	private String dogName;
 
@@ -35,6 +34,10 @@ public class TrainingSession
 	public String getCategory()
 	{
 		return this.category;
+	}
+	public Calendar getDate()
+	{
+		return this.sessionDate;
 	}
 	public String getCategoryKey()
 	{
@@ -89,7 +92,7 @@ public class TrainingSession
 	}
 	public String getUserName()
 	{
-		return this.userName;
+		return this.trainerUserName;
 	}
 	public String getSessionDateString()
 	{
@@ -98,29 +101,31 @@ public class TrainingSession
 	private void initializeDate(String sessionDate)
 	{
 		this.sessionDateString = sessionDate;
-		if (sessionDate == null)
+		if (sessionDate == null || sessionDate.equals("null"))
 		{
 			// Occurs for planned but not executed activity
 			this.sessionDate = null;
 			return;
 		}
-		Log.i("TAG","c");
 		String[] parts = sessionDate.split("-");
-		Log.i("TAG","c");
 		int year = Integer.parseInt(parts[0]);
-		Log.i("TAG","c");
 		int month = Integer.parseInt(parts[1]);
-		Log.i("TAG","c");
 		int day = Integer.parseInt(parts[2]);
-		Log.i("TAG","c");
+		
+		String timeString = parts[3];
+		String[] timeParts = timeString.split(":");
+		int hour = Integer.parseInt(timeParts[0]);
+		int minute = Integer.parseInt(timeParts[1]);
+		int second = Integer.parseInt(timeParts[2]);
+		
 		
 		Calendar cal = GregorianCalendar.getInstance();
-		Log.i("TAG","c");
 		cal.set(Calendar.YEAR, year);
 		cal.set(Calendar.MONTH, month);
-		Log.i("TAG","c");
 		cal.set(Calendar.DAY_OF_MONTH, day);
-		Log.i("TAG","c");
+		cal.set(Calendar.HOUR_OF_DAY, hour);
+		cal.set(Calendar.MINUTE, minute);
+		cal.set(Calendar.SECOND, second);
 		this.sessionDate = cal;
 	}
 

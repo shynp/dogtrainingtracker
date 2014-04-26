@@ -2,6 +2,7 @@ package com.upenn.trainingtracker;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,7 @@ public class HistoryActivity extends Activity
 	private ArrayAdapter<String> autoAdapter;
 	private List<String> filterCriteria = new ArrayList<String>();
 	private HistoryAdapter entryAdapter;
+	
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState)

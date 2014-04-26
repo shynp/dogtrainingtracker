@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
@@ -25,10 +26,16 @@ import android.widget.LinearLayout;
 
 public class SessionActivity extends Activity
 {
-	private String[] catKeys;
+	private List<String> catKeys = new ArrayList<String>();
 	private Map<String, SessionCategoryWidget> catKeyToWidget;
 	private int dogID;
 	private String userName;
+	private LinearLayout binLayout;
+	private static final int EDIT_PLAN_RESULT = 100;
+	
+	private String catKeyBeingEdited;
+	private int indexOfCatKeyBeingEdited;
+	private SessionCategoryWidget widgetBeingEdited;
 	
 	public void onCreate(Bundle savedInstanceState)
 	{
@@ -37,29 +44,38 @@ public class SessionActivity extends Activity
 		this.catKeyToWidget = new HashMap<String, SessionCategoryWidget>();
 		
 		Bundle extras = this.getIntent().getExtras();
-		this.catKeys = extras.getStringArray("categoryKeys");
+		String[] catKeysArray = extras.getStringArray("categoryKeys");
+		for (String catKey : catKeysArray)
+		{
+			catKeys.add(catKey);
+		}
 		this.dogID = extras.getInt("dogID");
 		SharedPreferences preferences = this.getSharedPreferences(MainActivity.USER_PREFS, 0);
 		this.userName = preferences.getString(MainActivity.USER_NAME_KEY, "");
 		
-		LinearLayout binLayout = (LinearLayout) this.findViewById(R.id.bin);
+		binLayout = (LinearLayout) this.findViewById(R.id.bin);
 		
-		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		TrainingInfoTether tether = TrainingInfoTether.getInstance();
 		
 		for (String cat : catKeys)
 		{
-			SessionCategoryWidget widget = (SessionCategoryWidget) inflater.inflate(R.layout.session_category_widget, null);
-			Map<String,String> planMap = tether.getPlanByCategoryKey(cat, dogID, this);
-			widget.initializeView(cat, planMap);
-			LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-			params.setMargins(0, 10, 0, 10);
-			widget.setLayoutParams(params);
+			SessionCategoryWidget widget = this.createWidgetByCatKey(cat);
 			binLayout.addView(widget);
 			this.catKeyToWidget.put(cat, widget);
 		}
 	}
+	private SessionCategoryWidget createWidgetByCatKey(String catKey)
+	{
+		LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		TrainingInfoTether tether = TrainingInfoTether.getInstance();
 
+		SessionCategoryWidget widget = (SessionCategoryWidget) inflater.inflate(R.layout.session_category_widget, null);
+		Map<String,String> planMap = tether.getPlanByCategoryKey(catKey, dogID, this);
+		widget.initializeView(catKey, planMap, this);
+		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+		params.setMargins(0, 10, 0, 10);
+		widget.setLayoutParams(params);
+		return widget;
+	}
 	public void collapseAllWidgets()
 	{
 		for (String catKey : this.catKeys)
@@ -141,10 +157,79 @@ public class SessionActivity extends Activity
 	}
 	public void recordCategory(String catKey)
 	{
-		String dateString = Keys.getCurrentDateString();
 		SessionCategoryWidget widget = catKeyToWidget.get(catKey);
+		this.recordWidget(catKey, widget);
+	}
+	public void recordWidget(String catKey, SessionCategoryWidget widget)
+	{
+		String dateString = Keys.getCurrentDateString();
 		TrainingInfoTether tether = TrainingInfoTether.getInstance();
 	    tether.addEntry(dateString, catKey, dogID, userName, widget.getResultSequence(), this);
+	}
+	/*
+	 * Called from the widget when the user selects edit icon
+	 */
+	public void editPlan(String catKey)
+	{
+		SessionCategoryWidget widget = this.catKeyToWidget.get(catKey);
+		this.catKeyBeingEdited = catKey;
+		this.widgetBeingEdited = widget;
+		this.indexOfCatKeyBeingEdited = this.catKeys.indexOf(catKey);
+		
+		this.removeWidget(catKey);
+		
+		// Launch the PlanActivity
+		Intent intent = new Intent(this, CheckOutActivity.class);
+		String[] categories = {catKey};
+		intent.putExtra("categoryKeys", categories);
+		intent.putExtra("dogID", this.dogID);
+		this.startActivityForResult(intent, SessionActivity.EDIT_PLAN_RESULT);
+	}
+	public void removeWidget(String catKey)
+	{
+		SessionCategoryWidget widget = this.catKeyToWidget.get(catKey);
+		this.binLayout.removeView(widget);
+		this.catKeyToWidget.remove(catKey);
+		this.catKeys.remove(catKey);
+	}
+	public void addNewWidget(String catKey)
+	{
+		SessionCategoryWidget widget = this.createWidgetByCatKey(this.catKeyBeingEdited);
+		this.catKeyToWidget.put(this.catKeyBeingEdited, widget);
+		this.catKeys.add(this.indexOfCatKeyBeingEdited, catKey);
+		this.refreshBinLayout();
+	}
+	public void refreshBinLayout()
+	{
+		this.binLayout.removeAllViews();
+		for (String catKey : this.catKeys)
+		{
+			SessionCategoryWidget widget = this.catKeyToWidget.get(catKey);
+			this.binLayout.addView(widget);
+		}
+		this.binLayout.invalidate();
+	}
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		Log.i("TAG","Result deliverde");
+		switch (requestCode)
+		{
+		case SessionActivity.EDIT_PLAN_RESULT:
+			// Record at this point so old plan info can be used
+			if (this.widgetBeingEdited.isStarted())
+			{
+				this.recordWidget(this.catKeyBeingEdited, this.widgetBeingEdited);
+			}
+			// Add the new widget if a new plan was added
+			if (resultCode == RESULT_OK)
+			{
+				this.addNewWidget(this.catKeyBeingEdited);
+			}
+			this.catKeyBeingEdited = null;
+			this.widgetBeingEdited = null;
+			break;
+		}
 	}
     /**
      * Event Handling for Individual menu item selected

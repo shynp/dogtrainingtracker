@@ -2,6 +2,8 @@ package com.upenn.trainingtracker;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -56,7 +60,7 @@ public class HistoryAdapter extends BaseAdapter
 	private List<String> userNames = new ArrayList<String>();
 	private List<String> fullNames = new ArrayList<String>();
 	private List<String> categories = new ArrayList<String>();
-	
+
 	public HistoryAdapter(Context context, List<TrainingSession> allSessions, Map<String, List<TrainingSession>> catKeyToSessions,
 			Map<String, List<TrainingSession>> userNameToSessions)
 	{
@@ -75,6 +79,7 @@ public class HistoryAdapter extends BaseAdapter
 		UserTether tether = UserTether.getInstance();
 		this.userNames = tether.getUserNames(context);
 		this.fullNames = tether.getUserFullNames(context);
+		this.applyFilterStrings(new ArrayList<String>());
 	}
 	public void setSelectionType(HistoryAdapter.SelectionType type)
 	{
@@ -91,7 +96,7 @@ public class HistoryAdapter extends BaseAdapter
 			LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 			HistoryEntryWidget profileWidget = (HistoryEntryWidget) inflater.inflate(R.layout.history_widget, null);
 		    // Initialize---------	
-			profileWidget.initializeView(session.getCategoryKey(), session.getPlanMap());
+			profileWidget.initializeView(session.getCategoryKey(), session.getPlanMap(), session.getDate());
 			profileWidget.initializeSuccessFailureButtons(session.getResultSequence());
 			
 			TextView trainerName = (TextView) profileWidget.findViewById(R.id.trainerName);
@@ -133,6 +138,7 @@ public class HistoryAdapter extends BaseAdapter
 			widgetList.add(profileWidget);
 		}
 		widgetList = this.userNameToWidgets.get(session.getUserName());
+		Log.i("TAG","HERE: " + session.getUserName());
 		if (widgetList == null)
 		{
 			widgetList = new ArrayList<HistoryEntryWidget>();
@@ -168,16 +174,25 @@ public class HistoryAdapter extends BaseAdapter
 			{
 				this.selection.add(entry);
 			}
+			this.sortChronologically();
 			this.notifyDataSetChanged();
 			return;
 		}
 		TrainingReader reader = TrainingReader.getInstance(null);
 		// Get all the lists
 		List<List<HistoryEntryWidget>> entryLists = new ArrayList<List<HistoryEntryWidget>>();
+		boolean emptyListPresent = false;
 		for (String filter : filters)
 		{
 			List<HistoryEntryWidget> list = this.getListForFilter(filter);
-			if (list != null) entryLists.add(list);
+			if (list != null) 
+			{
+				entryLists.add(list);
+			}
+			else
+			{
+				emptyListPresent = true;
+			}
 		}
 		// First get the set of all entries
 		Set<HistoryEntryWidget> entrySet = new HashSet<HistoryEntryWidget>();
@@ -192,14 +207,26 @@ public class HistoryAdapter extends BaseAdapter
 			case UNITY:
 				break;
 			case INTERSECTION:
-				for (List<HistoryEntryWidget> list : entryLists)
+				if (!emptyListPresent)
 				{
-					selection.retainAll(list);
+					for (List<HistoryEntryWidget> list : entryLists)
+					{
+						selection.retainAll(list);
+					}
+				}
+				else
+				{
+					selection.clear();
 				}
 				break;
 		}
 
 		this.notifyDataSetChanged();
+		this.sortChronologically();
+	}
+	private void sortChronologically()
+	{
+		Collections.sort(this.selection);
 	}
 	private List<HistoryEntryWidget> getListForFilter(String filter)
 	{

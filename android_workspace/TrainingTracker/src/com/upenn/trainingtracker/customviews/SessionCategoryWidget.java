@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.upenn.trainingtracker.PlanEntry;
 import com.upenn.trainingtracker.R;
+import com.upenn.trainingtracker.SessionActivity;
 import com.upenn.trainingtracker.TrainingReader;
 import com.upenn.trainingtracker.ViewUtils;
 
@@ -32,6 +33,8 @@ public class SessionCategoryWidget extends LinearLayout
 	private LinearLayout planLayout;
 	private TableLayout table;
 	private LinearLayout resultsBin;
+	private SessionActivity activity;
+	private String catKey;
 	
 	private List<View> resultViews = new ArrayList<View>();
 	private List<Boolean> resultSequence = new ArrayList<Boolean>();
@@ -51,7 +54,7 @@ public class SessionCategoryWidget extends LinearLayout
 			int defStyle) {
 		super(context, attrs, defStyle);
 	}
-	public void initializeView(String catKey, Map<String, String> planMap)
+	public void initializeView(String catKey, Map<String, String> planMap, SessionActivity activity)
 	{
 		this.setCollapseBehavior();
 		this.setEditPlanBehavior();
@@ -63,6 +66,8 @@ public class SessionCategoryWidget extends LinearLayout
 		TextView titleText = (TextView) this.findViewById(R.id.title);
 		titleText.setText(catName);
 		this.setCompleteDeleteBehavior();
+		this.activity = activity;
+		this.catKey = catKey;
 	}
 	private void setEditPlanBehavior()
 	{
@@ -83,13 +88,17 @@ public class SessionCategoryWidget extends LinearLayout
 					@Override
 					public void onClick(DialogInterface dialog, int which) 
 					{
-						
+						SessionCategoryWidget.this.editPlan();
 					}
 		    	});
 		    	builder.setNegativeButton("No", null);
 		    	builder.create().show();		
 			}
 		});
+	}
+	private void editPlan()
+	{
+		this.activity.editPlan(this.catKey);
 	}
 	private void setCompleteDeleteBehavior()
 	{

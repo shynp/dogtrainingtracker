@@ -44,18 +44,20 @@
 			        android:id="@+id/submitPlansButton"
 					android:padding="15dp"
 					android:layout_margin="10dp"
-			        android:layout_width="wrap_content"
+		    		android:background="@drawable/generic_button_selector"
+		    		android:textStyle="bold"
+			        android:layout_width="fill_parent"
 			        android:layout_height="wrap_content"
 					android:onClick="submitPlan"
 			        android:text="Submit Plans" />
-				<Button
+			<!-- <Button
 			        android:id="@+id/pressValuesButton"
 					android:padding="15dp"
 					android:layout_margin="10dp"
 			        android:onClick="pressValues"
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
-			        android:text="PressValues" />
+			        android:text="PressValues" />  -->
 			</LinearLayout>
 	</LinearLayout>
 

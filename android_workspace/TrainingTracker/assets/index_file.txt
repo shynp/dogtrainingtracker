@@ -22,6 +22,6 @@ Heel||heel||FOHeel.csv,
 Down / Stay||down_stay||FOStay.csv, 
 
 Search,3,
-Search||search||random.txt,
-Go Find||go_find||random.txt,
+Search||search||SSearch.csv,
+Go Find||go_find||SGoFind.csv,
 Bark Alert||bark_alert||SBarkAlert.csv

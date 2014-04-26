@@ -111,6 +111,7 @@ public class PlanEntry
 		default: throw new IllegalArgumentException("Character did not match any cases: " + character);
 		}
 	}
+	public void initializeImages
 	public String[] getOptionKeys()
 	{
 		return this.optionKeys;

@@ -47,7 +47,7 @@ import android.widget.Toast;
 public class DatabaseHandler extends SQLiteOpenHelper
 { 
     // Database Version
-    private static final int DATABASE_VERSION = 31;
+    private static final int DATABASE_VERSION = 37;
  
     // Database Name
     private static final String DATABASE_NAME = "service_manager.db";

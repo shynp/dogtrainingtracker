@@ -5,4 +5,5 @@
     <color name="shadow_gray">#D0D0D0</color>
     <color name="text_light_blue">#2799C3</color>
      <color name="tag_button_blue">#3258C3</color>
+     <color name = "selected_blue">#18d7e5</color>
 </resources>

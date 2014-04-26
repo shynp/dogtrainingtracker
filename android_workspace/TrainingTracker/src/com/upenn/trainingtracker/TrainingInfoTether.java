@@ -58,6 +58,7 @@ public class TrainingInfoTether
 			}
     		this.updateDogWithAssocs(allAssocs, id, db);
     	}
+    	db.close();
     }
     /*
      * Assocs goes from catKey -> JSONArray of rows
@@ -137,6 +138,7 @@ public class TrainingInfoTether
     		values.put(Keys.CategoryKeys.SESSION_DATE, sessionDate);
     		values.put(Keys.CategoryKeys.SYNCED, 1);
     		values.put(Keys.CategoryKeys.TRIALS_RESULT, trialsResult);
+    		Log.i("TAG",trialsResult);
     		values.put(Keys.CategoryKeys.TRAINER_USERNAME, userName);
     		db.insertIntoTable(tableName, null, values);
     		Log.i("TAG","Data inserted");
@@ -144,7 +146,7 @@ public class TrainingInfoTether
     		{
     			return true;
     		}
-    		else
+    		else if (index == rows.length() - 1)
     		{
     			return false;
     		}
@@ -216,6 +218,7 @@ public class TrainingInfoTether
     		values.put(Keys.CategoryKeys.SYNCED, true);
     		db.updateTable(catTableName, values, null, null);
     	}	
+    	db.close();
     	return tableToValues;
     }
 	/*
@@ -256,6 +259,7 @@ public class TrainingInfoTether
 				e.printStackTrace();
 			}
 		}
+		db.close();
 		return result;
 	}
     public boolean hasPlan(String category, int dogID, Activity activity)
@@ -266,10 +270,9 @@ public class TrainingInfoTether
     /*
      * Mapping of NameKey to ValueKey
      */
-    public Map<String, String> getPlan(String category, int dogID, Activity activity)
+    public Map<String, String> getPlan(String catKey, int dogID, Activity activity)
     {
     	TrainingReader reader = TrainingReader.getInstance(null);
-    	String catKey = reader.categoryToCatKey(category);
     	String skillsTableName = Keys.getSkillsTableName(dogID);
     	DatabaseHandler db = new DatabaseHandler(activity);
     	
@@ -279,7 +282,7 @@ public class TrainingInfoTether
     	{
     		return null;
     	}
-    	String catTableName = Keys.getTableNameForCategory(category, dogID);
+    	String catTableName = Keys.getTableNameForCatKey(catKey, dogID);
     	result = db.queryFromTable(catTableName, new String[] {Keys.CategoryKeys.PLAN},Keys.CategoryKeys.TRIALS_RESULT + " = 'EMPTY'", null);
     	result.moveToFirst();
     	String plan = result.getString(result.getColumnIndex(Keys.CategoryKeys.PLAN));
@@ -291,6 +294,7 @@ public class TrainingInfoTether
 			String[] subParts = part.split("==");
 			mapping.put(subParts[0], subParts[1]);
 		}
+		db.close();
 		return mapping;
     }
     /*
@@ -312,6 +316,7 @@ public class TrainingInfoTether
     	result = db.queryFromTable(catTableName, new String[] {Keys.CategoryKeys.PLAN},Keys.CategoryKeys.TRIALS_RESULT + " = 'EMPTY'", null);
     	result.moveToFirst();
     	String plan = result.getString(result.getColumnIndex(Keys.CategoryKeys.PLAN));
+    	db.close();
     	return this.planStringToPlanMap(plan);
     	
     }
@@ -329,24 +334,24 @@ public class TrainingInfoTether
     /*
      * 
      */
-    public void addPlan(String date, String plan, String category, int dogID, String userName, Activity activity)
+    public void addPlan(String date, String plan, String catKey, int dogID, String userName, Activity activity)
     {    
+    	Log.i("TAG","1");
     	String skillsTableName = Keys.getSkillsTableName(dogID);
-    	String categoryTableName = Keys.getTableNameForCategory(category, dogID);
-    	
+    	String categoryTableName = Keys.getTableNameForCatKey(catKey, dogID);
+    	Log.i("TAG","1");
     	TrainingReader reader = TrainingReader.getInstance(null);
-    	String categoryKey = reader.categoryToCatKey(category);
     	// Get skills table and see if it contains the category table
     	DatabaseHandler db = new DatabaseHandler(activity);
-    	Cursor result = db.queryFromTable(skillsTableName, new String[] {Keys.SkillsKeys.CATEGORY_NAME}, Keys.SkillsKeys.CATEGORY_NAME + "='" + categoryKey + "'", null);
+    	Cursor result = db.queryFromTable(skillsTableName, new String[] {Keys.SkillsKeys.CATEGORY_NAME}, Keys.SkillsKeys.CATEGORY_NAME + "='" + catKey + "'", null);
     	Log.i("TAG","Checking for: " + skillsTableName);
     	// If it doesn't add the entry and then create the category table
     	if (result.getCount() == 0)
     	{
-        	
+    		Log.i("TAG","1");
     		// Add the entry
     		ContentValues values = new ContentValues();
-        	values.put(Keys.SkillsKeys.CATEGORY_NAME, reader.categoryToCatKey(category));
+        	values.put(Keys.SkillsKeys.CATEGORY_NAME, catKey);
         	values.put(Keys.SkillsKeys.PLANNED, 1);
         	values.put(Keys.SkillsKeys.COMPLETED, 0);
         	values.put(Keys.SkillsKeys.VERSION_NUMBER, 1);
@@ -357,36 +362,43 @@ public class TrainingInfoTether
     	}
     	else
     	{
+    		Log.i("TAG","1");
 	    	// If the table does exist delete any previous plans that weren't executed
 	    	db.deleteEntries(categoryTableName, Keys.CategoryKeys.TRIALS_RESULT + " = " + "'EMPTY'", null);
 	    	// Ensure that skillsTable indicates that the activity is planned
     		ContentValues values = new ContentValues();
-        	String catKey = reader.categoryToCatKey(category);
         	values.put(Keys.SkillsKeys.CATEGORY_NAME, catKey);
         	values.put(Keys.SkillsKeys.PLANNED, 1);
         	db.updateTable(skillsTableName, values, Keys.SkillsKeys.CATEGORY_NAME + " = '" + catKey + "'", null);
     	}
+    	Log.i("TAG","1");
     	// Add the new plan to the category table
+    	Log.i("TAG","2");
     	ContentValues values = new ContentValues();
+    	Log.i("TAG","3");
     	values.put(Keys.CategoryKeys.PLAN, plan);
     	values.put(Keys.CategoryKeys.TRIALS_RESULT, "EMPTY"); // The flag used to see unexecuted plan
     	values.put(Keys.CategoryKeys.SYNCED, 0);
     	values.put(Keys.CategoryKeys.TRAINER_USERNAME, userName);
     	values.put(Keys.CategoryKeys.SESSION_DATE, date);
     	db.insertIntoTable(categoryTableName, null, values);  
-    	
+    	Log.i("TAG","3");
     	// Tell sync table that this category table needs to be updated
     	// First check if it already knows
-    	String whereClause = Keys.SyncKeys.CATEGORY_KEY + "='" + categoryKey + "' AND " + Keys.SyncKeys.DOG_ID + "='" + dogID + "'";
+    	String whereClause = Keys.SyncKeys.CATEGORY_KEY + "='" + catKey + "' AND " + Keys.SyncKeys.DOG_ID + "='" + dogID + "'";
+    	Log.i("TAG","1");
     	result = db.queryFromTable(DatabaseHandler.TABLE_SYNC, new String[] {Keys.SyncKeys.CATEGORY_KEY}, whereClause, null);
+    	Log.i("TAG","1");
     	// If not add the entry
     	if (result.getCount() == 0)
     	{
     		values = new ContentValues();
-    		values.put(Keys.SyncKeys.CATEGORY_KEY, categoryKey);
+    		values.put(Keys.SyncKeys.CATEGORY_KEY, catKey);
     		values.put(Keys.SyncKeys.DOG_ID, dogID);
     		db.insertIntoTable(DatabaseHandler.TABLE_SYNC, null, values);
     	}
+    	Log.i("TAG","5");
+    	db.close();
     }
     public void addEntry(String date, String catKey, int dogID, String userName, List<Boolean> resultSequence, Activity activity)
     {
@@ -422,5 +434,6 @@ public class TrainingInfoTether
     		values.put(Keys.SyncKeys.DOG_ID, dogID);
     		db.insertIntoTable(DatabaseHandler.TABLE_SYNC, null, values);
     	}
+    	db.close();
     }
 }

@@ -1,5 +1,6 @@
 package com.upenn.trainingtracker.customviews;
 
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -22,13 +23,14 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class HistoryEntryWidget extends LinearLayout
+public class HistoryEntryWidget extends LinearLayout implements Comparable<HistoryEntryWidget>
 {
 	private LinearLayout planLayout;
 	private TableLayout table;
 	private boolean planVisible;
 	private LinearLayout resultsBin;
 	private HistoryEntryWidget.Type type;
+	private Calendar date;
 	
 	public enum Type 
 	{
@@ -46,12 +48,13 @@ public class HistoryEntryWidget extends LinearLayout
 			int defStyle) {
 		super(context, attrs, defStyle);
 	}
-	public void initializeView(String catKey, Map<String, String> planMap)
+	public void initializeView(String catKey, Map<String, String> planMap, Calendar date)
 	{
 		this.resultsBin = (LinearLayout) this.findViewById(R.id.resultsBin);
 		
 		this.initializePlanTable(catKey, planMap);
 		this.setCollapseBehavior();
+		this.date = date;
 	}
 	public HistoryEntryWidget.Type getType()
 	{
@@ -59,6 +62,7 @@ public class HistoryEntryWidget extends LinearLayout
 	}
 	public void initializeSuccessFailureButtons(List<Boolean> resultSequence)
 	{
+		Log.i("TAG","RESULT LENGTH: " + resultSequence.size());
 		int numSuccess = 0;
 		for (Boolean sf : resultSequence)
 		{
@@ -180,5 +184,10 @@ public class HistoryEntryWidget extends LinearLayout
 		this.addView(planLayout);
 		this.planVisible = true;
 		this.invalidate();
+	}
+	@Override
+	public int compareTo(HistoryEntryWidget otherWidget) 
+	{
+		return this.date.compareTo(otherWidget.date);
 	}
 }

@@ -31,6 +31,7 @@ public class TrainingSelectorActivity extends Activity
 {
 	private List<String> selectedCategories;
 	private int dogID;
+	private static final int RESULT_PLAN_CATEGORIES = 100;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -62,9 +63,43 @@ public class TrainingSelectorActivity extends Activity
 			return;
 		}
 		Intent intent = new Intent(this, CheckOutActivity.class);
-		intent.putExtra("categories", this.selectedCategories.toArray(new String[selectedCategories.size()]));
+		String[] catKeys = new String[this.selectedCategories.size()];
+		TrainingReader reader = TrainingReader.getInstance(this);
+		for (int index = 0; index < selectedCategories.size(); ++index)
+		{
+			catKeys[index] = reader.categoryToCatKey(selectedCategories.get(index));
+		}
+
+		intent.putExtra("categoryKeys", catKeys);
 		intent.putExtra("dogID", this.dogID);
-		this.startActivity(intent);
+		this.startActivityForResult(intent, TrainingSelectorActivity.RESULT_PLAN_CATEGORIES);
+	}
+	private void startSession()
+	{
+		Intent intent = new Intent(TrainingSelectorActivity.this, SessionActivity.class);
+		String[] catKeys = new String[this.selectedCategories.size()];
+		TrainingReader reader = TrainingReader.getInstance(this);
+		for (int index = 0; index < selectedCategories.size(); ++index)
+		{
+			catKeys[index] = reader.categoryToCatKey(selectedCategories.get(index));
+		}
+		intent.putExtra("categoryKeys", catKeys);
+		intent.putExtra("dogID", this.dogID);
+		this.finish();
+		this.startActivity(intent); 
+	}
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		switch (requestCode)
+		{
+		case TrainingSelectorActivity.RESULT_PLAN_CATEGORIES:
+			if (resultCode == RESULT_OK)
+			{
+				this.startSession();
+			}
+			break;
+		}
 	}
 	public void addNewCategory(final String category)
 	{

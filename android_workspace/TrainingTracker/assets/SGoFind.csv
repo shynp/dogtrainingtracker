@@ -1,0 +1,17 @@
+Session
+2
+Date & Start Time,U
+Location,8,None,T: Training Room,A: Agility Yard,R: Rubble Yard,P: Parking Lot,G: Grass,B: Building,X: Off Site
+Trials
+5
+K9||k9,O,2,Visual||visual,Blind||blind
+Hide Distance||hide_distance,O,5,None||none,0-10'||0to10ft,11-30'||11to30ft,31-50'||31to50ft,>50'||greater50ft
+K9 Release Delay||k9_release_delay,O,8,None||none,1-5 sec||1to5s,6-15 sec||6to15s,16-30 sec||16to30s,31-60 sec||31to60s,1-2 min||1to2m,2-5 min||2to5m,>5 min||greater5m
+Hide||hide,O,9,Bark Barrel OPEN||bark_barrel_open,Bark Barrel CLOSED||bark_barrel_closed,Inaccessible||inaccessible,Vented(high odor escape)||vented_high_odor_escape,Sealed(low odor escape)||sealed_low_odor_escape,Buried||buried,Elevated||elevated,Multiple Target||multiple_target,Blanks||blanks
+Dogs||dogs,O,3,None||none,S||s,M||m
+Humans||humans,O,3,None||none,S||s,M||m
+Toys||toys,O,3,None||none,S||s,M||m
+Food||food,C
+Alert(Barks)||alert_barks,O,6,None||none,1 Bark||1bark,2-5 Barks||2to5barks,5-10||5to10barks,11-20||11to20barks,>20||greater20barks
+Handler Distance (from Alert)||handler_distance_from_alert,O,6,None||none,0-10'||0to10ft,11-15'||11to15ft,16-30'||16to30ft,>30'||greater30ft,Out of sight||out_of_sight
+Reward||reward,O,3,None||none,Handler||handler,Subject||subject
