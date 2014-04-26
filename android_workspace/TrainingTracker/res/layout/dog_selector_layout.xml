@@ -27,14 +27,17 @@
 	            android:layout_width="0dp"
 	            android:layout_height="wrap_content"
 	            android:layout_weight="1" 
-				android:background="#FFFFFF"
+	            android:background="@drawable/generic_button_unselected"
 				android:padding="8dp"
-				android:textSize="25dp"
+				android:textSize="25sp"
 				android:hint="Enter Dog Name"/>
 	        <Button
 	            android:id="@+id/button1"
+	            android:background="@drawable/generic_button_selector"
+	            android:textStyle="bold"
 	            android:onClick="openAddDogPopUp"
 	            android:layout_width="wrap_content"
+	            android:layout_marginLeft="2dp"
 	            android:layout_height="fill_parent"
 	            android:text="+" />
 	        

@@ -179,7 +179,7 @@ public class TrainingReader
 				continue;
 			}
 			int numOptions = Integer.parseInt(parts[2]);
-			if (parts.length != numOptions + 3) 
+			if (parts.length != numOptions + 3)
 			{
 				Log.i("TAG", "INVALID LINE: " + line);
 				for (String str : parts)

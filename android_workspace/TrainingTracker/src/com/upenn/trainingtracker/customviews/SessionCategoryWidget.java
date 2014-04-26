@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.upenn.trainingtracker.ImageManager;
 import com.upenn.trainingtracker.PlanEntry;
 import com.upenn.trainingtracker.R;
 import com.upenn.trainingtracker.SessionActivity;
@@ -14,6 +15,7 @@ import com.upenn.trainingtracker.ViewUtils;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -228,6 +230,13 @@ public class SessionCategoryWidget extends LinearLayout
 			if (entry.getType() == PlanEntry.Type.OPTIONS)
 			{
 				optionText.setText(entry.getOptionFromOptionKey(optionValue));
+			}
+			else if (entry.getType() == PlanEntry.Type.IMAGE_OPTIONS)
+			{
+				ImageManager manager = ImageManager.getInstance();
+				Integer drawableID = manager.keyToDrawableID(optionValue);
+				Drawable optionImage = this.getContext().getResources().getDrawable(drawableID);
+				optionText.setCompoundDrawablesWithIntrinsicBounds(optionImage, null, null, null);
 			}
 			else
 			{

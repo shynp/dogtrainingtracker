@@ -73,7 +73,7 @@ public class HistoryActivity extends Activity
 	{
 		Spinner spinner = (Spinner) this.findViewById(R.id.filterTypeSpinnerID);
 		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-		        R.array.filter_types, android.R.layout.simple_spinner_item);
+		        R.array.filter_types, R.layout.spinner_item_layout);
 		// Specify the layout to use when the list of choices appears
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		// Apply the adapter to the spinner

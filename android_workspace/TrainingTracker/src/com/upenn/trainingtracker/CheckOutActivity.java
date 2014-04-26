@@ -295,6 +295,15 @@ public class CheckOutActivity extends Activity
 				break;
 				case IMAGE_OPTIONS:// view = this.getImageSpinnerFromEntry(entry);
 					canvasLayout = (TableRow) this.getImageSpinnerFromEntry(entry, viewBinParent);
+					if (plan != null)
+					{
+						viewBinParent.setSpinnerByKeys(entry.getNameKey(), plan.get(entry.getNameKey()));
+						Log.i("TAG","changing");
+					}
+					else
+					{
+						Log.i("TAG", "null");
+					}
 				break;
 			}
 			viewBin.addView(canvasLayout);
@@ -337,9 +346,32 @@ public class CheckOutActivity extends Activity
 		
 		return layout;
 	}
-	private Spinner getImageSpinnerFromEntry(PlanEntry entry)
+	private LinearLayout getImageSpinnerFromEntry(PlanEntry entry, PlanningBinLayout viewBinParent)
 	{
-		return null; //TODO: IMPLEMENT THIS
+		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		LinearLayout layout = (LinearLayout) inflater.inflate(R.layout.options_widget, null);
+		
+		TextView text = (TextView) layout.findViewById(R.id.optionsTextID);
+		text.setText(entry.getName());
+		
+		ImageManager provider = ImageManager.getInstance();
+		String[] keys = entry.getOptionKeys();
+		Integer[] drawables = new Integer[entry.getOptionKeys().length];
+		for (int index = 0; index < keys.length; ++index)
+		{
+			Log.i("TAG","trying to get drawable: " + keys[index]);
+			drawables[index] = provider.keyToDrawableID(keys[index]);
+		}
+		Log.i("TAG","done getting drawables");
+		
+		Spinner spinner = (Spinner) layout.findViewById(R.id.optionsSpinnerID);
+		ImageAdapter adapter = new ImageAdapter(this, drawables);
+		spinner.setAdapter(adapter);
+		viewBinParent.registerSpinner(entry.getNameKey(), entry.getOptionKeys(), spinner);
+		
+		this.planEntryToView.put(entry, spinner);
+		
+		return layout;
 	}
 
 	private void setSpinner(String category)

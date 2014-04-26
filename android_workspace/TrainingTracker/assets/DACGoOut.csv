@@ -8,7 +8,7 @@ K9 Position||k9_position,O,4,None||none,From Sit||from_sit,From Stand||from_stan
 Handler Radius||handler_radius,O,6,None||none,5-10’||5to10,11-15’||11to15,16-20’||16to20,21-75’||21to75,76-100’||76to100
 Object||object,O,5,None||none,To elevated target < 1 ft.||to_elevated_target_less1ft,To elevated target > 1-3ft||to_elevated_target_greater1to3ft,To Ground Level Target||to_ground_level_target,To real world target (boulders - bench - hay bale)||to_real_world_target
 Go Out Distance||go_out_distance,O,6,None||none,5-10’||5to10,11-15’||11to15,16-20’||16to20,21-75’||21to75,76-100’||76to100
-Sequence, I, filenames
+Sequence||sequence,I,5, Second||second, First and Third||first_and_third, Second and Third||second_and_third, First and Second||first_and_second, First Second and Third||first_second_and_third
 Other Dogs||other_dogs,O,3,None||none,S||s,M||m
 Humans||humans,O,3,None||none,S||s,M||m
 Toys||toys,O,3,None||none,S||s,M||m

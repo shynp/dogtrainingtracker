@@ -19,7 +19,7 @@ public class TagButton extends Button
 		this.setTextSize(12);
 		this.setBackgroundResource(R.drawable.tag_button);
 		this.setTextColor(Color.WHITE);
-		
+		this.setTextSize(20);
 		
 		this.setText(text);
 

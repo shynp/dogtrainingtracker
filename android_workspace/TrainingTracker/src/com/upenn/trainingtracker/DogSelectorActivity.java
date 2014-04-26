@@ -455,6 +455,8 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
     		Log.i("TAG","Not adding image");
     	}
     	cm.postToServer("updateDog.php", pairs, this, this.RESULT_UPDATE_DOG);
+		SyncManager sm = SyncManager.getInstance(this);
+		sm.syncDogInfoWithServer(this, this, this.RESULT_UPDATE_DOG);
 
     	this.updateDialog.cancel();
     }

@@ -30,15 +30,16 @@
 		            android:id="@+id/historyFilterID"
 		            android:layout_width="0dp"
 		            android:layout_weight="1"
-		            android:layout_height="wrap_content"
-					android:background="#FFFFFF"
+		            android:layout_height="fill_parent"
+	           		android:background="@drawable/generic_button_unselected"
 					android:padding="8dp"
-					android:textSize="18dp"
+					android:textSize="25sp"
 					android:hint="Add Filter"/>
 		        <Spinner
 		            android:id="@+id/filterTypeSpinnerID"
+					android:textSize="25sp"
 		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content" />
+		           	android:layout_height="fill_parent" />
 			</LinearLayout>
 	        <com.upenn.trainingtracker.customviews.FlowLayout
 	            android:layout_marginTop="10dp"

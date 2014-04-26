@@ -16,15 +16,17 @@
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="25sp"
             android:textStyle="bold"
             android:layout_alignParentLeft="true"
             android:text="Walk it Plank" />
         <TextView
             android:id="@+id/collapseID"
-            android:layout_width="wrap_content"
+            android:clickable="true"
+            android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="25sp"
+            android:gravity="right"
             android:textStyle="bold"
             android:layout_alignParentRight="true"
             android:text="+/-" />
@@ -40,10 +42,12 @@
 			<TextView 
 			    android:layout_width="wrap_content"
 			    android:layout_height="wrap_content"
+		        android:textSize="18sp"
 			    android:layout_marginRight="10dp"
 			    android:text="Date" />
 			<TextView 
 			    android:id="@+id/date"
+			    android:textSize="18sp"
 			    android:layout_width="wrap_content"
 			    android:layout_height="wrap_content"/>
 		</TableRow>
@@ -54,9 +58,11 @@
 				android:layout_marginRight="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:textSize="18sp"
                 android:text="Trainer Name" />
             <TextView
                 android:id="@+id/trainerName"
+			    android:textSize="18sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </TableRow>
@@ -76,6 +82,7 @@
 	    android:orientation="vertical" >
 		<TableLayout
 		    android:id="@+id/tableID"
+		    android:textSize="25sp"
 		    android:layout_width="fill_parent"
 		    android:layout_height="wrap_content" />
 	</LinearLayout>

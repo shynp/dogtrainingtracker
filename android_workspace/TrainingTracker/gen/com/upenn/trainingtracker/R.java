@@ -108,39 +108,44 @@ containing a value of this type.
         public static final int dog_thumb=0x7f020005;
         public static final int edit_icon=0x7f020006;
         public static final int filter_button=0x7f020007;
-        public static final int generic_button_selected=0x7f020008;
-        public static final int generic_button_selector=0x7f020009;
-        public static final int generic_button_unselected=0x7f02000a;
-        public static final int gradient_bg=0x7f02000b;
-        public static final int gradient_bg_hover=0x7f02000c;
-        public static final int history_widget_aborted=0x7f02000d;
-        public static final int history_widget_background=0x7f02000e;
-        public static final int history_widget_failed=0x7f02000f;
-        public static final int history_widget_passed=0x7f020010;
-        public static final int history_widget_planned=0x7f020011;
-        public static final int ic_launcher=0x7f020012;
-        public static final int ic_rotate_left=0x7f020013;
-        public static final int ic_rotate_right=0x7f020014;
-        public static final int image_bg=0x7f020015;
-        public static final int indicator_autocrop=0x7f020016;
-        public static final int list_selector=0x7f020017;
-        public static final int log_in_background=0x7f020018;
-        public static final int log_in_sel=0x7f020019;
-        public static final int log_in_selector=0x7f02001a;
-        public static final int log_in_unsel=0x7f02001b;
-        public static final int login_background_rectangle=0x7f02001c;
-        public static final int lookup_sel=0x7f02001d;
-        public static final int lookup_selector=0x7f02001e;
-        public static final int lookup_unsel=0x7f02001f;
-        public static final int record_session_button_selector=0x7f020020;
-        public static final int record_session_sel=0x7f020021;
-        public static final int record_session_unsel=0x7f020022;
-        public static final int rounded_text_field=0x7f020023;
-        public static final int roundex_text_field=0x7f020024;
-        public static final int selector_crop_button=0x7f020025;
-        public static final int session_widget_background=0x7f020026;
-        public static final int session_widget_buttons=0x7f020027;
-        public static final int tag_button=0x7f020028;
+        public static final int first_and_second=0x7f020008;
+        public static final int first_and_third=0x7f020009;
+        public static final int first_second_and_third=0x7f02000a;
+        public static final int generic_button_selected=0x7f02000b;
+        public static final int generic_button_selector=0x7f02000c;
+        public static final int generic_button_unselected=0x7f02000d;
+        public static final int gradient_bg=0x7f02000e;
+        public static final int gradient_bg_hover=0x7f02000f;
+        public static final int history_widget_aborted=0x7f020010;
+        public static final int history_widget_background=0x7f020011;
+        public static final int history_widget_failed=0x7f020012;
+        public static final int history_widget_passed=0x7f020013;
+        public static final int history_widget_planned=0x7f020014;
+        public static final int ic_launcher=0x7f020015;
+        public static final int ic_rotate_left=0x7f020016;
+        public static final int ic_rotate_right=0x7f020017;
+        public static final int image_bg=0x7f020018;
+        public static final int indicator_autocrop=0x7f020019;
+        public static final int list_selector=0x7f02001a;
+        public static final int log_in_background=0x7f02001b;
+        public static final int log_in_sel=0x7f02001c;
+        public static final int log_in_selector=0x7f02001d;
+        public static final int log_in_unsel=0x7f02001e;
+        public static final int login_background_rectangle=0x7f02001f;
+        public static final int lookup_sel=0x7f020020;
+        public static final int lookup_selector=0x7f020021;
+        public static final int lookup_unsel=0x7f020022;
+        public static final int record_session_button_selector=0x7f020023;
+        public static final int record_session_sel=0x7f020024;
+        public static final int record_session_unsel=0x7f020025;
+        public static final int rounded_text_field=0x7f020026;
+        public static final int roundex_text_field=0x7f020027;
+        public static final int second=0x7f020028;
+        public static final int second_and_third=0x7f020029;
+        public static final int selector_crop_button=0x7f02002a;
+        public static final int session_widget_background=0x7f02002b;
+        public static final int session_widget_buttons=0x7f02002c;
+        public static final int tag_button=0x7f02002d;
     }
     public static final class id {
         public static final int action_settings=0x7f040041;
@@ -234,8 +239,9 @@ containing a value of this type.
         public static final int session_layout=0x7f030013;
         public static final int session_success_button=0x7f030014;
         public static final int session_table_row=0x7f030015;
-        public static final int training_param_selector_layout=0x7f030016;
-        public static final int training_selector_layout=0x7f030017;
+        public static final int spinner_item_layout=0x7f030016;
+        public static final int training_param_selector_layout=0x7f030017;
+        public static final int training_selector_layout=0x7f030018;
     }
     public static final class menu {
         public static final int dog_selector_menu=0x7f0a0000;
@@ -294,6 +300,7 @@ containing a value of this type.
         public static final int AppTheme=0x7f090001;
         public static final int CropButton=0x7f090003;
         public static final int TagTheme=0x7f090002;
+        public static final int mySpinnerItemStyle=0x7f090004;
     }
     public static final class styleable {
         /** Attributes that can be used with a FlowLayout.

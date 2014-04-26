@@ -6,6 +6,7 @@
 
     <TextView
         android:id="@+id/key"
+        android:textSize="18sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="7dp"
@@ -13,6 +14,7 @@
 
     <TextView
         android:id="@+id/value"
+        android:textSize="18sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="This is a description of the title" />
