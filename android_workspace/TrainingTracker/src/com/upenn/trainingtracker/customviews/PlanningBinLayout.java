@@ -67,8 +67,15 @@ public class PlanningBinLayout extends ScrollView
 				break;
 			}
 		}
-		if (valueIndex == -1) throw new IllegalArgumentException("Invalid optionsKey: " + optionsKey);
-		spinner.setSelection(valueIndex);
+		if (valueIndex == -1) 
+		{
+			Log.e("TAG","Invalid optionsKey: " + optionsKey + " for " + categoryKey);
+			//throw new IllegalArgumentException("Invalid optionsKey: " + optionsKey + " for " + categoryKey);
+		}
+		else
+		{
+			spinner.setSelection(valueIndex);
+		}
 	}
 	public void setCheckBoxByKeys(String categoryKey, String boolValue)
 	{

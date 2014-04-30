@@ -65,7 +65,7 @@ public class ConnectionsManager
 	{
 		ConnectivityManager connManager = (ConnectivityManager) this.activity.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo gConn = connManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-		return gConn.isConnected();
+		return (gConn != null && gConn.isConnected());
 	}
 	public void openWifiSettings(Activity activity)
 	{

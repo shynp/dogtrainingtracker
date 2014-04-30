@@ -490,6 +490,7 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
         	 if (!isAvailable) return false;
         	 sm = SyncManager.getInstance(this);
         	 sm.syncDogInfoWithServer(this, this, RESULT_UPDATE_DOG);
+        	 sm.syncCategoryDataWithServer(this);
         	 break;
          case R.id.itemSwitchAccountID:
         	 this.logOutOfAccount();

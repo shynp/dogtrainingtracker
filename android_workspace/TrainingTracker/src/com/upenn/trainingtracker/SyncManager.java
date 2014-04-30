@@ -95,7 +95,7 @@ public class SyncManager implements Notifiable
     	this.observers.add(observer);
     	this.eventCode = eventCode;
     	ConnectionsManager cm = ConnectionsManager.getInstance(context);
-    	boolean isAvailable = cm.isGConnectionAvailable() && cm.isWifiAvailable();
+    	boolean isAvailable = cm.isGConnectionAvailable() || cm.isWifiAvailable();
     	if (!isAvailable) return;
     	cm.postToServer("getUsers.php", null, this, RESULT_PULL_USERS);
     }
@@ -177,9 +177,10 @@ public class SyncManager implements Notifiable
 			this.updateLocalWithCategoryData(message);
 			break;
 		case SyncManager.RESULT_PULL_USERS:
+			Log.i("TAG","Sending to LogInActivity");
 			for (Notifiable observer : this.observers)
 			{
-				observer.notifyOfEvent(eventCode, null);
+				observer.notifyOfEvent(this.eventCode, message);
 			}
 			this.observers.clear();
 			break;

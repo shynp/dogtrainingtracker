@@ -160,9 +160,10 @@ public class LogInActivity extends Activity implements Notifiable
 	@Override
 	public void notifyOfEvent(int eventCode, String message) 
 	{
-		Log.i("TAG",message);
+		Log.i("TAG","notified");
 		if (eventCode == RESULT_GET_USERS || eventCode == RESULT_GET_USERS_AFTER_ADD)
 		{
+			Log.i("TAG","Received");
 			ConnectionsManager cm = ConnectionsManager.getInstance(this);
 			boolean isValid = cm.isValidJSON(message);
 			

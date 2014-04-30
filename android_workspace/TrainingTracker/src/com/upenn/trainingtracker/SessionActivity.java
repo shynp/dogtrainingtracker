@@ -191,6 +191,11 @@ public class SessionActivity extends Activity
 		
 		this.removeWidget(catKey);
 		
+		if (this.widgetBeingEdited.isStarted())
+		{
+			this.recordWidget(this.catKeyBeingEdited, this.widgetBeingEdited);
+		}
+		
 		// Launch the PlanActivity
 		Intent intent = new Intent(this, CheckOutActivity.class);
 		String[] categories = {catKey};
@@ -229,11 +234,6 @@ public class SessionActivity extends Activity
 		switch (requestCode)
 		{
 		case SessionActivity.EDIT_PLAN_RESULT:
-			// Record at this point so old plan info can be used
-			if (this.widgetBeingEdited.isStarted())
-			{
-				this.recordWidget(this.catKeyBeingEdited, this.widgetBeingEdited);
-			}
 			// Add the new widget if a new plan was added
 			if (resultCode == RESULT_OK)
 			{
