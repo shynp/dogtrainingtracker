@@ -38,7 +38,7 @@ public class HistoryAdapter extends BaseAdapter
 	}
 	public enum FilterType
 	{
-		CATEGORY_KEY, USER_NAME, USER_FULL_NAME, RESULT, OTHER
+		CATEGORY_KEY, PARENT_KEY, USER_NAME, USER_FULL_NAME, RESULT, OTHER
 	}
 	
 	private Map<String, List<TrainingSession>> catKeyToSessions;
@@ -49,6 +49,7 @@ public class HistoryAdapter extends BaseAdapter
 	 * Maps
 	 */
 	private Map<String, List<HistoryEntryWidget>> catKeyToWidgets = new HashMap<String, List<HistoryEntryWidget>>();
+	private Map<String, List<HistoryEntryWidget>> catParentToWidgets = new HashMap<String, List<HistoryEntryWidget>>();
 	private Map<String, List<HistoryEntryWidget>> userNameToWidgets = new HashMap<String, List<HistoryEntryWidget>>();
 	private Map<String, List<HistoryEntryWidget>> fullNameToWidgets = new HashMap<String, List<HistoryEntryWidget>>();
 	private List<HistoryEntryWidget> allWidgets = new ArrayList<HistoryEntryWidget>();
@@ -60,6 +61,7 @@ public class HistoryAdapter extends BaseAdapter
 	private List<String> userNames = new ArrayList<String>();
 	private List<String> fullNames = new ArrayList<String>();
 	private List<String> categories = new ArrayList<String>();
+	private List<String> parentCats = new ArrayList<String>();
 
 	public HistoryAdapter(Context context, List<TrainingSession> allSessions, Map<String, List<TrainingSession>> catKeyToSessions,
 			Map<String, List<TrainingSession>> userNameToSessions)
@@ -68,13 +70,15 @@ public class HistoryAdapter extends BaseAdapter
 		this.catKeyToSessions = catKeyToSessions;
 		this.userNameToSessions = userNameToSessions;
 		this.allSessions = allSessions;
-
+				
 		this.initializeViews(context, allSessions);
 		for (HistoryEntryWidget entry : allWidgets)
 		{
 			this.selection.add(entry);
 		}
 		TrainingReader reader = TrainingReader.getInstance(context);
+		this.parentCats = reader.getParentCategories();
+
 		this.categories = reader.getAllCategories();
 		UserTether tether = UserTether.getInstance();
 		this.userNames = tether.getUserNames(context);
@@ -126,6 +130,21 @@ public class HistoryAdapter extends BaseAdapter
 		{
 			widgetList.add(profileWidget);
 		}
+		TrainingReader reader = TrainingReader.getInstance(null);
+		String parentCat = reader.getParentCatFromChild(session.getCategoryKey());
+		widgetList = this.catParentToWidgets.get(parentCat);
+		if (widgetList == null)
+		{
+			widgetList = new ArrayList<HistoryEntryWidget>();
+			widgetList.add(profileWidget);
+			this.catParentToWidgets.put(parentCat, widgetList);
+		}
+		else
+		{
+			widgetList.add(profileWidget);
+		}
+		
+		
 		widgetList = this.fullNameToWidgets.get(session.getTrainerName());
 		if (widgetList == null)
 		{
@@ -236,6 +255,8 @@ public class HistoryAdapter extends BaseAdapter
 			case CATEGORY_KEY:
 				String catKey = reader.categoryToCatKey(filter);
 				return this.catKeyToWidgets.get(catKey);
+			case PARENT_KEY:
+				return this.catParentToWidgets.get(filter);
 			case USER_NAME:
 				return this.userNameToWidgets.get(filter);
 			case USER_FULL_NAME:
@@ -274,6 +295,10 @@ public class HistoryAdapter extends BaseAdapter
 		else if (categories.contains(filter))
 		{
 			return HistoryAdapter.FilterType.CATEGORY_KEY;
+		}
+		else if (parentCats.contains(filter))
+		{
+			return HistoryAdapter.FilterType.PARENT_KEY;
 		}
 		else if (filter.equals("Passed") || filter.equals("Failed") ||
 				filter.equals("Aborted") || filter.equals("Planned"))

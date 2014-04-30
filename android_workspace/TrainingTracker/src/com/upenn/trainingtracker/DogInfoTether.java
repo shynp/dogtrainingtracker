@@ -47,7 +47,7 @@ public class DogInfoTether
      * @param JSON
      * @param activity
      */
-    public void updateDogsWithJSON(String JSON, Activity activity)
+    public void updateDogsWithJSON(String JSON, Context activity)
     {
     	DatabaseHandler db = new DatabaseHandler(activity);
     	//db.execSQL("DELETE FROM " + this.TABLE_DOGS);
@@ -168,7 +168,7 @@ public class DogInfoTether
      * Mapping of dogID to version_number
      * @return
      */
-    public JSONObject getDogEntryVersionNumbers(Activity activity)
+    public JSONObject getDogEntryVersionNumbers(Context activity)
     {
     	DatabaseHandler db = new DatabaseHandler(activity);
     	Cursor cursor = db.queryFromTable(DatabaseHandler.TABLE_DOGS, new String[] {Keys.DogKeys.ID,  Keys.DogKeys.VERSION_NUMBER},

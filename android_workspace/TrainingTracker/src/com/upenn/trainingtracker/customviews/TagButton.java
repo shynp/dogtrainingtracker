@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 
 import com.upenn.trainingtracker.HistoryActivity;
 import com.upenn.trainingtracker.R;
+import com.upenn.trainingtracker.ViewUtils;
 import com.upenn.trainingtracker.customviews.FlowLayout.LayoutParams;
 
 public class TagButton extends Button
@@ -23,7 +24,7 @@ public class TagButton extends Button
 		
 		this.setText(text);
 
-		LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, 90);
+		LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, (int)ViewUtils.convertDpToPixel(40, this.getContext()));
 		params.setMargins(5, 5);
 		this.setLayoutParams(params);
 		

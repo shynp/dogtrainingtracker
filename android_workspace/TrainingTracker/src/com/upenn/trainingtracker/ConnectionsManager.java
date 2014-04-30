@@ -36,14 +36,14 @@ import android.widget.Toast;
 
 public class ConnectionsManager 
 {
-	private Activity activity;
+	private Context activity;
 	private static ConnectionsManager instance;
 	
-	private ConnectionsManager(Activity activity)
+	private ConnectionsManager(Context activity)
 	{
 		this.activity = activity;
 	}
-	public static ConnectionsManager getInstance(Activity activity)
+	public static ConnectionsManager getInstance(Context activity)
 	{
 		if (instance == null)
 		{

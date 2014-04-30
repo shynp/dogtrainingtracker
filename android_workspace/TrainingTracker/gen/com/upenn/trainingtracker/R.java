@@ -9,8 +9,8 @@ package com.upenn.trainingtracker;
 
 public final class R {
     public static final class array {
-        public static final int filter_types=0x7f080001;
-        public static final int service_types=0x7f080000;
+        public static final int filter_types=0x7f090001;
+        public static final int service_types=0x7f090000;
     }
     public static final class attr {
         /** <p>Must be a boolean value, either "<code>true</code>" or "<code>false</code>".
@@ -82,12 +82,12 @@ containing a value of this type.
         public static final int verticalSpacing=0x7f010001;
     }
     public static final class color {
-        public static final int background_blue=0x7f050000;
-        public static final int background_gray=0x7f050001;
-        public static final int selected_blue=0x7f050005;
-        public static final int shadow_gray=0x7f050002;
-        public static final int tag_button_blue=0x7f050004;
-        public static final int text_light_blue=0x7f050003;
+        public static final int background_blue=0x7f060000;
+        public static final int background_gray=0x7f060001;
+        public static final int selected_blue=0x7f060005;
+        public static final int shadow_gray=0x7f060002;
+        public static final int tag_button_blue=0x7f060004;
+        public static final int text_light_blue=0x7f060003;
     }
     public static final class dimen {
         /**  Default screen margins, per the Android Design guidelines. 
@@ -96,8 +96,8 @@ containing a value of this type.
          screen margins) for sw720dp devices (e.g. 10" tablets) in landscape here.
     
          */
-        public static final int activity_horizontal_margin=0x7f060000;
-        public static final int activity_vertical_margin=0x7f060001;
+        public static final int activity_horizontal_margin=0x7f070000;
+        public static final int activity_vertical_margin=0x7f070001;
     }
     public static final class drawable {
         public static final int btn_crop_operator=0x7f020000;
@@ -148,73 +148,73 @@ containing a value of this type.
         public static final int tag_button=0x7f02002d;
     }
     public static final class id {
-        public static final int action_settings=0x7f040041;
-        public static final int addNewDogButtonID=0x7f040007;
-        public static final int bin=0x7f040037;
-        public static final int breedID=0x7f040004;
-        public static final int button1=0x7f04001f;
-        public static final int categoryLayout=0x7f040008;
-        public static final int categorySelectorID=0x7f04000b;
-        public static final int checkOutParentView=0x7f040009;
-        public static final int checkOutProgressView=0x7f04000d;
-        public static final int checkOutScrollBin=0x7f04000c;
-        public static final int checkOutScrollBinOld=0x7f04000f;
-        public static final int checkOutSuperParent=0x7f04000a;
-        public static final int checkoutButton=0x7f04003d;
-        public static final int collapseAllID=0x7f040042;
-        public static final int collapseID=0x7f040025;
-        public static final int createAccountButtonID=0x7f040015;
-        public static final int date=0x7f040027;
-        public static final int dateSelectorTextViewID=0x7f040003;
-        public static final int delete=0x7f040035;
-        public static final int discard=0x7f040017;
-        public static final int dogFilterTextID=0x7f04001e;
-        public static final int dogImageID=0x7f040006;
-        public static final int dogNameTextID=0x7f04001d;
-        public static final int editPlanButton=0x7f040036;
-        public static final int emailID=0x7f040013;
-        public static final int failure=0x7f040034;
-        public static final int filterBinID=0x7f040023;
-        public static final int filterTypeSpinnerID=0x7f040022;
-        public static final int historyFilterID=0x7f040021;
-        public static final int horizontal=0x7f040000;
-        public static final int image=0x7f040016;
-        public static final int infoTableID=0x7f040026;
-        public static final int itemSwitchAccountID=0x7f04003f;
-        public static final int itemSyncCategories=0x7f040040;
-        public static final int itemSyncID=0x7f04003e;
-        public static final int key=0x7f040039;
-        public static final int list=0x7f040020;
-        public static final int lookupLayout=0x7f04003b;
-        public static final int nameID=0x7f040002;
-        public static final int optionsCheckWidget=0x7f040030;
-        public static final int optionsCheckWidgetText=0x7f04002f;
-        public static final int optionsSpinnerID=0x7f040032;
-        public static final int optionsTextID=0x7f040031;
-        public static final int password=0x7f04002e;
-        public static final int passwordID=0x7f040012;
-        public static final int phoneID=0x7f040014;
-        public static final int planLayout=0x7f04002a;
-        public static final int profileImageID=0x7f04001c;
-        public static final int randomID=0x7f04001b;
-        public static final int resultsBin=0x7f040029;
-        public static final int rotateLeft=0x7f040018;
-        public static final int rotateRight=0x7f040019;
-        public static final int save=0x7f04001a;
-        public static final int selectedLayout=0x7f04003c;
-        public static final int serviceTypeID=0x7f040005;
-        public static final int submitPlansButton=0x7f04000e;
-        public static final int success=0x7f040033;
-        public static final int tableID=0x7f04002b;
-        public static final int tableLayoutBin=0x7f040010;
-        public static final int tableRow1=0x7f040038;
-        public static final int textView1=0x7f04002c;
-        public static final int title=0x7f040024;
-        public static final int trainerName=0x7f040028;
-        public static final int userNmeID=0x7f040011;
-        public static final int username=0x7f04002d;
-        public static final int value=0x7f04003a;
-        public static final int vertical=0x7f040001;
+        public static final int action_settings=0x7f050040;
+        public static final int addNewDogButtonID=0x7f050007;
+        public static final int bin=0x7f050037;
+        public static final int breedID=0x7f050004;
+        public static final int button1=0x7f05001f;
+        public static final int categoryLayout=0x7f050008;
+        public static final int categorySelectorID=0x7f05000b;
+        public static final int checkOutParentView=0x7f050009;
+        public static final int checkOutProgressView=0x7f05000d;
+        public static final int checkOutScrollBin=0x7f05000c;
+        public static final int checkOutScrollBinOld=0x7f05000f;
+        public static final int checkOutSuperParent=0x7f05000a;
+        public static final int checkoutButton=0x7f05003d;
+        public static final int collapseAllID=0x7f050042;
+        public static final int collapseID=0x7f050025;
+        public static final int createAccountButtonID=0x7f050015;
+        public static final int date=0x7f050027;
+        public static final int dateSelectorTextViewID=0x7f050003;
+        public static final int delete=0x7f050035;
+        public static final int discard=0x7f050017;
+        public static final int dogFilterTextID=0x7f05001e;
+        public static final int dogImageID=0x7f050006;
+        public static final int dogNameTextID=0x7f05001d;
+        public static final int editPlanButton=0x7f050036;
+        public static final int emailID=0x7f050013;
+        public static final int failure=0x7f050034;
+        public static final int filterBinID=0x7f050023;
+        public static final int filterTypeSpinnerID=0x7f050022;
+        public static final int historyFilterID=0x7f050021;
+        public static final int horizontal=0x7f050000;
+        public static final int image=0x7f050016;
+        public static final int infoTableID=0x7f050026;
+        public static final int itemSwitchAccountID=0x7f05003e;
+        public static final int itemSyncID=0x7f05003f;
+        public static final int key=0x7f050039;
+        public static final int list=0x7f050020;
+        public static final int lookupLayout=0x7f05003b;
+        public static final int nameID=0x7f050002;
+        public static final int optionsCheckWidget=0x7f050030;
+        public static final int optionsCheckWidgetText=0x7f05002f;
+        public static final int optionsSpinnerID=0x7f050032;
+        public static final int optionsTextID=0x7f050031;
+        public static final int password=0x7f05002e;
+        public static final int passwordID=0x7f050012;
+        public static final int phoneID=0x7f050014;
+        public static final int planLayout=0x7f05002a;
+        public static final int profileImageID=0x7f05001c;
+        public static final int randomID=0x7f05001b;
+        public static final int removeAllID=0x7f050041;
+        public static final int resultsBin=0x7f050029;
+        public static final int rotateLeft=0x7f050018;
+        public static final int rotateRight=0x7f050019;
+        public static final int save=0x7f05001a;
+        public static final int selectedLayout=0x7f05003c;
+        public static final int serviceTypeID=0x7f050005;
+        public static final int submitPlansButton=0x7f05000e;
+        public static final int success=0x7f050033;
+        public static final int tableID=0x7f05002b;
+        public static final int tableLayoutBin=0x7f050010;
+        public static final int tableRow1=0x7f050038;
+        public static final int textView1=0x7f05002c;
+        public static final int title=0x7f050024;
+        public static final int trainerName=0x7f050028;
+        public static final int userNmeID=0x7f050011;
+        public static final int username=0x7f05002d;
+        public static final int value=0x7f05003a;
+        public static final int vertical=0x7f050001;
     }
     public static final class layout {
         public static final int activity_main=0x7f030000;
@@ -244,21 +244,22 @@ containing a value of this type.
         public static final int training_selector_layout=0x7f030018;
     }
     public static final class menu {
-        public static final int dog_selector_menu=0x7f0a0000;
-        public static final int log_in_menu=0x7f0a0001;
-        public static final int main=0x7f0a0002;
-        public static final int session_menu=0x7f0a0003;
+        public static final int dog_selector_menu=0x7f0b0000;
+        public static final int log_in_menu=0x7f0b0001;
+        public static final int main=0x7f0b0002;
+        public static final int selector_menu=0x7f0b0003;
+        public static final int session_menu=0x7f0b0004;
     }
     public static final class string {
-        public static final int action_settings=0x7f070001;
-        public static final int app_name=0x7f070000;
-        public static final int cancel=0x7f070003;
-        public static final int hello_world=0x7f070002;
-        public static final int no_storage_card=0x7f070007;
-        public static final int not_enough_space=0x7f070008;
-        public static final int preparing_card=0x7f070006;
-        public static final int save=0x7f070004;
-        public static final int saving_image=0x7f070005;
+        public static final int action_settings=0x7f080001;
+        public static final int app_name=0x7f080000;
+        public static final int cancel=0x7f080003;
+        public static final int hello_world=0x7f080002;
+        public static final int no_storage_card=0x7f080007;
+        public static final int not_enough_space=0x7f080008;
+        public static final int preparing_card=0x7f080006;
+        public static final int save=0x7f080004;
+        public static final int saving_image=0x7f080005;
     }
     public static final class style {
         /** 
@@ -291,16 +292,20 @@ containing a value of this type.
     
  API 14 theme customizations can go here. 
          */
-        public static final int AppBaseTheme=0x7f090000;
+        public static final int AppBaseTheme=0x7f0a0000;
         /**  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
  Application theme. 
  All customizations that are NOT specific to a particular API-level can go here. 
          */
-        public static final int AppTheme=0x7f090001;
-        public static final int CropButton=0x7f090003;
-        public static final int TagTheme=0x7f090002;
-        public static final int mySpinnerItemStyle=0x7f090004;
+        public static final int AppTheme=0x7f0a0001;
+        public static final int CropButton=0x7f0a0003;
+        public static final int TagTheme=0x7f0a0002;
+        public static final int mySpinnerItemStyle=0x7f0a0004;
+    }
+    public static final class xml {
+        public static final int authenticator=0x7f040000;
+        public static final int syncadapter=0x7f040001;
     }
     public static final class styleable {
         /** Attributes that can be used with a FlowLayout.

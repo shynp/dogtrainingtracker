@@ -102,10 +102,23 @@ public class SessionActivity extends Activity
 					}
 				}
 				SessionActivity.this.finish();
+				SessionActivity.this.launchCheckOutActivity();
 			}
     	});
     	builder.setNegativeButton("No", null);
     	builder.create().show();		
+	}
+	private void launchCheckOutActivity()
+	{
+		String[] catKeys = new String[this.catKeys.size()];
+		for (int index = 0; index < this.catKeys.size(); ++index)
+		{
+			catKeys[index] = this.catKeys.get(index);
+		}
+		Intent intent = new Intent(this, CheckOutActivity.class);
+		intent.putExtra("categoryKeys", catKeys);
+		intent.putExtra("dogID", this.dogID);
+		this.startActivity(intent);
 	}
 	public String getRecordMessage()
 	{
@@ -151,7 +164,7 @@ public class SessionActivity extends Activity
 		}
 		else
 		{
-			message = "All categories are complete!";
+			message = "Would you like to submit this session?";
 		}
 		return message;
 	}

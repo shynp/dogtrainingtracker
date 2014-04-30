@@ -198,6 +198,6 @@ public class HistoryEntryWidget extends LinearLayout implements Comparable<Histo
 	@Override
 	public int compareTo(HistoryEntryWidget otherWidget) 
 	{
-		return this.date.compareTo(otherWidget.date);
+		return this.date.compareTo(otherWidget.date) * -1;
 	}
 }

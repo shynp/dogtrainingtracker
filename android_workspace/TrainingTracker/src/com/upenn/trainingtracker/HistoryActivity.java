@@ -126,7 +126,7 @@ public class HistoryActivity extends Activity
 		autoList.addAll(this.userNames);
 		autoList.addAll(this.userFullNames);
 		autoList.add("Passed");autoList.add("Failed");autoList.add("Aborted");autoList.add("Planned");
-		
+				
 		final AutoCompleteTextView textView = (AutoCompleteTextView) this.findViewById(R.id.historyFilterID);
 		autoAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_dropdown_item_1line, autoList);
 		textView.setAdapter(autoAdapter);

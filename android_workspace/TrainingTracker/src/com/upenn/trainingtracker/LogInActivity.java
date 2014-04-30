@@ -38,9 +38,9 @@ public class LogInActivity extends Activity implements Notifiable
 	 *  to allow for global access.
 	 */
 	private Dialog dialog;
-	private final int RESULT_GET_USERS = 1;
-	private final int RESULT_GET_USERS_AFTER_ADD = 2;
-	private final int RESULT_ADD_USER = 3;
+	private static final int RESULT_GET_USERS = 1;
+	private static final int RESULT_GET_USERS_AFTER_ADD = 2;
+	private static final int RESULT_ADD_USER = 3;
 	
     @Override
     protected void onCreate(Bundle savedInstanceState) 
@@ -143,15 +143,16 @@ public class LogInActivity extends Activity implements Notifiable
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-    	Log.i("TAG","SYncing");
+    	Log.i("TAG","Syncing");
     	 switch (item.getItemId())
          {
          case R.id.itemSyncID:
         	 ConnectionsManager cm = ConnectionsManager.getInstance(this);
         	 boolean isAvailable = cm.checkForWifi(this, "A data connection is needed to sync users");
         	 if (!isAvailable) return false;
-        	 Log.i("TAG","Posted");
-        	 cm.postToServer("getUsers.php", null, this, this.RESULT_GET_USERS);
+        	 //cm.postToServer("getUsers.php", null, this, this.RESULT_GET_USERS);
+        	 SyncManager sm = SyncManager.getInstance(this);
+        	 sm.syncUsersWithServer(this, this, RESULT_GET_USERS);
          default:
              return super.onOptionsItemSelected(item);
          }
@@ -160,7 +161,7 @@ public class LogInActivity extends Activity implements Notifiable
 	public void notifyOfEvent(int eventCode, String message) 
 	{
 		Log.i("TAG",message);
-		if (eventCode == this.RESULT_GET_USERS || eventCode == this.RESULT_GET_USERS_AFTER_ADD)
+		if (eventCode == RESULT_GET_USERS || eventCode == RESULT_GET_USERS_AFTER_ADD)
 		{
 			ConnectionsManager cm = ConnectionsManager.getInstance(this);
 			boolean isValid = cm.isValidJSON(message);
@@ -175,7 +176,7 @@ public class LogInActivity extends Activity implements Notifiable
 			handler.updateUsersWithJSON(message);	
 			Log.i("TAG",message);
 		}
-		else if (eventCode == this.RESULT_ADD_USER)
+		else if (eventCode == RESULT_ADD_USER)
 		{
 			if (message.equals("invalid_username"))
 			{
@@ -199,7 +200,7 @@ public class LogInActivity extends Activity implements Notifiable
 	 public boolean onCreateOptionsMenu(Menu menu)
 	 {
 	     MenuInflater menuInflater = getMenuInflater();
-	     menuInflater.inflate(R.menu.dog_selector_menu, menu);
+	     menuInflater.inflate(R.menu.log_in_menu, menu);
 	     return true;
 	 }
 	 /**

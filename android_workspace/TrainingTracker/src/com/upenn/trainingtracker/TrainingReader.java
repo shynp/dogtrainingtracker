@@ -21,6 +21,7 @@ public class TrainingReader
 	private ArrayList<String> parentCategories;
 	// Parent is like FOB and sub category such as Heel
 	private HashMap<String, List<String>> parentToSub;
+	private Map<String, String> subToParent = new HashMap<String, String>();
 	/* The key is the string that is used when creating the table for this category
 	 * We didn't use the category string itself since this would have spaces etc.
 	 * and could also be subject to change
@@ -52,6 +53,14 @@ public class TrainingReader
 		
 		this.catKeyToCompositionList = new HashMap<String, ArrayList<PlanEntry>>();
 		this.catKeyToCompositionMap = new HashMap<String, Map<String, PlanEntry>>();
+	}
+	public String getParentCatFromChild(String catKey)
+	{
+		if (this.subToParent.get(catKey) == null)
+		{
+			Log.i("TAG","RETURNING NULL");
+		}
+		return this.subToParent.get(catKey);
 	}
 	public String categoryToCatKey(String category)
 	{
@@ -240,6 +249,7 @@ public class TrainingReader
     			subList.add(parts[0].trim());
         		this.categoryToKey.put(parts[0].trim(), parts[1]);
         		this.keyToCategory.put(parts[1].trim(), parts[0].trim());
+        		this.subToParent.put(parts[1].trim(), category);
     		}
     		this.parentToSub.put(category, subList);
     	}

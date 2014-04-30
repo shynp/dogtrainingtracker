@@ -387,7 +387,7 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
     	
 		Log.i("TAG","Caaling addDog.php");
 		
-		cm.postToServer("addDog.php", pairs, this, this.RESULT_ADD_DOG);
+		cm.postToServer("addDog.php", pairs, this, RESULT_ADD_DOG);
     	this.addDogDialog.cancel();
     }
     /**
@@ -454,9 +454,9 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
     	{
     		Log.i("TAG","Not adding image");
     	}
-    	cm.postToServer("updateDog.php", pairs, this, this.RESULT_UPDATE_DOG);
+    	cm.postToServer("updateDog.php", pairs, this, RESULT_UPDATE_DOG);
 		SyncManager sm = SyncManager.getInstance(this);
-		sm.syncDogInfoWithServer(this, this, this.RESULT_UPDATE_DOG);
+		sm.syncDogInfoWithServer(this, this, RESULT_UPDATE_DOG);
 
     	this.updateDialog.cancel();
     }
@@ -489,15 +489,15 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
         	 boolean isAvailable = cm.checkForWifi(this, "A data connection is needed to sync dogs");
         	 if (!isAvailable) return false;
         	 sm = SyncManager.getInstance(this);
-        	 sm.syncDogInfoWithServer(this, this, this.RESULT_UPDATE_DOG);
+        	 sm.syncDogInfoWithServer(this, this, RESULT_UPDATE_DOG);
         	 break;
          case R.id.itemSwitchAccountID:
         	 this.logOutOfAccount();
         	 break;
-         case R.id.itemSyncCategories:
+   /*      case R.id.itemSyncCategories:
         	 sm = SyncManager.getInstance(this);
         	 sm.syncCategoryDataWithServer(this);
-        	 break;
+        	 break; */
          default:
              return super.onOptionsItemSelected(item);
          }
@@ -518,7 +518,7 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
 	public void notifyOfEvent(int eventCode, String message) 
 	{
 
-		if (eventCode == this.RESULT_ADD_DOG)
+		if (eventCode == RESULT_ADD_DOG)
 		{
 			Log.i("TAG","here: " + message);
 			if (!message.equals("success"))
@@ -528,9 +528,9 @@ public class DogSelectorActivity extends FragmentActivity implements Notifiable
 				return;
 			}
 			SyncManager sm = SyncManager.getInstance(this);
-			sm.syncDogInfoWithServer(this, this, this.RESULT_UPDATE_DOG);
+			sm.syncDogInfoWithServer(this, this, RESULT_UPDATE_DOG);
 		}
-		else if (eventCode == this.RESULT_UPDATE_DOG)
+		else if (eventCode == RESULT_UPDATE_DOG)
 		{
 			this.refreshListDisplay();
 		}

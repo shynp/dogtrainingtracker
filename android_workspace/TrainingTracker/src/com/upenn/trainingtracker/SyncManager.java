@@ -9,12 +9,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Context;
 import android.util.Log;
 
 public class SyncManager implements Notifiable
 {
 	private static SyncManager instance;
-	private Activity activity;
+	private Context activity;
 	
 	public static final int RESULT_UPDATE_DOG = 1;
 	public static final int RESULT_PUSH_DOG_DATA = 2;
@@ -23,14 +24,16 @@ public class SyncManager implements Notifiable
 	public static final int RESULT_PUSH_CATEGORY_DATA = 4;
 	public static final int RESULT_PULL_CATEGORY_DATA = 5;
 	
+	public static final int RESULT_PULL_USERS = 6;
+	
 	private ArrayList<Notifiable> observers = new ArrayList<Notifiable>();
 	private int eventCode;
 	
-	private SyncManager(Activity activity)
+	private SyncManager(Context activity)
 	{
 		this.activity = activity;
 	}
-	public static SyncManager getInstance(Activity activity)
+	public static SyncManager getInstance(Context activity)
 	{
 		if (instance == null && activity == null)
 		{
@@ -42,7 +45,7 @@ public class SyncManager implements Notifiable
 		}
 		return instance;
 	}
-    public void syncCategoryDataWithServer(Activity activity)
+    public void syncCategoryDataWithServer(Context activity)
     {
     	this.activity = activity;
     	this.pushCategoryDataToServer();
@@ -65,19 +68,20 @@ public class SyncManager implements Notifiable
 		db.clearTable(DatabaseHandler.TABLE_SYNC);
 		TrainingInfoTether tether = TrainingInfoTether.getInstance();
 		JSONObject object = tether.getCategoryVersionNumbers(activity);
-		Log.i("TAG",object.toString());
 		ConnectionsManager cm = ConnectionsManager.getInstance(activity);
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
     	pairs.add(new BasicNameValuePair("jsonMessage", object.toString()));
     	cm.postToServer("getTrainingInfo.php", pairs, this, SyncManager.RESULT_PULL_CATEGORY_DATA); 
     }
-    public void syncDogInfoWithServer(Activity activity, Notifiable observer, int eventCode)
+    public void syncDogInfoWithServer(Context activity, Notifiable observer, int eventCode)
     {
-    	this.observers.add(observer);
-    	this.eventCode = eventCode;
+    	if (observer != null)
+    	{
+	    	this.observers.add(observer);
+	    	this.eventCode = eventCode;
+    	}
     	
     	this.activity = activity;
-    	Log.i("TAG","Syncing");
     	ConnectionsManager cm = ConnectionsManager.getInstance(activity);
     	DogInfoTether tether = DogInfoTether.getInstance();
     	JSONObject idToVersionNumber = tether.getDogEntryVersionNumbers(activity);
@@ -85,6 +89,15 @@ public class SyncManager implements Notifiable
     	List<NameValuePair> pairs = new ArrayList<NameValuePair>();
     	pairs.add(new BasicNameValuePair("idToVersionNumber", idToVersionNumber.toString()));
    	 	cm.postToServer("getDogs.php", pairs, this, SyncManager.RESULT_PUSH_DOG_DATA);
+    }
+    public void syncUsersWithServer(Context context, Notifiable observer, int eventCode)
+    {
+    	this.observers.add(observer);
+    	this.eventCode = eventCode;
+    	ConnectionsManager cm = ConnectionsManager.getInstance(context);
+    	boolean isAvailable = cm.isGConnectionAvailable() && cm.isWifiAvailable();
+    	if (!isAvailable) return;
+    	cm.postToServer("getUsers.php", null, this, RESULT_PULL_USERS);
     }
     private void updateLocalWithDogInfo(String jsonMessage)
     {
@@ -99,6 +112,7 @@ public class SyncManager implements Notifiable
 				observer.notifyOfEvent(eventCode, null);
 			}
 		}
+		observers.clear();
     }
     private void updateLocalWithCategoryData(String jsonMessage)
     {
@@ -161,6 +175,13 @@ public class SyncManager implements Notifiable
 				return;
 			}
 			this.updateLocalWithCategoryData(message);
+			break;
+		case SyncManager.RESULT_PULL_USERS:
+			for (Notifiable observer : this.observers)
+			{
+				observer.notifyOfEvent(eventCode, null);
+			}
+			this.observers.clear();
 			break;
 		}
 		

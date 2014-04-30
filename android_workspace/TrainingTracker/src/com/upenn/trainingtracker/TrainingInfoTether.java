@@ -1,5 +1,6 @@
 package com.upenn.trainingtracker;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -12,6 +13,7 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
@@ -39,7 +41,7 @@ public class TrainingInfoTether
      * @param JSON
      * @param activity
      */
-    public void updateDogTrainingInfo(JSONObject object, Activity activity)
+    public void updateDogTrainingInfo(JSONObject object, Context activity)
     {
     	DatabaseHandler db = new DatabaseHandler(activity);
     	Cursor idCursor = db.queryFromTable(DatabaseHandler.TABLE_DOGS, new String[] {Keys.DogKeys.ID}, null, null);
@@ -108,6 +110,13 @@ public class TrainingInfoTether
     			whereClause = Keys.SkillsKeys.CATEGORY_NAME + "=?";
     			db.updateTable(skillsTableName, values, whereClause, new String[] {catKey});
     		}
+    		else
+    		{
+    			ContentValues values = new ContentValues();
+    			values.put(Keys.SkillsKeys.PLANNED, false);
+    			whereClause = Keys.SkillsKeys.CATEGORY_NAME + "=?";
+    			db.updateTable(skillsTableName, values, whereClause, new String[] {catKey});
+    		}
     	}
     }
     private boolean addRowsToTable(JSONArray rows, String tableName, DatabaseHandler db)
@@ -159,7 +168,7 @@ public class TrainingInfoTether
      * structure mapping CategoryKeys column keys to their values
      * @return
      */
-    public JSONObject getCategoryUpdateJSON(Activity activity)
+    public JSONObject getCategoryUpdateJSON(Context activity)
     {
     	DatabaseHandler db = new DatabaseHandler(activity);
     	Cursor cursor = db.queryFromTable(DatabaseHandler.TABLE_SYNC, new String[] {Keys.SyncKeys.CATEGORY_KEY, Keys.SyncKeys.DOG_ID}, 
@@ -225,7 +234,7 @@ public class TrainingInfoTether
 	 * result: dogID -> dogObject
 	 * dogObject: catKey -> version_number
 	 */
-	public JSONObject getCategoryVersionNumbers(Activity activity)
+	public JSONObject getCategoryVersionNumbers(Context activity)
 	{
 		DatabaseHandler db = new DatabaseHandler(activity);
 		Cursor cursor = db.queryFromTable(DatabaseHandler.TABLE_DOGS, new String[] {Keys.DogKeys.ID,  Keys.DogKeys.SKILLS_TABLE_NAME}, null, null);
@@ -262,7 +271,7 @@ public class TrainingInfoTether
 		db.close();
 		return result;
 	}
-    public boolean hasPlan(String category, int dogID, Activity activity)
+    public boolean hasPlan(String category, int dogID, Context activity)
     {
     	return !(this.getPlan(category, dogID, activity) == null);
     }
@@ -270,7 +279,7 @@ public class TrainingInfoTether
     /*
      * Mapping of NameKey to ValueKey
      */
-    public Map<String, String> getPlan(String catKey, int dogID, Activity activity)
+    public Map<String, String> getPlan(String catKey, int dogID, Context activity)
     {
     	TrainingReader reader = TrainingReader.getInstance(null);
     	String skillsTableName = Keys.getSkillsTableName(dogID);
@@ -300,7 +309,7 @@ public class TrainingInfoTether
     /*
      * Mapping of NameKey to ValueKey
      */
-    public Map<String, String> getPlanByCategoryKey(String catKey, int dogID, Activity activity)
+    public Map<String, String> getPlanByCategoryKey(String catKey, int dogID, Context activity)
     {
     	TrainingReader reader = TrainingReader.getInstance(null);
     	String skillsTableName = Keys.getSkillsTableName(dogID);
@@ -331,10 +340,23 @@ public class TrainingInfoTether
 		}
 		return mapping;
     }
+    public List<String> getPlannedCategoryKeys(Context context, int dogID)
+    {
+    	String skillsTableName = Keys.getSkillsTableName(dogID);
+
+    	DatabaseHandler db = new DatabaseHandler(context);
+    	Cursor result = db.queryFromTable(skillsTableName, new String[] {Keys.SkillsKeys.CATEGORY_NAME}, Keys.SkillsKeys.PLANNED + "='" + 1 + "'", null);
+    	List<String> planned = new ArrayList<String>();
+    	while (result.moveToNext())
+    	{
+    		planned.add(result.getString(result.getColumnIndex(Keys.SkillsKeys.CATEGORY_NAME)));
+    	}
+    	return planned;
+    }
     /*
      * 
      */
-    public void addPlan(String date, String plan, String catKey, int dogID, String userName, Activity activity)
+    public void addPlan(String date, String plan, String catKey, int dogID, String userName, Context activity)
     {    
     	Log.i("TAG","1");
     	String skillsTableName = Keys.getSkillsTableName(dogID);
@@ -400,7 +422,7 @@ public class TrainingInfoTether
     	Log.i("TAG","5");
     	db.close();
     }
-    public void addEntry(String date, String catKey, int dogID, String userName, List<Boolean> resultSequence, Activity activity)
+    public void addEntry(String date, String catKey, int dogID, String userName, List<Boolean> resultSequence, Context activity)
     {
     	String skillsTableName = Keys.getSkillsTableName(dogID);
     	String categoryTableName = Keys.getTableNameForCatKey(catKey, dogID);

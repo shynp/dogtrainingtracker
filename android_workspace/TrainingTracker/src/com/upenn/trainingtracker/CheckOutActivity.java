@@ -374,8 +374,10 @@ public class CheckOutActivity extends Activity
 		return layout;
 	}
 
-	private void setSpinner(String category)
+	private void setSpinner(String catKey)
 	{
+		TrainingReader reader = TrainingReader.getInstance(this);
+		String category = reader.catKeyToCategory(catKey);
 		Spinner spinner = (Spinner) this.findViewById(R.id.categorySelectorID);
 		int pos = ((ArrayAdapter<String>)spinner.getAdapter()).getPosition(category);
 	    spinner.setSelection(pos);
@@ -392,6 +394,7 @@ public class CheckOutActivity extends Activity
 			}
 		});
 	}
+
 	public void swipeRight()
 	{
 		if (this.catKeys.size() == 1) return;
@@ -431,7 +434,7 @@ public class CheckOutActivity extends Activity
 		final View nextView = this.catKeyToView.get(this.currentCategory);
 		//parentLayout.removeAllViews();
 		parentLayout.addView(nextView);
-		animation = new TranslateAnimation(-1000, 0,0, 0); //May need to check the direction you want.
+		animation = new TranslateAnimation(-500, 0,0, 0); //May need to check the direction you want.
 		animation.setDuration(400);
 		animation.setFillAfter(true);
 		nextView.startAnimation(animation);
