@@ -42,7 +42,7 @@ public class TrainingReaderGetParentCategories extends AndroidTestCase
 	}
 	public void testGetSearch() throws Throwable 
 	{
-		AndroidTestCase.assertTrue(categories.contains("Search"));	
+		AndroidTestCase.assertTrue(categories.contains("Search General"));	
 	}
 	public void testCatSize() throws Throwable
 	{
