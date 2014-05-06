@@ -53,7 +53,7 @@ public class PlanEntry
 	public PlanEntry(String name, String nameKey, PlanEntry.Type type, String[] options, String[] optionKeys)
 	{
 		this.name = name;
-		this.nameKey = name;
+		this.nameKey = nameKey;
 		this.options = options;
 		this.optionKeys = optionKeys;
 		this.type = type;

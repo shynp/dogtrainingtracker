@@ -61,7 +61,7 @@ public class TrainingReaderGetSubCategories extends AndroidTestCase
 	}
 	public void testGetSearch() throws Throwable 
 	{
-		categories = reader.getSubCategories("Search");
+		categories = reader.getSubCategories("Search General");
 		AndroidTestCase.assertTrue(categories.contains("Search"));
 		AndroidTestCase.assertTrue(categories.contains("Go Find"));
 		AndroidTestCase.assertTrue(categories.contains("Bark Alert"));
