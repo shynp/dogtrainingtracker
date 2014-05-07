@@ -25,5 +25,5 @@
 	$stmt = $con->prepare('INSERT INTO users (name, username, password, email, phone) VALUES (?, ?, ?, ?, ?)');
 	$stmt->bind_param('sssss', $name, $userName, $password, $email, $phone);
 	$stmt->execute();
-	exit($con->error);
+	exit('success');
 ?>
